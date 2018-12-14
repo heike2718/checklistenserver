@@ -75,7 +75,7 @@ public class ChecklistenService {
 	}
 
 	/**
-	 * Ändert die Daten oder den Namen oder beides.
+	 * Ändert die Daten oder den Namen.
 	 *
 	 * @param daten
 	 * @return ChecklisteDaten
