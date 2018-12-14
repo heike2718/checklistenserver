@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
+
+	<persistence-unit name="checklistenservicePU" transaction-type="JTA">
+
+		<jta-data-source>jdbc/ChecklistenserviceDS</jta-data-source>
+
+		<class>de.egladil.web.checklistenserver.domain.Checkliste</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="hibernate.generate_statistics" value="false" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+			<property name="show_sql" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>
