@@ -26,7 +26,7 @@ public class ChecklistenItem implements Serializable {
 	private String kommentar;
 
 	public static ChecklistenItem fromName(final String name) {
-		return new ChecklistenItem(name);
+		return new ChecklistenItem(name.trim());
 	}
 
 	/**
