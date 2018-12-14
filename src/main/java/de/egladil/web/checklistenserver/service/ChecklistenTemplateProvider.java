@@ -9,8 +9,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,8 +83,27 @@ public class ChecklistenTemplateProvider {
 			break;
 		}
 
-		List<ChecklistenItem> result = Stream.of(vorgaben).filter(s -> StringUtils.isNotBlank(s)).map(ChecklistenItem::fromName)
-			.collect(Collectors.toList());
+		List<ChecklistenItem> result = mapToChecklistenItems(vorgaben);
+		return result;
+	}
+
+	/**
+	 * Zu Testzwecken Sichtbarkeit package
+	 *
+	 * @param namen String[]
+	 * @return List
+	 */
+	List<ChecklistenItem> mapToChecklistenItems(final String[] namen) {
+		Set<String> gefilterteNamen = Stream.of(namen).filter(name -> StringUtils.isNotBlank(name)).map(name -> name.trim())
+			.collect(Collectors.toSet());
+
+		ArrayList<String> namenliste = new ArrayList<>(gefilterteNamen);
+
+		Collator coll = Collator.getInstance(Locale.GERMAN);
+		coll.setStrength(Collator.PRIMARY);
+		Collections.sort(namenliste, coll);
+
+		List<ChecklistenItem> result = namenliste.stream().map(ChecklistenItem::fromName).collect(Collectors.toList());
 		return result;
 	}
 

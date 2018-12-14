@@ -119,9 +119,8 @@ public class ChecklistenService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		LOG.debug("konkurrierendes Update: erzeuge neues Payload mit geänderten Daten");
 
-		ChecklisteDaten geaenderteDaten;
 		try {
-			geaenderteDaten = objectMapper.readValue(checkliste.getDaten(), ChecklisteDaten.class);
+			ChecklisteDaten geaenderteDaten = objectMapper.readValue(checkliste.getDaten(), ChecklisteDaten.class);
 
 			// nur zur Sicherheit.
 			geaenderteDaten.setVersion(checkliste.getVersion());

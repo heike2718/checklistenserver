@@ -5,6 +5,7 @@
 
 package de.egladil.web.checklistenserver.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.domain.Checkliste;
+import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 
 /**
  * ChecklisteDao
@@ -36,7 +38,17 @@ public class ChecklisteDao {
 
 		final Query query = em.createNativeQuery(stmt);
 
-		return SqlUtils.getCount(query).intValue();
+		return getCount(query).intValue();
+	}
+
+	private BigInteger getCount(final Query query) {
+		final Object res = query.getSingleResult();
+
+		if (!(res instanceof BigInteger)) {
+			throw new ChecklistenRuntimeException("result ist kein BigInteger, sondern " + res.getClass());
+		}
+
+		return (BigInteger) res;
 	}
 
 	/**

@@ -112,4 +112,13 @@ public class ChecklistenItem implements Serializable {
 		}
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ChecklistenItem [name=");
+		builder.append(name);
+		builder.append("]");
+		return builder.toString();
+	}
 }
