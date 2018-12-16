@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="customers">
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<!-- Mit custom context (MDC) <PatternLayout pattern="%-4r %d{yyyy-MM-dd HH:mm:ss.SSS, Europe/Berlin} %-5level [X:%X{ip}
+				U:%X{username}] [%t] %logger{26} %msg%n" /> -->
+			<PatternLayout
+				pattern="%-4r %d{yyyy-MM-dd HH:mm:ss.SSS, Europe/Berlin} %-5level [%t] %logger{26} %msg%n" />
+		</Console>
+		<RollingFile name="file" fileName="/home/heike/git/checklistenserver/log/checklistenserver.log"
+			filePattern="/home/heike/git/checklistenserver/log/checklistenserver-%d{yyyy-MM-dd}.log">
+			<!-- Mit custom context (MDC) <PatternLayout pattern="%-4r %d{yyyy-MM-dd HH:mm:ss.SSS, Europe/Berlin} %-5level [X:%X{ip}
+				U:%X{username}] [%t] %logger{26} %msg%n" /> -->
+			<PatternLayout
+				pattern="%-4r %d{yyyy-MM-dd HH:mm:ss.SSS, Europe/Berlin} %-5level [%t] %logger{26} %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<!-- Default logger -->
+		<Root level="info">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="file" />
+		</Root>
+	</Loggers>
+</Configuration>
+

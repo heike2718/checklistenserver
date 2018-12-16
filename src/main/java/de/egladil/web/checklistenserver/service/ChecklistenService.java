@@ -87,7 +87,7 @@ public class ChecklistenService {
 			throw new ChecklistenRuntimeException("Ändern gescheitert: keine daten oder noch kein kuerzel");
 		}
 
-		Optional<Checkliste> opt = checklisteDao.findByKuerzel(daten.getKuerzel());
+		Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(daten.getKuerzel());
 		if (!opt.isPresent()) {
 			throw new ResourceNotFoundException();
 		}
@@ -143,7 +143,7 @@ public class ChecklistenService {
 	public void checklisteLoeschen(final String kuerzel) {
 		try {
 
-			Optional<Checkliste> opt = checklisteDao.findByKuerzel(kuerzel);
+			Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(kuerzel);
 			if (opt.isPresent()) {
 				checklisteDao.delete(opt.get());
 				LOG.info("Checkliste mit kuerzel [{}] gelöscht", kuerzel);

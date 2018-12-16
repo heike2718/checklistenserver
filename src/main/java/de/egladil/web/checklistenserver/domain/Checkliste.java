@@ -5,7 +5,6 @@
 
 package de.egladil.web.checklistenserver.domain;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -27,7 +26,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "checklisten")
-public class Checkliste implements Serializable {
+public class Checkliste implements Checklistenentity {
 
 	/* serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -93,6 +92,7 @@ public class Checkliste implements Serializable {
 		return true;
 	}
 
+	@Override
 	public Long getId() {
 		return id;
 	}
