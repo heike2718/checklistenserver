@@ -52,7 +52,7 @@ public class ChecklisteDao extends BaseDao {
 	 */
 	public List<Checkliste> loadChecklisten() {
 
-		String stmt = "c.kuerzel, c.name, c.typ, c.datumGeaendert, c.version from Checkliste c";
+		String stmt = "select c.kuerzel, c.name, c.typ, c.datumGeaendert, c.version from Checkliste c";
 		TypedQuery<Checkliste> query = getEm().createQuery(stmt, Checkliste.class);
 
 		List<Checkliste> trefferliste = query.getResultList();

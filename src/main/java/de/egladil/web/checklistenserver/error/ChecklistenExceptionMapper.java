@@ -6,6 +6,7 @@
 package de.egladil.web.checklistenserver.error;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
@@ -39,9 +40,9 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		}
 
 		ResponsePayload payload = ResponsePayload
-			.messageOnly(MessagePayload.error("OMG +++ Divide By Cucumber Error. Please Reinstall Universe And Reboot +++"));
+			.messageOnly(MessagePayload.error("OMG +++ Divide By Cucumber Error. Please Reinstall Universe And Reboot +++ (und schau besser auch mal ins Server-Log...)"));
 
-		return Response.status(500).entity(payload).build();
+		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(payload).build();
 	}
 
 }

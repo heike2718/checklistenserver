@@ -21,11 +21,21 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 
 	@Override
 	public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
+
+		String originHeader = requestContext.getHeaderString("Origin");
+
+
 		final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 		headers.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
 		headers.add("X-Content-Type-Options", "nosniff");
 		headers.add("X-Frame-Options", "DENY");
 		headers.add("X-Powered-By", "Ponder Stibbons");
 		headers.add("Server", "Hex");
+		headers.add("Access-Control-Allow-Origin", originHeader);
+		headers.add("Vary", "Origin");
+		headers.add("Access-Control-Allow-Credentials", "true");
+		headers.add("Access-Control-Allow-Methods", "POST, PUT, GET, HEADERS, OPTIONS, DELETE");
+		headers.add("Access-Control-Max-Age", "3600");
+	    headers.add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
 	}
 }
