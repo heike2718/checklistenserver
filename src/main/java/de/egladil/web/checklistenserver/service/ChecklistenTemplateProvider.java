@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,6 +64,7 @@ public class ChecklistenTemplateProvider {
 
 		ChecklisteDaten result = new ChecklisteDaten();
 		result.setTyp(typ);
+		result.setKuerzel(UUID.randomUUID().toString());
 		List<ChecklistenItem> items = readFromFile(typ);
 		result.setItems(items);
 
