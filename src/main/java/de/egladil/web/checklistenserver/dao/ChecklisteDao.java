@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
@@ -26,6 +27,19 @@ import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 public class ChecklisteDao extends BaseDao {
 
 	private static final Logger LOG = LogManager.getLogger(ChecklisteDao.class.getName());
+
+	/**
+	* Erzeugt eine Instanz von ChecklisteDao
+	*/
+	public ChecklisteDao() {
+	}
+
+	/**
+	* Erzeugt eine Instanz von ChecklisteDao
+	*/
+	public ChecklisteDao(final EntityManager em) {
+		super(em);
+	}
 
 	public Integer getAnzahlChecklisten() {
 		final String stmt = "select count(*) from checklisten c";
@@ -52,7 +66,7 @@ public class ChecklisteDao extends BaseDao {
 	 */
 	public List<Checkliste> loadChecklisten() {
 
-		String stmt = "select c.kuerzel, c.name, c.typ, c.datumGeaendert, c.version from Checkliste c";
+		String stmt = "select c from Checkliste c";
 		TypedQuery<Checkliste> query = getEm().createQuery(stmt, Checkliste.class);
 
 		List<Checkliste> trefferliste = query.getResultList();

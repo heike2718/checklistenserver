@@ -13,16 +13,18 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
 import com.kumuluz.ee.logs.cdi.Log;
 import com.kumuluz.ee.logs.cdi.LogParams;
 
-import de.egladil.web.checklistenserver.domain.Checkliste;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.payload.MessagePayload;
 import de.egladil.web.checklistenserver.payload.ResponsePayload;
@@ -40,13 +42,15 @@ public class ChecklistenResource {
 
 	private static final String RESOURCE_BASE_URL = "/cl/checklisten/";
 
+	private static final Logger LOG = LogManager.getLogger(ChecklistenResource.class.getName());
+
 	@Inject
 	private ChecklistenService checklistenService;
 
 	@GET
 	public Response getChecklisten() {
 
-		List<Checkliste> checklisten = checklistenService.loadChecklisten();
+		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
 
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK: Anzahl Checklisten: " + checklisten.size()),
 			checklisten);
@@ -54,19 +58,36 @@ public class ChecklistenResource {
 		return Response.ok().entity(payload).build();
 	}
 
+	@GET
+	@Path("/{kuerzel}")
+	public Response getCheckliste(@PathParam(value = "kuerzel")
+	final String kuerzel) {
+		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel);
+		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK"), checkliste);
+		return Response.ok().entity(payload).build();
+	}
+
 	@POST
 	public Response checklisteAnlegen(final ChecklisteDaten daten) {
 
-		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten);
+		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("erfolgreich angelegt"), result);
 		// TODO: hier die BaseUrl vom Server lesen. und davorklatschen
 		return Response.status(201).entity(payload).header("Location", result.getLocation(RESOURCE_BASE_URL)).build();
 	}
 
+	@PUT
+	@Path("/{kuerzel}")
 	public Response checklisteAendern(@PathParam(value = "kuerzel")
 	final String kuerzel, final ChecklisteDaten daten) {
 
-		ResponsePayload payload = checklistenService.checklisteAendern(daten);
+		if (!kuerzel.equals(daten.getKuerzel())) {
+			LOG.error("Konflikt: kuerzel= '{}', daten.kuerzel = '{}'", kuerzel, daten.getKuerzel());
+			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Precondition Failed"));
+			return Response.status(412).entity(payload).build();
+		}
+
+		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel);
 		return Response.ok().entity(payload).build();
 
 	}

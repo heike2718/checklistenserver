@@ -21,6 +21,8 @@ public class ChecklisteDaten {
 
 	private int version;
 
+	private int anzahlErledigt;
+
 	private List<ChecklistenItem> items = new ArrayList<>();
 
 	/**
@@ -69,5 +71,13 @@ public class ChecklisteDaten {
 
 	public void setVersion(final int version) {
 		this.version = version;
+	}
+
+	public int getAnzahlErledigt() {
+		return anzahlErledigt;
+	}
+
+	public void setAnzahlErledigt(final int anzahlErledigt) {
+		this.anzahlErledigt = anzahlErledigt;
 	}
 }

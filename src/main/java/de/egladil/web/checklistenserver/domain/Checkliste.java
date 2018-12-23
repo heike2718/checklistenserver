@@ -31,6 +31,15 @@ public class Checkliste implements Checklistenentity {
 	/* serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
+	public static Checkliste create(final Checklistentyp typ, final String name, final String kuerzel) {
+		Checkliste result = new Checkliste();
+		result.setTyp(typ);
+		result.setName(name);
+		result.setKuerzel(kuerzel);
+
+		return result;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")

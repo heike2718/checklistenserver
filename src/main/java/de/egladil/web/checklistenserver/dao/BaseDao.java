@@ -31,6 +31,20 @@ public abstract class BaseDao {
 	private EntityManager em;
 
 	/**
+	 * Erzeugt eine Instanz von BaseDao
+	 */
+	public BaseDao() {
+	}
+
+	/**
+	 * Erzeugt eine Instanz von BaseDao
+	 */
+	public BaseDao(final EntityManager em) {
+		super();
+		this.em = em;
+	}
+
+	/**
 	 * Tja, was wohl.
 	 *
 	 * @param entity Checklistenentity

@@ -5,24 +5,22 @@
 
 package de.egladil.web.checklistenserver.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.dao.ChecklisteDao;
 import de.egladil.web.checklistenserver.domain.Checkliste;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
+import de.egladil.web.checklistenserver.domain.Checklistentyp;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 import de.egladil.web.checklistenserver.error.ResourceNotFoundException;
 import de.egladil.web.checklistenserver.payload.MessagePayload;
@@ -39,34 +37,55 @@ public class ChecklistenService {
 	@Inject
 	private ChecklisteDao checklisteDao;
 
-	public List<Checkliste> loadChecklisten() {
-		return checklisteDao.loadChecklisten();
+	@Inject
+	private ChecklistenTemplateProvider checklistenTemplateProvider;
+
+	/**
+	 *
+	 * @return List
+	 */
+	public List<ChecklisteDaten> loadChecklisten() {
+		final List<Checkliste> checklisten = checklisteDao.loadChecklisten();
+
+		List<ChecklisteDaten> result = checklisten.stream().map(chl -> ChecklisteDatenMapper.deserialize(chl))
+			.filter(daten -> daten != null).collect(Collectors.toList());
+		return result;
+	}
+
+	public ChecklisteDaten getCheckliste(final String kuerzel) {
+		if (kuerzel == null) {
+			throw new ChecklistenRuntimeException("Lesen gescheitert: kein kuerzel");
+		}
+
+		Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(kuerzel);
+		if (!opt.isPresent()) {
+			LOG.error("Chcekliste mit kuerzel '{}' nicht gefunden", kuerzel);
+			throw new ResourceNotFoundException();
+		}
+
+		ChecklisteDaten daten = ChecklisteDatenMapper.deserialize(opt.get());
+		if (daten == null) {
+			// die Message wurde bereits gelogged
+			throw new ChecklistenRuntimeException("");
+		}
+		return daten;
 	}
 
 	@Transactional
-	public ChecklisteDaten checklisteAnlegen(final ChecklisteDaten daten) {
-		ObjectMapper objectMapper = new ObjectMapper();
+	public ChecklisteDaten checklisteAnlegen(final Checklistentyp typ, final String name) {
 
 		try {
-			String kuerzel = UUID.randomUUID().toString();
-			daten.setKuerzel(kuerzel);
-			Checkliste checkliste = new Checkliste();
-			checkliste.setKuerzel(daten.getKuerzel());
-			checkliste.setName(daten.getName());
-			checkliste.setTyp(daten.getTyp());
+			ChecklisteDaten daten = checklistenTemplateProvider.getTemplateMitTyp(typ);
+			daten.setName(name);
 
-			checkliste.setDaten(objectMapper.writeValueAsString(daten));
-
+			Checkliste checkliste = Checkliste.create(typ, name, daten.getKuerzel());
+			checkliste.setDaten(ChecklisteDatenMapper.serialize(daten, "Anlegen gescheitert"));
 			Checkliste persisted = checklisteDao.save(checkliste);
 
 			daten.setVersion(persisted.getVersion());
 
-			LOG.info("Checkliste mit kuerzel [{}] angelegt", kuerzel);
+			LOG.info("Checkliste mit kuerzel '{}' angelegt", daten.getKuerzel());
 			return daten;
-		} catch (JsonProcessingException e) {
-			String msg = "Anlegen gescheitert (Fehler beim JSONisieren)";
-			LOG.error("{}: {}", e.getMessage(), e);
-			throw new ChecklistenRuntimeException(msg);
 		} catch (PersistenceException e) {
 			String msg = "Anlegen gescheitert (Fehler beim Speichern)";
 			LOG.error("{}: {}", e.getMessage(), e);
@@ -81,14 +100,18 @@ public class ChecklistenService {
 	 * @return ChecklisteDaten
 	 */
 	@Transactional
-	public ResponsePayload checklisteAendern(final ChecklisteDaten daten) {
+	public ResponsePayload checklisteAendern(final ChecklisteDaten daten, final String kuerzel) {
 
-		if (daten == null || daten.getKuerzel() == null) {
-			throw new ChecklistenRuntimeException("Ändern gescheitert: keine daten oder noch kein kuerzel");
+		if (daten == null) {
+			throw new ChecklistenRuntimeException("Ändern gescheitert: keine daten");
+		}
+		if (kuerzel == null) {
+			throw new ChecklistenRuntimeException("Ändern gescheitert: kein kuerzel");
 		}
 
-		Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(daten.getKuerzel());
+		Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(kuerzel);
 		if (!opt.isPresent()) {
+			LOG.error("Chcekliste mit kuerzel '{}' nicht gefunden", kuerzel);
 			throw new ResourceNotFoundException();
 		}
 
@@ -100,13 +123,9 @@ public class ChecklistenService {
 			// persist erhöht Version um 1, das muss auch in die Daten.
 			daten.setVersion(checkliste.getVersion() + 1);
 			checkliste.setName(daten.getName());
-			checkliste.setDaten(new ObjectMapper().writeValueAsString(daten));
+			checkliste.setDaten(ChecklisteDatenMapper.serialize(daten, "Ändern gescheitert"));
 			checklisteDao.save(checkliste);
 			return new ResponsePayload(MessagePayload.info("erfolgreich geändert"), daten);
-		} catch (JsonProcessingException e) {
-			String msg = "Ändern gescheitert (Fehler beim JSONisieren)";
-			LOG.error("{}: {}", e.getMessage(), e);
-			throw new ChecklistenRuntimeException(msg);
 		} catch (PersistenceException e) {
 			String msg = "Ändern gescheitert (Fehler beim Speichern)";
 			LOG.error("{}: {}", e.getMessage(), e);
@@ -116,22 +135,14 @@ public class ChecklistenService {
 	}
 
 	private ResponsePayload handleConcurrentUpdate(final Checkliste checkliste) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		LOG.debug("konkurrierendes Update: erzeuge neues Payload mit geänderten Daten");
 
-		try {
-			ChecklisteDaten geaenderteDaten = objectMapper.readValue(checkliste.getDaten(), ChecklisteDaten.class);
-
-			// nur zur Sicherheit.
-			geaenderteDaten.setVersion(checkliste.getVersion());
-
-			return new ResponsePayload(MessagePayload.warn("Jemand anderes hat die Daten geändert. Anbei die neue Version"),
-				geaenderteDaten);
-		} catch (IOException e) {
-			String msg = "Ändern gescheitert (konkurrierendes Update konnte nicht verarbeitet werden: Fehler beim deJSONisieren)";
-			LOG.error("{}: {}", e.getMessage(), e);
-			throw new ChecklistenRuntimeException(msg);
-		}
+		ChecklisteDaten geaenderteDaten = ChecklisteDatenMapper.deserialize(checkliste, new String[] {
+			"Ändern gescheitert (konkurrierendes Update konnte nicht verarbeitet werden: Fehler beim deJSONisieren)" });
+		// nur zur Sicherheit.
+		geaenderteDaten.setVersion(checkliste.getVersion());
+		return new ResponsePayload(MessagePayload.warn("Jemand anderes hat die Daten geändert. Anbei die neue Version"),
+			geaenderteDaten);
 	}
 
 	/**
@@ -146,9 +157,9 @@ public class ChecklistenService {
 			Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(kuerzel);
 			if (opt.isPresent()) {
 				checklisteDao.delete(opt.get());
-				LOG.info("Checkliste mit kuerzel [{}] gelöscht", kuerzel);
+				LOG.info("Checkliste mit kuerzel '{}' gelöscht", kuerzel);
 			} else {
-				LOG.debug("Checkliste mit kuerzel [{}] war bereits gelöscht", kuerzel);
+				LOG.debug("Checkliste mit kuerzel '{}' war bereits gelöscht", kuerzel);
 			}
 		} catch (PersistenceException e) {
 			String msg = "Löschen gescheitert (Fehler beim Speichern)";

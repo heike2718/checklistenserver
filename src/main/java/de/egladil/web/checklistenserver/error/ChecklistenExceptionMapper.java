@@ -29,7 +29,11 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		if (exception instanceof NoContentException) {
 			return Response.status(204).build();
 		}
-		if (exception instanceof ResourceNotFoundException || exception instanceof ConcurrentUpdateException) {
+		if (exception instanceof ResourceNotFoundException) {
+			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Not Found"));
+			return Response.status(401).entity(payload).build();
+		}
+		if (exception instanceof ConcurrentUpdateException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn(exception.getMessage()));
 			return Response.status(409).entity(payload).build();
 		}

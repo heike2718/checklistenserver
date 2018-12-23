@@ -6,6 +6,7 @@
 package de.egladil.web.checklistenserver.dao;
 
 import javax.enterprise.context.RequestScoped;
+import javax.persistence.EntityManager;
 
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
 
@@ -14,6 +15,19 @@ import de.egladil.web.checklistenserver.domain.Checklistenuser;
  */
 @RequestScoped
 public class ChecklistenuserDao extends BaseDao {
+
+	/**
+	* Erzeugt eine Instanz von ChecklistenuserDao
+	*/
+	public ChecklistenuserDao() {
+	}
+
+	/**
+	* Erzeugt eine Instanz von ChecklistenuserDao
+	*/
+	public ChecklistenuserDao(final EntityManager em) {
+		super(em);
+	}
 
 	@Override
 	protected String getSubjectQuery(final String queryParameterName) {
