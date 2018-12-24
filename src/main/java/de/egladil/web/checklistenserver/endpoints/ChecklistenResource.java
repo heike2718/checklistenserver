@@ -26,9 +26,9 @@ import com.kumuluz.ee.logs.cdi.Log;
 import com.kumuluz.ee.logs.cdi.LogParams;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
-import de.egladil.web.checklistenserver.payload.MessagePayload;
-import de.egladil.web.checklistenserver.payload.ResponsePayload;
 import de.egladil.web.checklistenserver.service.ChecklistenService;
+import de.egladil.web.commons.payload.MessagePayload;
+import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
  * ChecklistenResource

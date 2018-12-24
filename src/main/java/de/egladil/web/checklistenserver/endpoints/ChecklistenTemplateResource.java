@@ -22,9 +22,9 @@ import com.kumuluz.ee.logs.cdi.LogParams;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
-import de.egladil.web.checklistenserver.payload.MessagePayload;
-import de.egladil.web.checklistenserver.payload.ResponsePayload;
 import de.egladil.web.checklistenserver.service.ChecklistenTemplateProvider;
+import de.egladil.web.commons.payload.MessagePayload;
+import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
  * ChecklistenTemplateResource gibt Vorgabedetails für Checklisten zurück.

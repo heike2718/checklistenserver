@@ -16,6 +16,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.NoContentException;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +24,6 @@ import org.apache.logging.log4j.ThreadContext;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
-
-import de.egladil.web.checklistenserver.error.NoContentException;
 
 /**
  * MDCFilter *
@@ -35,7 +34,7 @@ public class MDCFilter implements ContainerRequestFilter {
 
 	private static final Logger LOG = LogManager.getLogger(MDCFilter.class.getName());
 
-	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] {"/favicon.ico"});
+	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
 
 	@Context
 	private HttpServletRequest servletRequest;
@@ -46,7 +45,7 @@ public class MDCFilter implements ContainerRequestFilter {
 
 		final String pathInfo = servletRequest.getPathInfo();
 		if (NO_CONTENT_PATHS.contains(pathInfo)) {
-			throw new NoContentException();
+			throw new NoContentException(pathInfo);
 		}
 
 		// Das ist die Variante, bei der Custom Context zum Log hinzugefügt wird.
@@ -55,8 +54,8 @@ public class MDCFilter implements ContainerRequestFilter {
 		String origin = extractOriginOrReferer(headers.getFirst("Origin"));
 		String referer = headers.getFirst("Referer");
 
-		LOG.info("{} - {} {} , Origin={}, Referrer={}", servletRequest.getRemoteAddr(), servletRequest.getMethod(),
-			pathInfo, origin, referer);
+		LOG.info("{} - {} {} , Origin={}, Referrer={}", servletRequest.getRemoteAddr(), servletRequest.getMethod(), pathInfo,
+			origin, referer);
 	}
 
 	private String extractOriginOrReferer(final String headerValue) {

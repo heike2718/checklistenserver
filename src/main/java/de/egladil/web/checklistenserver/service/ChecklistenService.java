@@ -22,9 +22,9 @@ import de.egladil.web.checklistenserver.domain.Checkliste;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
-import de.egladil.web.checklistenserver.error.ResourceNotFoundException;
-import de.egladil.web.checklistenserver.payload.MessagePayload;
-import de.egladil.web.checklistenserver.payload.ResponsePayload;
+import de.egladil.web.commons.error.ResourceNotFoundException;
+import de.egladil.web.commons.payload.MessagePayload;
+import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
  * ChecklistenService

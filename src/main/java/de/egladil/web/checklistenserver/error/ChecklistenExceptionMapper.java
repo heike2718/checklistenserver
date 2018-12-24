@@ -5,6 +5,7 @@
 
 package de.egladil.web.checklistenserver.error;
 
+import javax.ws.rs.core.NoContentException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -13,8 +14,9 @@ import javax.ws.rs.ext.Provider;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
-import de.egladil.web.checklistenserver.payload.MessagePayload;
-import de.egladil.web.checklistenserver.payload.ResponsePayload;
+import de.egladil.web.commons.error.ResourceNotFoundException;
+import de.egladil.web.commons.payload.MessagePayload;
+import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
  * ChecklistenExceptionMapper
