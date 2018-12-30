@@ -17,6 +17,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -48,7 +50,7 @@ public class ChecklistenResource {
 	private ChecklistenService checklistenService;
 
 	@GET
-	public Response getChecklisten() {
+	public Response getChecklisten(@Context final ContainerRequestContext crc) {
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
 
@@ -60,7 +62,7 @@ public class ChecklistenResource {
 
 	@GET
 	@Path("/{kuerzel}")
-	public Response getCheckliste(@PathParam(value = "kuerzel")
+	public Response getCheckliste(@Context final ContainerRequestContext crc, @PathParam(value = "kuerzel")
 	final String kuerzel) {
 		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel);
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK"), checkliste);
@@ -68,7 +70,7 @@ public class ChecklistenResource {
 	}
 
 	@POST
-	public Response checklisteAnlegen(final ChecklisteDaten daten) {
+	public Response checklisteAnlegen(@Context final ContainerRequestContext crc, final ChecklisteDaten daten) {
 
 		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("erfolgreich angelegt"), result);

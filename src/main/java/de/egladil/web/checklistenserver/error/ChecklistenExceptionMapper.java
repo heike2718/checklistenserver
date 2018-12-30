@@ -14,6 +14,7 @@ import javax.ws.rs.ext.Provider;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
+import de.egladil.web.commons.error.ConcurrentUpdateException;
 import de.egladil.web.commons.error.ResourceNotFoundException;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
