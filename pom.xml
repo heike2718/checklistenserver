@@ -33,6 +33,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>de.egladil.web</groupId>
+			<artifactId>commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.kumuluz.ee</groupId>
 			<artifactId>kumuluzee-core</artifactId>
 		</dependency>
@@ -67,12 +73,6 @@
 			<version>1.0.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>de.egladil.web</groupId>
-			<artifactId>commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -83,6 +83,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
@@ -119,6 +124,11 @@
 			<artifactId>dependency-check-maven</artifactId>
 			<version>3.3.2</version>
 			<type>maven-plugin</type>
+		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.4.1</version>
 		</dependency>
 
 		<!-- Test -->
