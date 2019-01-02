@@ -8,7 +8,6 @@ package de.egladil.web.checklistenserver.filters;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.annotation.Priority;
@@ -31,6 +30,7 @@ import com.kumuluz.ee.logs.Logger;
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
 import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.SessionExpiredException;
+import de.egladil.web.commons.utils.CommonHttpUtils;
 import de.egladil.web.commons.utils.CommonStringUtils;
 import de.egladil.web.commons.utils.CommonTimeUtils;
 
@@ -133,30 +133,8 @@ public class SecurityFilter implements ContainerRequestFilter {
 	 * @throws IOException
 	 */
 	private void logErrorAndThrow(final String details) throws IOException {
-		final String dump = getRequesInfos();
+		final String dump = CommonHttpUtils.getRequesInfos(servletRequest);
 		LOG.warn("Possible CSRF-Attack: {} - {}", details, dump);
-
 		throw new AuthException();
 	}
-
-	private String getRequesInfos() {
-		final Enumeration<String> headerNames = servletRequest.getHeaderNames();
-		final StringBuffer sb = new StringBuffer();
-		sb.append(" <--- Request Headers --- ");
-		while (headerNames.hasMoreElements()) {
-			final String headerName = headerNames.nextElement();
-			sb.append(headerName);
-			sb.append(":");
-			final Enumeration<String> headerValues = servletRequest.getHeaders(headerName);
-			if (headerValues.hasMoreElements()) {
-				sb.append(headerValues.nextElement());
-				sb.append(", ");
-			}
-			sb.append(" -- ");
-		}
-		sb.append(" Headers Request ---> ");
-		final String dump = sb.toString();
-		return dump;
-	}
-
 }
