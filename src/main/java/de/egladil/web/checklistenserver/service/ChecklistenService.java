@@ -59,7 +59,7 @@ public class ChecklistenService {
 
 		Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(kuerzel);
 		if (!opt.isPresent()) {
-			LOG.error("Chcekliste mit kuerzel '{}' nicht gefunden", kuerzel);
+			LOG.error("Checkliste mit kuerzel '{}' nicht gefunden", kuerzel);
 			throw new ResourceNotFoundException();
 		}
 

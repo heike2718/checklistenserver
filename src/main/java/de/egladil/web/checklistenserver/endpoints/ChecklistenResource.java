@@ -65,8 +65,7 @@ public class ChecklistenResource {
 	public Response getCheckliste(@Context final ContainerRequestContext crc, @PathParam(value = "kuerzel")
 	final String kuerzel) {
 		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel);
-		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK"), checkliste);
-		return Response.ok().entity(payload).build();
+		return Response.ok().entity(checkliste).build();
 	}
 
 	@POST
