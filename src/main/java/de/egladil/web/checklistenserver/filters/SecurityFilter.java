@@ -57,7 +57,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 	public void filter(final ContainerRequestContext requestContext) throws IOException {
 
 		final String pathInfo = servletRequest.getPathInfo();
-		if (NO_CONTENT_PATHS.contains(pathInfo)) {
+		if (NO_CONTENT_PATHS.contains(pathInfo) || "OPTIONS".equals(this.servletRequest.getMethod())) {
 			throw new NoContentException(pathInfo);
 		}
 
@@ -66,11 +66,13 @@ public class SecurityFilter implements ContainerRequestFilter {
 		DecodedJWT jwt = new JWTProvider().getJWT(servletRequest.getHeader("Authorization"), applicationConfig);
 
 		if (jwt != null) {
-			checkIfLoggedIn(jwt, requestContext);
+			checkNotExpired(jwt, requestContext);
+			String subject = jwt.getSubject();
+			requestContext.setProperty("USER_ID", subject);
 		}
 	}
 
-	private void checkIfLoggedIn(final DecodedJWT jwt, final ContainerRequestContext requestContext) {
+	private void checkNotExpired(final DecodedJWT jwt, final ContainerRequestContext requestContext) {
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expiresAt = CommonTimeUtils.transformFromDate(jwt.getExpiresAt());
@@ -78,9 +80,6 @@ public class SecurityFilter implements ContainerRequestFilter {
 		if (expiresAt.isBefore(now)) {
 			throw new SessionExpiredException();
 		}
-
-		String subject = jwt.getSubject();
-		requestContext.setProperty("USER_ID", subject);
 	}
 
 	/**

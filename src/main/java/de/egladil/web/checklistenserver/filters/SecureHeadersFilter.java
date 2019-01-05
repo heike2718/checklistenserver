@@ -31,7 +31,7 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 		headers.add("X-Frame-Options", "DENY");
 		headers.add("X-Powered-By", "Ponder Stibbons");
 		headers.add("Server", "Hex");
-		headers.add("Access-Control-Allow-Origin", originHeader);
+		headers.add("Access-Control-Allow-Origin", "*");
 		headers.add("Vary", "Origin");
 		headers.add("Access-Control-Allow-Credentials", "true");
 		headers.add("Access-Control-Allow-Methods", "POST, PUT, GET, HEADERS, OPTIONS, DELETE");
