@@ -26,6 +26,7 @@ import com.kumuluz.ee.logs.cdi.LogParams;
 public class SessionResource {
 
 
+
 	public Response checkUserLoggedIn(final String idToken, final String publicCert) {
 		return null;
 	}

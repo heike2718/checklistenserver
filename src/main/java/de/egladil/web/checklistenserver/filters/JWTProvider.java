@@ -25,7 +25,7 @@ public class JWTProvider {
 	 * Verifiziert das JWT und gibt es zurück, wenn valid.
 	 *
 	 * @param authorizationHeader
-	 * @param applicationConfig
+	 * @param applicationConfig ApplicationConfig
 	 * @return DecodedJWT oder null
 	 */
 	public DecodedJWT getJWT(final String authorizationHeader, final ApplicationConfig applicationConfig) {

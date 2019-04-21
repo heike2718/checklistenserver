@@ -14,7 +14,7 @@ import de.egladil.web.commons.config.ConfigRootProvider;
 /**
  * ApplicationConfig<br>
  * <br>
- * Attribut 'application-config' verweist auf den gleichnamigen Abschnitt in der config.yaml.
+ * Attribut 'application-config' verweist auf den gleichnamigen Abschnitt in der checklistenservice-config.yaml.
  */
 @ApplicationScoped
 @ConfigBundle("application-config")

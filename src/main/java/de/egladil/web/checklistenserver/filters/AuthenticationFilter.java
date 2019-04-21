@@ -35,15 +35,15 @@ import de.egladil.web.commons.utils.CommonStringUtils;
 import de.egladil.web.commons.utils.CommonTimeUtils;
 
 /**
- * SecurityFilter
+ * AuthenticationFilter
  */
 @ApplicationScoped
 @Provider
 @PreMatching
 @Priority(100)
-public class SecurityFilter implements ContainerRequestFilter {
+public class AuthenticationFilter implements ContainerRequestFilter {
 
-	private static final Logger LOG = LogManager.getLogger(SecurityFilter.class.getName());
+	private static final Logger LOG = LogManager.getLogger(AuthenticationFilter.class.getName());
 
 	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
 
