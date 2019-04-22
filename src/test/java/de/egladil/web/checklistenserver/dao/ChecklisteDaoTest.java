@@ -21,7 +21,7 @@ public class ChecklisteDaoTest {
 		ChecklisteDao dao = new ChecklisteDao();
 
 		// Act
-		String stmt = dao.getSubjectQuery(identifierName);
+		String stmt = dao.getFindEntityByUniqueIdentifierQuery(identifierName);
 
 		// Assert
 		assertEquals("select c from Checkliste c where c.kuerzel=:hühnchen", stmt);

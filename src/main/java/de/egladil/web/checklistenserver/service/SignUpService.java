@@ -14,9 +14,6 @@ import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.commons.config.DynamicConfigReader;
 import de.egladil.web.commons.crypto.CryptoService;
 
-/**
- * SignUpService stellt die Funktionalität zum Anlegen eines Kontos in der Checklistenapp zur Verfügung.
- */
 @RequestScoped
 public class SignUpService {
 

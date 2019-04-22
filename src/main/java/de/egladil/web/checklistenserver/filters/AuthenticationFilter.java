@@ -23,6 +23,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
@@ -54,7 +55,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	private ApplicationConfig applicationConfig;
 
 	@Override
-	public void filter(final ContainerRequestContext requestContext) throws IOException {
+	public void filter(final ContainerRequestContext requestContext) throws IOException, AuthException, SessionExpiredException {
 
 		final String pathInfo = servletRequest.getPathInfo();
 		if (NO_CONTENT_PATHS.contains(pathInfo) || "OPTIONS".equals(this.servletRequest.getMethod())) {
@@ -63,7 +64,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		this.validateOriginAndRefererHeader();
 
-		DecodedJWT jwt = new JWTProvider().getJWT(servletRequest.getHeader("Authorization"), applicationConfig);
+		DecodedJWT jwt = null;
+
+		try {
+			jwt = new JWTProvider().getJWT(servletRequest.getHeader("Authorization"), applicationConfig);
+		} catch (JWTVerificationException e) {
+			LOG.warn("Das JWT wurde unterwegs manipuliert: {}", e.getMessage());
+			throw new AuthException();
+		}
 
 		if (jwt != null) {
 			checkNotExpired(jwt, requestContext);

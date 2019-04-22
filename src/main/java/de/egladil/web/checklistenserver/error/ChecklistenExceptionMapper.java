@@ -14,9 +14,11 @@ import javax.ws.rs.ext.Provider;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
+import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.ConcurrentUpdateException;
 import de.egladil.web.commons.error.InvalidInputException;
 import de.egladil.web.commons.error.ResourceNotFoundException;
+import de.egladil.web.commons.error.SessionExpiredException;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
@@ -38,9 +40,13 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 			InvalidInputException e = (InvalidInputException) exception;
 			return Response.status(400).entity(e.getResponsePayload()).build();
 		}
-		if (exception instanceof ChecklistenAuthenticationException) {
+		if (exception instanceof ChecklistenAuthenticationException || exception instanceof AuthException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
 			return Response.status(401).entity(payload).build();
+		}
+		if (exception instanceof SessionExpiredException) {
+			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
+			return Response.status(901).entity(payload).build();
 		}
 		if (exception instanceof ResourceNotFoundException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Hamwer nich"));

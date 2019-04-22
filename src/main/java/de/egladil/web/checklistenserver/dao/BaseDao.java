@@ -69,7 +69,8 @@ public abstract class BaseDao {
 	 * @return Optional
 	 */
 	public <T extends Checklistenentity> Optional<T> findByUniqueIdentifier(final String identifier) {
-		String stmt = getSubjectQuery("identifier");
+
+		String stmt = getFindEntityByUniqueIdentifierQuery("identifier");
 		@SuppressWarnings("unchecked")
 		TypedQuery<T> query = getEm().createQuery(stmt, getEntityClass());
 		query.setParameter("identifier", identifier);
@@ -89,10 +90,11 @@ public abstract class BaseDao {
 	}
 
 	/**
+	 * Gibt die jql zurück, die eine Entity anhand des fachlichen Schlüssels sucht.
 	 *
 	 * @return String
 	 */
-	protected abstract String getSubjectQuery(String queryParameterName);
+	protected abstract String getFindEntityByUniqueIdentifierQuery(String queryParameterName);
 
 	@SuppressWarnings("rawtypes")
 	protected abstract Class getEntityClass();

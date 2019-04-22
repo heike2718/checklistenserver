@@ -30,7 +30,7 @@ public class ChecklistenuserDao extends BaseDao {
 	}
 
 	@Override
-	protected String getSubjectQuery(final String queryParameterName) {
+	protected String getFindEntityByUniqueIdentifierQuery(final String queryParameterName) {
 		return "select u from Checklistenuser u where u.uuid=:" + queryParameterName;
 	}
 

@@ -5,19 +5,35 @@
 
 package de.egladil.web.checklistenserver.payload;
 
+import javax.validation.constraints.NotNull;
+
 import de.egladil.web.commons.validation.annotations.Honeypot;
-import de.egladil.web.commons.validation.annotations.Passwort;
+import de.egladil.web.commons.validation.annotations.Passphrase;
 
 /**
  * SignUpPayload
  */
 public class SignUpPayload {
 
-	@Passwort
+	@Passphrase
 	private String secret;
 
 	@Honeypot(message = "")
 	private String kleber;
+
+	/**
+	* Erzeugt eine Instanz von SignUpPayload
+	*/
+	public SignUpPayload() {
+	}
+
+	/**
+	* Erzeugt eine Instanz von SignUpPayload
+	*/
+	public SignUpPayload(@NotNull final String secret, final String kleber) {
+		this.secret = secret;
+		this.kleber = kleber;
+	}
 
 	public String getSecret() {
 		return secret;
@@ -38,5 +54,4 @@ public class SignUpPayload {
 	public void wipe() {
 		this.secret = null;
 	}
-
 }

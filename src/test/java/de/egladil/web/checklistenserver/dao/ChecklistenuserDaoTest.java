@@ -21,7 +21,7 @@ public class ChecklistenuserDaoTest {
 		ChecklistenuserDao dao = new ChecklistenuserDao();
 
 		// Act
-		String stmt = dao.getSubjectQuery(identifierName);
+		String stmt = dao.getFindEntityByUniqueIdentifierQuery(identifierName);
 
 		// Assert
 		assertEquals("select u from Checklistenuser u where u.uuid=:hühnchen", stmt);

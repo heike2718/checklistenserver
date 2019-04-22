@@ -14,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.kumuluz.ee.logs.cdi.Log;
 import com.kumuluz.ee.logs.cdi.LogParams;
 
@@ -48,18 +50,37 @@ public class SingUpResource {
 	@Path("/secret")
 	public Response checkMaySignUp(SignUpPayload signUpPayload) {
 
+		SignUpPayload trimmedPayload = trimIfNotEmpty(signUpPayload);
 		try {
-			validationDelegate.check(signUpPayload, SignUpPayload.class);
+			validationDelegate.check(trimmedPayload, SignUpPayload.class);
 
-			signUpService.verifySecret(signUpPayload);
+			signUpService.verifySecret(trimmedPayload);
+
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Tritt ein, Fremder."));
 			return Response.status(200).entity(payload).build();
-
 		} finally {
 			signUpPayload.wipe();
 			signUpPayload = null;
+			if (trimmedPayload != null) {
+				trimmedPayload.wipe();
+				trimmedPayload = null;
+			}
 		}
 
+	}
+
+	private SignUpPayload trimIfNotEmpty(final SignUpPayload payload) {
+		if (payload == null) {
+			return null;
+		}
+		String secret = payload.getSecret();
+		if (secret != null && StringUtils.isEmpty(secret)) {
+			secret = secret.trim();
+		}
+		SignUpPayload result = new SignUpPayload(secret, payload.getKleber());
+		secret = null;
+		payload.wipe();
+		return result;
 	}
 
 	/**

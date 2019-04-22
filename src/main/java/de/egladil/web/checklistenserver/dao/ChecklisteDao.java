@@ -97,7 +97,7 @@ public class ChecklisteDao extends BaseDao {
 	}
 
 	@Override
-	protected String getSubjectQuery(final String queryParameterName) {
+	protected String getFindEntityByUniqueIdentifierQuery(final String queryParameterName) {
 		return "select c from Checkliste c where c.kuerzel=:" + queryParameterName;
 	}
 

@@ -27,7 +27,7 @@ public class SessionResource {
 
 
 
-	public Response checkUserLoggedIn(final String idToken, final String publicCert) {
+	public Response checkAuthenticated(final String idToken, final String publicCert) {
 		return null;
 	}
 

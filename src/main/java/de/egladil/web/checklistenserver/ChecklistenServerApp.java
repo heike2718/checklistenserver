@@ -5,8 +5,12 @@
 
 package de.egladil.web.checklistenserver;
 
+import java.security.Security;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
 /**
@@ -15,4 +19,10 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/checklisten-api")
 public class ChecklistenServerApp extends Application {
 
+	/**
+	* Erzeugt eine Instanz von ChecklistenServerApp
+	*/
+	public ChecklistenServerApp() {
+		Security.addProvider(new BouncyCastleProvider());
+	}
 }
