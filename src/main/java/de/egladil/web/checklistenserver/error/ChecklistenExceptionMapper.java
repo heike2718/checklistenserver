@@ -42,7 +42,7 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		}
 		if (exception instanceof ChecklistenAuthenticationException || exception instanceof AuthException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
-			return Response.status(401).entity(payload).build();
+			return Response.status(403).entity(payload).build();
 		}
 		if (exception instanceof SessionExpiredException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
