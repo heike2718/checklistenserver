@@ -46,7 +46,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	private static final Logger LOG = LogManager.getLogger(AuthenticationFilter.class.getName());
 
-	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
+	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico", "/signup/secret" });
 
 	@Context
 	private HttpServletRequest servletRequest;
