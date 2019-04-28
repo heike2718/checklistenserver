@@ -14,16 +14,16 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 /**
- * SecureHeadersFilter
+ * SecureHeadersFilter packt die SecureHeaders in den Response.
  */
 @Provider
 public class SecureHeadersFilter implements ContainerResponseFilter {
 
 	@Override
-	public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
+	public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext)
+		throws IOException {
 
 		String originHeader = requestContext.getHeaderString("Origin");
-
 
 		final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 		headers.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
@@ -36,6 +36,6 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 		headers.add("Access-Control-Allow-Credentials", "true");
 		headers.add("Access-Control-Allow-Methods", "POST, PUT, GET, HEADERS, OPTIONS, DELETE");
 		headers.add("Access-Control-Max-Age", "3600");
-	    headers.add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
+		headers.add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
 	}
 }

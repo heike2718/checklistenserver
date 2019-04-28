@@ -5,14 +5,18 @@
 
 package de.egladil.web.checklistenserver.endpoints;
 
+import java.security.Principal;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,7 +45,8 @@ public class SingUpResource {
 	private ValidationDelegate validationDelegate = new ValidationDelegate();
 
 	/**
-	 * Prüft, ob derjenige, der diesen Endpoint aufruft, das Geheimnis kennt.
+	 * Prüft, ob derjenige, der diesen Endpoint aufruft, das Geheimnis kennt. Dann wird er auf den AuthProvider
+	 * redirected, um ein Konto anzulegen.
 	 *
 	 * @param signUpPayload String
 	 * @return Response
@@ -84,18 +89,21 @@ public class SingUpResource {
 	}
 
 	/**
-	 * Prüft, ob derjenige, der diesen Endpoint aufruft, das Geheimnis kennt.
+	 * Legt einen Checklistenuser mit der UUID an.
 	 *
 	 * @param signUpPayload String
 	 * @return Response
 	 */
 	@POST
 	@Path("/user")
-	public Response createUser(final String jwt) {
+	public Response createUser(@Context
+	final SecurityContext securityContext) {
 
-		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Tritt ein, Fremder."));
+		Principal principal = securityContext.getUserPrincipal();
+
+		String msg = "legen User mit UUID=" + principal.getName() + " an";
+		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("User angelegt"));
 		return Response.status(201).entity(payload).build();
-
 	}
 
 }

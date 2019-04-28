@@ -6,9 +6,10 @@
 package de.egladil.web.checklistenserver.filters;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,24 +20,30 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.NoContentException;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
+import de.egladil.web.checklistenserver.dao.ChecklistenuserDao;
+import de.egladil.web.checklistenserver.domain.Checklistenuser;
+import de.egladil.web.commons.access.PrincipalImpl;
 import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.SessionExpiredException;
 import de.egladil.web.commons.utils.CommonHttpUtils;
 import de.egladil.web.commons.utils.CommonStringUtils;
-import de.egladil.web.commons.utils.CommonTimeUtils;
 
 /**
- * AuthenticationFilter
+ * AuthenticationFilter liest den authorization-Header, wenn erforderlich, verifiziert das JWT und setzt das subject aus
+ * dem JWT in den SecurityContext als Principal. Von dort kann es in den API-Endpoints über den Parameter @Context
+ * SercurityContext ausgelesen werden.
  */
 @ApplicationScoped
 @Provider
@@ -46,7 +53,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	private static final Logger LOG = LogManager.getLogger(AuthenticationFilter.class.getName());
 
-	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico", "/signup/secret" });
+	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
+
+	private static final List<String> PUBLIC_API_PATHS = Arrays.asList(new String[] { "/signup/secret" });
+
+	private static final String SIGN_UP_PATH = "/signup/user";
 
 	@Context
 	private HttpServletRequest servletRequest;
@@ -54,8 +65,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	@Inject
 	private ApplicationConfig applicationConfig;
 
+	@Inject
+	private ChecklistenuserDao userDao;
+
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException, AuthException, SessionExpiredException {
+
+		requestContext.getPropertyNames().stream().forEach(n -> System.out.println(n));
 
 		final String pathInfo = servletRequest.getPathInfo();
 		if (NO_CONTENT_PATHS.contains(pathInfo) || "OPTIONS".equals(this.servletRequest.getMethod())) {
@@ -64,30 +80,90 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		this.validateOriginAndRefererHeader();
 
-		DecodedJWT jwt = null;
+		if (PUBLIC_API_PATHS.contains(pathInfo)) {
+			return;
+		}
+
+		authorizeRequest(requestContext, pathInfo);
+	}
+
+	private void authorizeRequest(final ContainerRequestContext requestContext, final String pathInfo) throws IOException {
+
+		final String authorizationHeader = servletRequest.getHeader("Authorization");
+
+		if (authorizationHeader == null) {
+			throw new AuthException("authorization- Header missing");
+		}
 
 		try {
-			jwt = new JWTProvider().getJWT(servletRequest.getHeader("Authorization"), applicationConfig);
+			DecodedJWT jwt = new JWTProvider().getJWT(authorizationHeader, applicationConfig);
+			final String subject = jwt.getSubject();
+			if (mustCheckUser(pathInfo)) {
+				boolean isUser = this.isAuthenticated(subject);
+				if (!isUser) {
+					throw new AuthException();
+				}
+			}
+			this.initSecurityContext(requestContext, subject);
+		} catch (TokenExpiredException e) {
+			if (mustCheckJWTExpired(pathInfo)) {
+				throw e;
+			}
 		} catch (JWTVerificationException e) {
 			LOG.warn("Das JWT wurde unterwegs manipuliert: {}", e.getMessage());
 			throw new AuthException();
 		}
-
-		if (jwt != null) {
-			checkNotExpired(jwt, requestContext);
-			String subject = jwt.getSubject();
-			requestContext.setProperty("USER_ID", subject);
-		}
 	}
 
-	private void checkNotExpired(final DecodedJWT jwt, final ContainerRequestContext requestContext) {
+	private boolean mustCheckUser(final String pathInfo) {
+		return !SIGN_UP_PATH.equals(pathInfo);
+	}
 
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime expiresAt = CommonTimeUtils.transformFromDate(jwt.getExpiresAt());
+	private boolean mustCheckJWTExpired(final String pathInfo) {
+		return !SIGN_UP_PATH.equals(pathInfo);
+	}
 
-		if (expiresAt.isBefore(now)) {
-			throw new SessionExpiredException();
-		}
+	private boolean isAuthenticated(final String subject) {
+		Optional<Checklistenuser> user = userDao.findByUniqueIdentifier(subject);
+		return user.isPresent();
+	}
+
+	/**
+	 * Holt das subject aus dem JWT und setzt es als Principal in den SecurityContext. Von dort kann es in den
+	 * Endpoint-Methoden mittels eines Parameters @Context final SecurityContext securityContext ausgelesen werden.
+	 *
+	 * @param requestContext
+	 * @param subject String das subject aus dem JWT
+	 */
+	private void initSecurityContext(final ContainerRequestContext requestContext, final String subject) {
+
+		final SecurityContext securityContext = requestContext.getSecurityContext();
+		final boolean secure = securityContext != null && securityContext.isSecure();
+
+		requestContext.setSecurityContext(new SecurityContext() {
+
+			@Override
+			public Principal getUserPrincipal() {
+				return new PrincipalImpl(subject);
+			}
+
+			@Override
+			public boolean isUserInRole(final String role) {
+				// jeder User
+				return StringUtils.isNotBlank(subject);
+			}
+
+			@Override
+			public boolean isSecure() {
+				return secure;
+			}
+
+			@Override
+			public String getAuthenticationScheme() {
+				return SecurityContext.FORM_AUTH;
+			}
+		});
+
 	}
 
 	/**

@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
@@ -55,6 +56,11 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		if (exception instanceof ConcurrentUpdateException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn(exception.getMessage()));
 			return Response.status(409).entity(payload).build();
+		}
+		if (exception instanceof TokenExpiredException ) {
+			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn("Die Session ist abgelaufen."));
+			// 419 ist kein Standard, sagt aber Authentication Timeout
+			return Response.status(419).entity(payload).build();
 		}
 		if (exception instanceof ChecklistenRuntimeException) {
 			// wurde schon gelogged

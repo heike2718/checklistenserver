@@ -52,6 +52,8 @@ public class SignUpService {
 			dynamicConfigProperties.getSalt(), dynamicConfigProperties.getPepper(), dynamicConfigProperties.getAlgorithm(),
 			dynamicConfigProperties.getIterations());
 
+		signUpPayload.wipe();
+
 		if (!stimmt) {
 			throw new ChecklistenAuthenticationException("Der Fremde kannte das Geheimnis nicht.");
 		}

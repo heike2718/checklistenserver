@@ -24,7 +24,7 @@ import com.kumuluz.ee.logs.Logger;
 import de.egladil.web.commons.utils.CommonStringUtils;
 
 /**
- * MDCFilter
+ * MDCFilter setzt Infos aus der URL ins Log.
  */
 @Provider
 @PreMatching

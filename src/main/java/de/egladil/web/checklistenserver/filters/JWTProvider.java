@@ -8,6 +8,7 @@ package de.egladil.web.checklistenserver.filters;
 import java.io.IOException;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
@@ -28,7 +29,7 @@ public class JWTProvider {
 	 * @throws IOException vom Lesen des public keys des AuthProviders
 	 */
 	public DecodedJWT getJWT(final String authorizationHeader, final ApplicationConfig applicationConfig)
-		throws JWTVerificationException, IOException {
+		throws JWTVerificationException, TokenExpiredException, IOException {
 		if (authorizationHeader == null) {
 			return null;
 		}
