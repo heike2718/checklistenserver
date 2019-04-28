@@ -71,8 +71,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException, AuthException, SessionExpiredException {
 
-		requestContext.getPropertyNames().stream().forEach(n -> System.out.println(n));
-
 		final String pathInfo = servletRequest.getPathInfo();
 		if (NO_CONTENT_PATHS.contains(pathInfo) || "OPTIONS".equals(this.servletRequest.getMethod())) {
 			throw new NoContentException(pathInfo);
@@ -98,13 +96,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		try {
 			DecodedJWT jwt = new JWTProvider().getJWT(authorizationHeader, applicationConfig);
 			final String subject = jwt.getSubject();
+			this.initSecurityContext(requestContext, subject);
 			if (mustCheckUser(pathInfo)) {
 				boolean isUser = this.isAuthenticated(subject);
 				if (!isUser) {
 					throw new AuthException();
 				}
 			}
-			this.initSecurityContext(requestContext, subject);
 		} catch (TokenExpiredException e) {
 			if (mustCheckJWTExpired(pathInfo)) {
 				throw e;

@@ -19,7 +19,6 @@ Subject bekannt ist. Erst dann gehts in die Anwendung
 * Der public key des AuthProviders wird über die URL geholt, die in der checklistenservice-config.yaml unter
 application-config -> auth-public-key-url steht
 * Zur Validierung dient die Klasse JWTProvider, die an einen Wrapper für den auth0-JWTVerifier delegiert (JWTVerifierWrapper)
-* Zusätzlich wird expirationAt validiert und ein status 901 zurückgesendet, wenn die Session abgelaufen ist.
 
 
 ## Notizen (chronologisch absteigend)
