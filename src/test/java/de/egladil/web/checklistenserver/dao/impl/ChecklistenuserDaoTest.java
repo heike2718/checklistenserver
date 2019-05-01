@@ -3,7 +3,7 @@
 // (c) Heike Winkelvoß
 //=====================================================
 
-package de.egladil.web.checklistenserver.dao;
+package de.egladil.web.checklistenserver.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,12 +18,23 @@ public class ChecklistenuserDaoTest {
 	void testUniqueIdentityQuery() {
 		// Arrange
 		String identifierName = "hühnchen";
-		ChecklistenuserDao dao = new ChecklistenuserDao();
+		UserDao dao = new UserDao();
 
 		// Act
 		String stmt = dao.getFindEntityByUniqueIdentifierQuery(identifierName);
 
 		// Assert
 		assertEquals("select u from Checklistenuser u where u.uuid=:hühnchen", stmt);
+	}
+
+	@Test
+	void testCountStatement()  {
+
+		// Act
+		String stmt = new UserDao().getCountStatement();
+
+		// Assert
+		assertEquals("select count(*) from user", stmt);
+
 	}
 }

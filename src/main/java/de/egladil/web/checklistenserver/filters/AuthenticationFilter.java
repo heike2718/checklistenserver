@@ -32,7 +32,7 @@ import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
-import de.egladil.web.checklistenserver.dao.ChecklistenuserDao;
+import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.commons.access.PrincipalImpl;
 import de.egladil.web.commons.error.AuthException;
@@ -66,7 +66,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	private ApplicationConfig applicationConfig;
 
 	@Inject
-	private ChecklistenuserDao userDao;
+	private UserDao userDao;
 
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException, AuthException, SessionExpiredException {
@@ -100,6 +100,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			if (mustCheckUser(pathInfo)) {
 				boolean isUser = this.isAuthenticated(subject);
 				if (!isUser) {
+					LOG.warn("Das JWT subj {} ist der Checklistenanwendung nicht bekannt", subject);
 					throw new AuthException();
 				}
 			}

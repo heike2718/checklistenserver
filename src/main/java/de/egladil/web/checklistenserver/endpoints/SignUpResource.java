@@ -6,6 +6,7 @@
 package de.egladil.web.checklistenserver.endpoints;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -25,19 +26,20 @@ import com.kumuluz.ee.logs.cdi.LogParams;
 
 import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.checklistenserver.service.SignUpService;
+import de.egladil.web.commons.payload.HateoasPayload;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 import de.egladil.web.commons.validation.ValidationDelegate;
 
 /**
- * SingUpResource
+ * SignUpResource
  */
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Log(LogParams.METRICS)
 @RequestScoped
 @Path("signup")
-public class SingUpResource {
+public class SignUpResource {
 
 	@Inject
 	private SignUpService signUpService;
@@ -101,8 +103,16 @@ public class SingUpResource {
 
 		Principal principal = securityContext.getUserPrincipal();
 
-		String msg = "legen User mit UUID=" + principal.getName() + " an";
-		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("User angelegt"));
+		String uuid = principal.getName();
+		Optional<HateoasPayload> optHateoasPayload = signUpService.findUser(uuid);
+
+		if (optHateoasPayload.isPresent()) {
+			return Response.ok().entity(new ResponsePayload(MessagePayload.info("User existiert bereits"), optHateoasPayload.get())).build();
+		}
+
+		HateoasPayload hateoasPayload = signUpService.signUpUser(uuid);
+
+		ResponsePayload payload = new ResponsePayload(MessagePayload.info("User angelegt"), hateoasPayload);
 		return Response.status(201).entity(payload).build();
 	}
 

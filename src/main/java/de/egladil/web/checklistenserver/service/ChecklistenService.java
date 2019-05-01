@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
-import de.egladil.web.checklistenserver.dao.ChecklisteDao;
+import de.egladil.web.checklistenserver.dao.impl.ChecklisteDao;
 import de.egladil.web.checklistenserver.domain.Checkliste;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
@@ -45,7 +45,7 @@ public class ChecklistenService {
 	 * @return List
 	 */
 	public List<ChecklisteDaten> loadChecklisten() {
-		final List<Checkliste> checklisten = checklisteDao.loadChecklisten();
+		final List<Checkliste> checklisten = checklisteDao.load();
 
 		List<ChecklisteDaten> result = checklisten.stream().map(chl -> ChecklisteDatenMapper.deserialize(chl))
 			.filter(daten -> daten != null).collect(Collectors.toList());

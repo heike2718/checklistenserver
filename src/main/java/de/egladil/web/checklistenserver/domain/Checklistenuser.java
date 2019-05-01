@@ -11,15 +11,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import de.egladil.web.commons.payload.HateoasPayload;
 
 /**
  * Checklistenuser
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class Checklistenuser implements Checklistenentity {
 
 	/* serialVersionUID */
@@ -28,6 +33,7 @@ public class Checklistenuser implements Checklistenentity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
+	@JsonIgnore
 	private Long id;
 
 	@NotNull
@@ -37,7 +43,12 @@ public class Checklistenuser implements Checklistenentity {
 
 	@Version
 	@Column(name = "VERSION")
+	@JsonIgnore
 	private int version;
+
+	@Transient
+	private HateoasPayload hateoasPayload;
+
 
 	@Override
 	public Long getId() {
@@ -62,5 +73,15 @@ public class Checklistenuser implements Checklistenentity {
 
 	public void setVersion(final int version) {
 		this.version = version;
+	}
+
+	@Override
+	public HateoasPayload getHateoasPayload() {
+		return hateoasPayload;
+	}
+
+	@Override
+	public void setHateoasPayload(final HateoasPayload hateoasPayload) {
+		this.hateoasPayload = hateoasPayload;
 	}
 }

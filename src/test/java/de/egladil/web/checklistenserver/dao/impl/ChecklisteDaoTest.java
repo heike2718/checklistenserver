@@ -3,7 +3,7 @@
 // (c) Heike Winkelvoß
 //=====================================================
 
-package de.egladil.web.checklistenserver.dao;
+package de.egladil.web.checklistenserver.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,5 +25,16 @@ public class ChecklisteDaoTest {
 
 		// Assert
 		assertEquals("select c from Checkliste c where c.kuerzel=:hühnchen", stmt);
+	}
+
+	@Test
+	void testCountStatement()  {
+
+		// Act
+		String stmt = new ChecklisteDao().getCountStatement();
+
+		// Assert
+		assertEquals("select count(*) from checklisten", stmt);
+
 	}
 }

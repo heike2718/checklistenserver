@@ -17,9 +17,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import de.egladil.web.commons.payload.HateoasPayload;
 
 /**
  * Checkliste
@@ -70,6 +73,9 @@ public class Checkliste implements Checklistenentity {
 	@Version
 	@Column(name = "VERSION")
 	private int version;
+
+	@Transient
+	private HateoasPayload hateoasPayload;
 
 	@Override
 	public int hashCode() {
@@ -152,5 +158,15 @@ public class Checkliste implements Checklistenentity {
 
 	public void setKuerzel(final String kuerzel) {
 		this.kuerzel = kuerzel;
+	}
+
+	@Override
+	public HateoasPayload getHateoasPayload() {
+		return hateoasPayload;
+	}
+
+	@Override
+	public void setHateoasPayload(final HateoasPayload hateoasPayload) {
+		this.hateoasPayload = hateoasPayload;
 	}
 }
