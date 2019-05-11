@@ -1,8 +1,0 @@
-CREATE TABLE checklisten.user (
-	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`UUID` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-	`VERSION` int(10) DEFAULT 0,
-	PRIMARY KEY (`ID`),
-  	UNIQUE KEY `uk_user_1` (`UUID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-

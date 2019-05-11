@@ -28,7 +28,7 @@ import de.egladil.web.commons.payload.HateoasPayload;
  * Checkliste
  */
 @Entity
-@Table(name = "checklisten")
+@Table(name = "CHECKLISTEN")
 public class Checkliste implements Checklistenentity {
 
 	/* serialVersionUID */

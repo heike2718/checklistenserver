@@ -1,4 +1,4 @@
-CREATE TABLE checklisten.checklisten (
+CREATE TABLE CHECKLISTEN (
 	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`KUERZEL` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 	`NAME` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -9,4 +9,14 @@ CREATE TABLE checklisten.checklisten (
 	PRIMARY KEY (`ID`),
   	UNIQUE KEY `uk_checklisten_1` (`KUERZEL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `USERS` (
+	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`UUID` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`VERSION` int(10) DEFAULT 0,
+	PRIMARY KEY (`ID`),
+  	UNIQUE KEY `uk_user_1` (`UUID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 

@@ -24,6 +24,8 @@ import de.egladil.web.checklistenserver.error.ChecklistenAuthenticationException
 import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.commons.config.DynamicConfigReader;
 import de.egladil.web.commons.crypto.CryptoService;
+import de.egladil.web.commons.crypto.PasswordAlgorithm;
+import de.egladil.web.commons.crypto.PasswordAlgorithmBuilder;
 import de.egladil.web.commons.error.InvalidInputException;
 import de.egladil.web.commons.payload.HateoasPayload;
 import de.egladil.web.commons.payload.MessagePayload;
@@ -61,9 +63,16 @@ public class SignUpService {
 		DynamicConfigProperties dynamicConfigProperties = (DynamicConfigProperties) dynamicConfigReader
 			.getConfig(DynamicConfigProperties.class);
 
-		boolean stimmt = cryptoService.verifyPassword(signUpPayload.getSecret().toCharArray(), dynamicConfigProperties.getSecret(),
-			dynamicConfigProperties.getSalt(), dynamicConfigProperties.getPepper(), dynamicConfigProperties.getAlgorithm(),
-			dynamicConfigProperties.getIterations());
+		// @formatter:off
+		PasswordAlgorithm passwordAlgorithm = PasswordAlgorithmBuilder.instance()
+			.withAlgorithmName(dynamicConfigProperties.getAlgorithm())
+			.withNumberIterations(dynamicConfigProperties.getIterations().intValue())
+			.withPepper(dynamicConfigProperties.getPepper())
+			.build();
+		// @formatter:on
+
+		boolean stimmt = cryptoService.verifyPassword(passwordAlgorithm, signUpPayload.getSecret().toCharArray(),
+			dynamicConfigProperties.getSecret(), dynamicConfigProperties.getSalt());
 
 		signUpPayload.wipe();
 
@@ -126,4 +135,3 @@ public class SignUpService {
 	}
 
 }
-
