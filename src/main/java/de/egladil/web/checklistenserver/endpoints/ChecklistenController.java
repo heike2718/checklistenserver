@@ -33,18 +33,18 @@ import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
- * ChecklistenResource
+ * ChecklistenController
  */
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Log(LogParams.METRICS)
 @RequestScoped
 @Path("checklisten")
-public class ChecklistenResource {
+public class ChecklistenController {
 
 	private static final String RESOURCE_BASE_URL = "/cl/checklisten/";
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenResource.class.getName());
+	private static final Logger LOG = LogManager.getLogger(ChecklistenController.class.getName());
 
 	@Inject
 	private ChecklistenService checklistenService;

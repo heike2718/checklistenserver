@@ -6,7 +6,6 @@
 package de.egladil.web.checklistenserver.filters;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -15,47 +14,51 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NoContentException;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
+import com.kumuluz.ee.jwt.auth.context.JWTSecurityContext;
+import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
+import com.kumuluz.ee.jwt.auth.validator.JWTValidationException;
+import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
 import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
-import de.egladil.web.commons.access.PrincipalImpl;
 import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.SessionExpiredException;
 import de.egladil.web.commons.utils.CommonHttpUtils;
 import de.egladil.web.commons.utils.CommonStringUtils;
 
 /**
- * AuthenticationFilter liest den authorization-Header, wenn erforderlich, verifiziert das JWT und setzt das subject aus
+ * AuthorizationFilter liest den authorization-Header, wenn erforderlich, verifiziert das JWT und setzt das subject aus
  * dem JWT in den SecurityContext als Principal. Von dort kann es in den API-Endpoints über den Parameter @Context
  * SercurityContext ausgelesen werden.
  */
 @ApplicationScoped
 @Provider
+@Priority(Priorities.AUTHENTICATION)
 @PreMatching
-@Priority(100)
-public class AuthenticationFilter implements ContainerRequestFilter {
+public class AuthorizationFilter implements ContainerRequestFilter {
 
-	private static final Logger LOG = LogManager.getLogger(AuthenticationFilter.class.getName());
+	private static final Logger LOG = LogManager.getLogger(AuthorizationFilter.class.getName());
 
 	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
 
-	private static final List<String> PUBLIC_API_PATHS = Arrays.asList(new String[] { "/signup/secret" });
+	private static final List<String> PUBLIC_API_PATHS = Arrays.asList(new String[] { "/dev/root", "/signup/secret" });
 
 	private static final String SIGN_UP_PATH = "/signup/user";
 
@@ -66,8 +69,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	private ApplicationConfig applicationConfig;
 
 	@Inject
+	private JWTContextInfo jwtContextInfo;
+
+	@Inject
 	private UserDao userDao;
 
+	// @Override
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException, AuthException, SessionExpiredException {
 
@@ -94,23 +101,28 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		}
 
 		try {
-			DecodedJWT jwt = new JWTProvider().getJWT(authorizationHeader, applicationConfig);
-			final String subject = jwt.getSubject();
-			this.initSecurityContext(requestContext, subject);
+			JWTPrincipal jwtPrincipal = validateToken(authorizationHeader.substring(7));
+
+			CLPrincipal egladilPrincipal = null;
+
 			if (mustCheckUser(pathInfo)) {
-				boolean isUser = this.isAuthenticated(subject);
-				if (!isUser) {
+				final String subject = jwtPrincipal.getSubject();
+				Optional<Checklistenuser> optUser = this.getChecklistenUser(subject);
+				if (!optUser.isPresent()) {
 					LOG.warn("Das JWT subj {} ist der Checklistenanwendung nicht bekannt", subject);
-					throw new AuthException();
+					requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+						.header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"").build());
 				}
+				egladilPrincipal = new CLPrincipal(jwtPrincipal, optUser.get().getRoles());
 			}
-		} catch (TokenExpiredException e) {
-			if (mustCheckJWTExpired(pathInfo)) {
-				throw e;
-			}
-		} catch (JWTVerificationException e) {
+
+			final SecurityContext securityContext = requestContext.getSecurityContext();
+			JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, egladilPrincipal);
+			requestContext.setSecurityContext(jwtSecurityContext);
+		} catch (JWTValidationException e) {
 			LOG.warn("Das JWT wurde unterwegs manipuliert: {}", e.getMessage());
-			throw new AuthException();
+			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+				.header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"").build());
 		}
 	}
 
@@ -118,51 +130,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		return !SIGN_UP_PATH.equals(pathInfo);
 	}
 
-	private boolean mustCheckJWTExpired(final String pathInfo) {
-		return !SIGN_UP_PATH.equals(pathInfo);
-	}
-
-	private boolean isAuthenticated(final String subject) {
+	private Optional<Checklistenuser> getChecklistenUser(final String subject) {
 		Optional<Checklistenuser> user = userDao.findByUniqueIdentifier(subject);
-		return user.isPresent();
-	}
-
-	/**
-	 * Holt das subject aus dem JWT und setzt es als Principal in den SecurityContext. Von dort kann es in den
-	 * Endpoint-Methoden mittels eines Parameters @Context final SecurityContext securityContext ausgelesen werden.
-	 *
-	 * @param requestContext
-	 * @param subject String das subject aus dem JWT
-	 */
-	private void initSecurityContext(final ContainerRequestContext requestContext, final String subject) {
-
-		final SecurityContext securityContext = requestContext.getSecurityContext();
-		final boolean secure = securityContext != null && securityContext.isSecure();
-
-		requestContext.setSecurityContext(new SecurityContext() {
-
-			@Override
-			public Principal getUserPrincipal() {
-				return new PrincipalImpl(subject);
-			}
-
-			@Override
-			public boolean isUserInRole(final String role) {
-				// jeder User
-				return StringUtils.isNotBlank(subject);
-			}
-
-			@Override
-			public boolean isSecure() {
-				return secure;
-			}
-
-			@Override
-			public String getAuthenticationScheme() {
-				return SecurityContext.FORM_AUTH;
-			}
-		});
-
+		return user;
 	}
 
 	/**
@@ -218,5 +188,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		final String dump = CommonHttpUtils.getRequesInfos(servletRequest);
 		LOG.warn("Possible CSRF-Attack: {} - {}", details, dump);
 		throw new AuthException();
+	}
+
+	private JWTPrincipal validateToken(final String token) throws JWTValidationException {
+		return JWTValidator.validateToken(token, jwtContextInfo);
 	}
 }

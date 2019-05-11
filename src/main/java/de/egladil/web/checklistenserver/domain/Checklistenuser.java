@@ -5,6 +5,9 @@
 
 package de.egladil.web.checklistenserver.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,8 +50,17 @@ public class Checklistenuser implements Checklistenentity {
 	private int version;
 
 	@Transient
+	private Set<String> roles = new HashSet<>();
+
+	@Transient
 	private HateoasPayload hateoasPayload;
 
+	/**
+	 * Erzeugt eine Instanz von Checklistenuser
+	 */
+	public Checklistenuser() {
+		roles.add("user");
+	}
 
 	@Override
 	public Long getId() {
@@ -83,5 +95,14 @@ public class Checklistenuser implements Checklistenentity {
 	@Override
 	public void setHateoasPayload(final HateoasPayload hateoasPayload) {
 		this.hateoasPayload = hateoasPayload;
+	}
+
+	/**
+	 * Rolle werden momentan konstant codiert und nicht in der DB abgelegt.
+	 *
+	 * @return Set
+	 */
+	public Set<String> getRoles() {
+		return roles;
 	}
 }

@@ -25,24 +25,26 @@ import de.egladil.web.commons.payload.ResponsePayload;
 import de.egladil.web.commons.validation.annotations.UuidString;
 
 /**
- * UserResource
+ * UserController
  */
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Log(LogParams.METRICS)
 @RequestScoped
 @Path("users")
-public class UserResource {
+public class UserController {
+
+	@Context
+	private SecurityContext securityContext;
 
 	/**
-	 * Erzeugt eine Instanz von UserResource
+	 * Erzeugt eine Instanz von UserController
 	 */
-	public UserResource() {
+	public UserController() {
 	}
 
 	@Path("/{uuid}")
-	public Response getUser(@Context
-	final SecurityContext securityContext, @UuidString @PathParam("uuid")
+	public Response getUser(@UuidString @PathParam("uuid")
 	final String uuid) {
 
 		Principal principal = securityContext.getUserPrincipal();

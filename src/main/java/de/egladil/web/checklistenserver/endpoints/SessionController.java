@@ -16,14 +16,14 @@ import com.kumuluz.ee.logs.cdi.Log;
 import com.kumuluz.ee.logs.cdi.LogParams;
 
 /**
- * SessionResource
+ * SessionController
  */
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Log(LogParams.METRICS)
 @RequestScoped
 @Path("sessions")
-public class SessionResource {
+public class SessionController {
 
 
 

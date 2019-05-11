@@ -7,8 +7,6 @@ package de.egladil.web.checklistenserver.payload;
 
 import javax.validation.constraints.NotNull;
 
-import org.bouncycastle.util.Arrays;
-
 import de.egladil.web.commons.validation.annotations.Honeypot;
 import de.egladil.web.commons.validation.annotations.Passphrase;
 
@@ -56,8 +54,10 @@ public class SignUpPayload {
 
 	public void wipe() {
 		if (this.secret != null) {
-			char[] chars = this.secret.toCharArray();
-			Arrays.fill(chars, (char) 0);
+			final char[] chars = this.secret.toCharArray();
+			for (int i = 0; i < chars.length; i++) {
+				chars[i] = (char) 0;
+			}
 		}
 		this.secret = null;
 	}

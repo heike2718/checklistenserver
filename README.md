@@ -13,12 +13,15 @@ REST-API für Winkels Checklisten
 * redirect zum AuthProvider mit url https://auth-provider-domain/login?clientId=die-client-id&redirectUrl=die-redirect-url
 * Nach Antwort vom AuthProvider: POST-Request an sessions/[noch zu entscheiden] mit dem JWT als Body. Es wird geprüft, ob das
 Subject bekannt ist. Erst dann gehts in die Anwendung
+* Ist das Subject nicht bekannt, muss das secret abgefragt werden. Bei Erfolg wird ein user angelegt.
 
 ## Validierung des JWT
 
+* erfolgt im AuthorizationFilter
 * Der public key des AuthProviders wird über die URL geholt, die in der checklistenservice-config.yaml unter
 application-config -> auth-public-key-url steht
-* Zur Validierung dient die Klasse JWTProvider, die an einen Wrapper für den auth0-JWTVerifier delegiert (JWTVerifierWrapper)
+* Validierung des JWT erfolgt mit MP-JWT (microprofile JWT)
+* Die groups werden aus dem JWT genommen und um statische Checklisten-Groups ergänzt.
 
 
 ## Notizen (chronologisch absteigend)
