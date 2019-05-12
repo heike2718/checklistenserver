@@ -44,6 +44,9 @@ public class SignUpController {
 	@Inject
 	private SignUpService signUpService;
 
+	@Context
+	private SecurityContext securityContext;
+
 	private ValidationDelegate validationDelegate = new ValidationDelegate();
 
 	/**
@@ -98,8 +101,7 @@ public class SignUpController {
 	 */
 	@POST
 	@Path("/user")
-	public Response createUser(@Context
-	final SecurityContext securityContext) {
+	public Response createUser() {
 
 		Principal principal = securityContext.getUserPrincipal();
 
@@ -107,7 +109,8 @@ public class SignUpController {
 		Optional<HateoasPayload> optHateoasPayload = signUpService.findUser(uuid);
 
 		if (optHateoasPayload.isPresent()) {
-			return Response.ok().entity(new ResponsePayload(MessagePayload.info("User existiert bereits"), optHateoasPayload.get())).build();
+			return Response.ok().entity(new ResponsePayload(MessagePayload.info("User existiert bereits"), optHateoasPayload.get()))
+				.build();
 		}
 
 		HateoasPayload hateoasPayload = signUpService.signUpUser(uuid);

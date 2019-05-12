@@ -20,12 +20,12 @@ import com.kumuluz.ee.logs.Logger;
 import de.egladil.web.checklistenserver.config.DynamicConfigProperties;
 import de.egladil.web.checklistenserver.dao.IUserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
-import de.egladil.web.checklistenserver.error.ChecklistenAuthenticationException;
 import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.commons.config.DynamicConfigReader;
 import de.egladil.web.commons.crypto.CryptoService;
 import de.egladil.web.commons.crypto.PasswordAlgorithm;
 import de.egladil.web.commons.crypto.PasswordAlgorithmBuilder;
+import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.InvalidInputException;
 import de.egladil.web.commons.payload.HateoasPayload;
 import de.egladil.web.commons.payload.MessagePayload;
@@ -52,7 +52,7 @@ public class SignUpService {
 	 * @param signUpPayload SignUpPayload
 	 * @throws ChecklistenAuthenticationException falls nicht korrekt
 	 */
-	public void verifySecret(final SignUpPayload signUpPayload) throws ChecklistenAuthenticationException {
+	public void verifySecret(final SignUpPayload signUpPayload) throws AuthException {
 
 		if (StringUtils.isBlank(signUpPayload.getSecret())) {
 			ResponsePayload payload = new ResponsePayload(MessagePayload.error("Die Eingaben sind nicht korrekt."),
@@ -77,9 +77,8 @@ public class SignUpService {
 		signUpPayload.wipe();
 
 		if (!stimmt) {
-			throw new ChecklistenAuthenticationException("Der Fremde kannte das Geheimnis nicht.");
+			throw new AuthException("Der Fremde kannte das Geheimnis nicht.");
 		}
-
 	}
 
 	/**
@@ -100,7 +99,7 @@ public class SignUpService {
 	}
 
 	/**
-	 * Rtzeugt das Teil, was für jemanden, der REST mit HATEOAS verwenden will, erforderlich ist, um die User-Resource
+	 * Erzeugt das Teil, was für jemanden, der REST mit HATEOAS verwenden will, erforderlich ist, um die User-Resource
 	 * zu finden.
 	 *
 	 * @param uuid

@@ -41,9 +41,9 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 			InvalidInputException e = (InvalidInputException) exception;
 			return Response.status(400).entity(e.getResponsePayload()).build();
 		}
-		if (exception instanceof ChecklistenAuthenticationException || exception instanceof AuthException) {
+		if (exception instanceof AuthException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
-			return Response.status(403).entity(payload).build();
+			return Response.status(401).entity(payload).build();
 		}
 		if (exception instanceof SessionExpiredException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));

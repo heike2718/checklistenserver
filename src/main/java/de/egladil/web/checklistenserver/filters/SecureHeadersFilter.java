@@ -23,8 +23,6 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 	public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext)
 		throws IOException {
 
-		String originHeader = requestContext.getHeaderString("Origin");
-
 		final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 		headers.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
 		headers.add("X-Content-Type-Options", "nosniff");
