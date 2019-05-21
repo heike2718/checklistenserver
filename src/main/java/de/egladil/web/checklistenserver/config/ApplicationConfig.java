@@ -26,10 +26,6 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	private boolean blockOnMissingOriginReferer = false;
 
-	private String authPublicKeyUrl;
-
-	private int authPublicKeyVersion;
-
 	private String nameDynamicConfigFile;
 
 	@Override
@@ -55,22 +51,6 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	public void setBlockOnMissingOriginReferer(final boolean blockOnMissingOriginReferer) {
 		this.blockOnMissingOriginReferer = blockOnMissingOriginReferer;
-	}
-
-	public String getAuthPublicKeyUrl() {
-		return authPublicKeyUrl;
-	}
-
-	public void setAuthPublicKeyUrl(final String authPublicKeyUrl) {
-		this.authPublicKeyUrl = authPublicKeyUrl;
-	}
-
-	public int getAuthPublicKeyVersion() {
-		return authPublicKeyVersion;
-	}
-
-	public void setAuthPublicKeyVersion(final int authPublicKeyVersion) {
-		this.authPublicKeyVersion = authPublicKeyVersion;
 	}
 
 	@Override
