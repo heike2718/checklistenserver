@@ -14,6 +14,8 @@ import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
@@ -80,6 +82,7 @@ public class ChecklistenService {
 
 			Checkliste checkliste = Checkliste.create(typ, name, daten.getKuerzel());
 			checkliste.setDaten(ChecklisteDatenMapper.serialize(daten, "Anlegen gescheitert"));
+
 			Checkliste persisted = checklisteDao.save(checkliste);
 
 			daten.setVersion(persisted.getVersion());
@@ -153,17 +156,16 @@ public class ChecklistenService {
 	@Transactional
 	public void checklisteLoeschen(final String kuerzel) {
 		try {
-
 			Optional<Checkliste> opt = checklisteDao.findByUniqueIdentifier(kuerzel);
 			if (opt.isPresent()) {
 				checklisteDao.delete(opt.get());
-				LOG.info("Checkliste mit kuerzel '{}' gelöscht", kuerzel);
+				LOG.debug("gelöscht: {}", opt.get());
 			} else {
 				LOG.debug("Checkliste mit kuerzel '{}' war bereits gelöscht", kuerzel);
 			}
 		} catch (PersistenceException e) {
-			String msg = "Löschen gescheitert (Fehler beim Speichern)";
-			LOG.error("{}: {}", e.getMessage(), e);
+			String msg = "Löschen Checkliste " + StringUtils.abbreviate(kuerzel, 11) + " gescheitert (Fehler beim persistieren)";
+			LOG.error("{}: {}", msg, e.getMessage(), e);
 			throw new ChecklistenRuntimeException(msg);
 		}
 	}

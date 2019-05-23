@@ -22,7 +22,9 @@ import com.kumuluz.ee.logs.cdi.LogParams;
 
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
+import de.egladil.web.commons.validation.ValidationDelegate;
 import de.egladil.web.commons.validation.annotations.UuidString;
+import de.egladil.web.commons.validation.beans.UuidPayload;
 
 /**
  * UserController
@@ -33,6 +35,8 @@ import de.egladil.web.commons.validation.annotations.UuidString;
 @RequestScoped
 @Path("users")
 public class UserController {
+
+	private final ValidationDelegate validationDelegate = new ValidationDelegate();
 
 	@Context
 	private SecurityContext securityContext;
@@ -47,6 +51,8 @@ public class UserController {
 	public Response getUser(@UuidString @PathParam("uuid")
 	final String uuid) {
 
+		validationDelegate.check(new UuidPayload(uuid), UuidPayload.class);
+
 		Principal principal = securityContext.getUserPrincipal();
 		if (principal == null || uuid == null || !uuid.equals(principal.getName())) {
 			return Response.status(403).entity(ResponsePayload.messageOnly(MessagePayload.error("Keine Berechtigung"))).build();
@@ -55,5 +61,5 @@ public class UserController {
 		// Erstmal no content
 		return Response.status(204).build();
 	}
-
 }
+
