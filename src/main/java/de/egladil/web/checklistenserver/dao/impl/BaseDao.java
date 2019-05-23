@@ -23,6 +23,7 @@ import com.kumuluz.ee.logs.Logger;
 import de.egladil.web.checklistenserver.dao.IBaseDao;
 import de.egladil.web.checklistenserver.domain.Checklistenentity;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
+import de.egladil.web.commons.validation.ValidationDelegate;
 
 /**
  * BaseDao
@@ -30,6 +31,8 @@ import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 public abstract class BaseDao implements IBaseDao {
 
 	private static final Logger LOG = LogManager.getLogger(BaseDao.class.getName());
+
+	private ValidationDelegate validationDelegate = new ValidationDelegate();
 
 	@PersistenceContext
 	private EntityManager em;
@@ -50,14 +53,23 @@ public abstract class BaseDao implements IBaseDao {
 
 	@Override
 	public <T extends Checklistenentity> T save(final T entity) {
+
+		@SuppressWarnings("unchecked")
+		final Class<T> clazz = (Class<T>) entity.getClass();
+
+		validationDelegate.check(entity, clazz);
+
 		T persisted;
 
 		if (entity.getId() == null) {
 			em.persist(entity);
 			persisted = entity;
+			LOG.debug("created: {}, ID={}", persisted, persisted.getId());
 		} else {
 			persisted = em.merge(entity);
+			LOG.debug("updated: {}", persisted);
 		}
+
 		return persisted;
 	}
 
@@ -69,8 +81,11 @@ public abstract class BaseDao implements IBaseDao {
 		query.setParameter("identifier", identifier);
 
 		try {
-			return Optional.of(query.getSingleResult());
+			final T singleResult = query.getSingleResult();
+			LOG.debug("gefunden: {} - {}", getEntityClass().getSimpleName(), identifier);
+			return Optional.of(singleResult);
 		} catch (NoResultException e) {
+			LOG.debug("nicht gefunden: {} - {}", getEntityClass().getSimpleName(), identifier);
 			return Optional.empty();
 		} catch (NonUniqueResultException e) {
 			String msg = getEntityClass().getSimpleName() + ": Trefferliste zu '" + identifier + "' nicht eindeutig";
@@ -84,13 +99,14 @@ public abstract class BaseDao implements IBaseDao {
 
 	@Override
 	public <T extends Checklistenentity> List<T> load() {
-		String stmt = "select e from " + getEntityClass().getSimpleName() + " e";
+		final String entityName = getEntityClass().getSimpleName();
+		String stmt = "select e from " + entityName + " e";
 
 		TypedQuery<T> query = getEm().createQuery(stmt, getEntityClass());
 
 		List<T> trefferliste = query.getResultList();
 
-		LOG.debug("Anzahl Treffer: {}", trefferliste.size());
+		LOG.debug("{} - Anzahl Treffer: {}", entityName, trefferliste.size());
 
 		return trefferliste;
 	}

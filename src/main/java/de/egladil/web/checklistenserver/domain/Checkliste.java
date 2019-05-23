@@ -22,6 +22,8 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.egladil.web.commons.payload.HateoasPayload;
 
 /**
@@ -168,5 +170,18 @@ public class Checkliste implements Checklistenentity {
 	@Override
 	public void setHateoasPayload(final HateoasPayload hateoasPayload) {
 		this.hateoasPayload = hateoasPayload;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Checkliste [kuerzel=");
+		builder.append(StringUtils.abbreviate(kuerzel, 11));
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", typ=");
+		builder.append(typ);
+		builder.append("]");
+		return builder.toString();
 	}
 }
