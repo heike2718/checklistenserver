@@ -24,4 +24,10 @@ können,
 * Validierung des JWT erfolgt mit MP-JWT (microprofile JWT)
 * Die groups werden aus dem JWT genommen und um (momentan nicht persistente) statische Checklisten-Groups ergänzt.
 
+## API zum Testen
+
+Server-Komponente kann getestet werden mit
+
+http://localhost:9300/checklisten-api/dev/hello
+
 

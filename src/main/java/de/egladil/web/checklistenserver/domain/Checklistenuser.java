@@ -19,6 +19,8 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.egladil.web.commons.payload.HateoasPayload;
@@ -104,5 +106,16 @@ public class Checklistenuser implements Checklistenentity {
 	 */
 	public Set<String> getRoles() {
 		return roles;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Checklistenuser [uuid=");
+		builder.append(StringUtils.abbreviate(uuid, 11));
+		builder.append(", roles=");
+		builder.append(roles);
+		builder.append("]");
+		return builder.toString();
 	}
 }
