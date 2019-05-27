@@ -44,6 +44,6 @@ public class UserDao extends BaseDao implements IUserDao {
 
 	@Override
 	protected String getCountStatement() {
-		return "select count(*) from user";
+		return "select count(*) from USER";
 	}
 }

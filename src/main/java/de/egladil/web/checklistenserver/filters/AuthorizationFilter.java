@@ -60,7 +60,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
 	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
 
-	private static final List<String> PUBLIC_API_PATHS = Arrays.asList(new String[] { "/dev/root", "/signup/secret" });
+	private static final List<String> PUBLIC_API_PATHS = Arrays.asList(new String[] { "/dev/hello", "/signup/secret", "/heartbeats" });
 
 	private static final String SIGN_UP_PATH = "/signup/user";
 
