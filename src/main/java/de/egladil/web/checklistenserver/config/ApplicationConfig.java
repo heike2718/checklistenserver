@@ -28,6 +28,8 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	private String nameDynamicConfigFile;
 
+	private String heartbeatId;
+
 	@Override
 	public String getConfigRoot() {
 		return configRoot;
@@ -60,5 +62,13 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	public void setNameDynamicConfigFile(final String nameDynamicConfigFile) {
 		this.nameDynamicConfigFile = nameDynamicConfigFile;
+	}
+
+	public String getHeartbeatId() {
+		return heartbeatId;
+	}
+
+	public void setHeartbeatId(final String heartbeatId) {
+		this.heartbeatId = heartbeatId;
 	}
 }
