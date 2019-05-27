@@ -57,6 +57,6 @@ public class ChecklisteDao extends BaseDao implements IChecklisteDao {
 
 	@Override
 	protected String getCountStatement() {
-		return "select count(*) from checklisten";
+		return "select count(*) from CHECKLISTEN";
 	}
 }

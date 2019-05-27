@@ -29,5 +29,6 @@ können,
 Server-Komponente kann getestet werden mit
 
 http://localhost:9300/checklisten-api/dev/hello
+http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
 
 

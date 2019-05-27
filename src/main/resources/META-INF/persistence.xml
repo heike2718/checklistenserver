@@ -10,12 +10,15 @@
 
 		<class>de.egladil.web.checklistenserver.domain.Checkliste</class>
 		<class>de.egladil.web.checklistenserver.domain.Checklistenuser</class>
+		<class>de.egladil.web.checklistenserver.domain.Pacemaker</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 		<properties>
 			<property name="hibernate.generate_statistics" value="false" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
-			<property name="show_sql" value="false"/>
+			<property name="hibernate.show_sql" value="true"/>
+			<property name="hibernate.expand_sql" value="false"/>
+			<property name="hibernate.generate_statistics" value="false"/>
 		</properties>
 	</persistence-unit>
 </persistence>
