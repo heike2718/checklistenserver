@@ -34,7 +34,7 @@ public class ChecklisteDaoTest {
 		String stmt = new ChecklisteDao().getCountStatement();
 
 		// Assert
-		assertEquals("select count(*) from checklisten", stmt);
+		assertEquals("select count(*) from CHECKLISTEN", stmt);
 
 	}
 }
