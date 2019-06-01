@@ -36,6 +36,12 @@
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons</artifactId>
 			<version>1.1.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -79,8 +85,15 @@
 		<dependency>
 			<groupId>com.kumuluz.ee.jwt</groupId>
 			<artifactId>kumuluzee-jwt-auth</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>1.1.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.9</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
