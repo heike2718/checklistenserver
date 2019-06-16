@@ -40,8 +40,6 @@ import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.SessionExpiredException;
-import de.egladil.web.commons.payload.MessagePayload;
-import de.egladil.web.commons.payload.ResponsePayload;
 import de.egladil.web.commons.utils.CommonHttpUtils;
 import de.egladil.web.commons.utils.CommonStringUtils;
 
@@ -76,7 +74,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 	@Inject
 	private UserDao userDao;
 
-	// @Override
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException, AuthException, SessionExpiredException {
 
@@ -114,8 +111,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 				Optional<Checklistenuser> optUser = this.getChecklistenUser(subject);
 				if (!optUser.isPresent()) {
 					LOG.warn("Das JWT subj {} ist der Checklistenanwendung nicht bekannt", subject);
-//					Response response = createUnauthorized();
-//					requestContext.abortWith(response);
 					throw new AuthException();
 				} else {
 					egladilPrincipal = new CLPrincipal(jwtPrincipal, optUser.get().getRoles());
@@ -126,17 +121,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 			}
 		} catch (JWTValidationException e) {
 			LOG.warn("Das JWT wurde unterwegs manipuliert: {}", e.getMessage());
-//			Response response = createUnauthorized();
-//			requestContext.abortWith(response);
 			throw new AuthException();
 		}
-	}
-
-	private Response createUnauthorized() {
-		return Response.status(Response.Status.UNAUTHORIZED)
-			.header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"")
-			.entity(ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"))).build();
-
 	}
 
 	private boolean mustCheckUser(final String pathInfo) {
