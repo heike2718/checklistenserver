@@ -1,6 +1,26 @@
 # checklistenserver
 REST-API für Winkels Checklisten
 
+## Development Server
+
+Sarten des Servers mit
+
+java -jar checklistenserver.jar -Dcom.kumuluz.ee.configuration.file=path-to-auth-provider-config.yaml
+
+Root-Resource zum Testen, ob das Backend da ist:
+http://localhost:9300/checklistenserver/dev
+http://localhost:9300/checklistenserver/heartbeats?heartbeatId=heartbeat
+
+### Starten in Eclipse
+
+mit IDEChecklistenAppRunner und VMargs
+
+	-Dcom.kumuluz.ee.configuration.file=/home/heike/git/konfigurationen/checklistenservice/checklistenservice-config.yaml
+
+oder
+
+	-Djavax.net.debug=all -Dcom.kumuluz.ee.configuration.file=/home/heike/git/konfigurationen/checklistenservice/checklistenservice-config.yaml
+
 ## Ablauf SignUp
 
 * POST-Request an signup/secret mit SignUpPayload: Verifiziert, ob der Person gestattet werden kann, ein Benutzerkonto anzulegen
