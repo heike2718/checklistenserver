@@ -34,7 +34,7 @@ public class ChecklistenuserDaoTest {
 		String stmt = new UserDao().getCountStatement();
 
 		// Assert
-		assertEquals("select count(*) from user", stmt);
+		assertEquals("select count(*) from USER", stmt);
 
 	}
 }
