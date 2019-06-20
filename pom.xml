@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,7 +13,7 @@
 	<description>Server für die Checklistenapp</description>
 
 	<properties>
-		<version.java>1.8</version.java>
+		<version.java>1.11</version.java>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.hibernate.persistence.version>5.3.7.Final</org.hibernate.persistence.version>
 		<kumuluz.version>3.4.1</kumuluz.version>
@@ -35,7 +36,7 @@
 		<dependency>
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.1.1</version>
+			<version>2.0.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -80,7 +81,7 @@
 		<dependency>
 			<groupId>com.kumuluz.ee.health</groupId>
 			<artifactId>kumuluzee-health</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.kumuluz.ee.jwt</groupId>
@@ -97,7 +98,7 @@
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>6.0.13.Final</version>
+			<version>6.1.0.Alpha5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
@@ -107,7 +108,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.8.1</version>
+			<version>3.9</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -119,7 +120,7 @@
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>2.4.1</version>
+			<version>2.4.2</version>
 		</dependency>
 
 		<!-- Logging -->
@@ -129,47 +130,41 @@
 			<version>1.3.0</version>
 		</dependency>
 
-		<!-- security -->
-		<dependency>
-			<groupId>org.owasp</groupId>
-			<artifactId>dependency-check-maven</artifactId>
-			<version>3.3.2</version>
-			<type>maven-plugin</type>
-		</dependency>
-
 		<!-- Test -->
 		<!-- api muss dabei sein, damit das surefire-plugin die tests findet! -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.4.2</version>
+			<version>5.5.0-RC1</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.4.2</version>
+			<version>5.5.0-RC1</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
-			<version>1.4.2</version>
+			<version>1.5.0-RC1</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
+			<version>2.0.2-beta</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>${project.artifactId}-${version}</finalName>
+
 		<plugins>
-			<!-- uber jar bauen mit 'mvn clean package kumuluzee:repackage' -->
 			<plugin>
 				<groupId>com.kumuluz.ee</groupId>
 				<artifactId>kumuluzee-maven-plugin</artifactId>
@@ -189,6 +184,7 @@
 				<version>3.8.0</version>
 				<inherited>true</inherited>
 				<configuration>
+					<release>11</release>
 					<source>${version.java}</source>
 					<target>${version.java}</target>
 				</configuration>
@@ -196,6 +192,9 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
+				<configuration>
+					<!-- <argLine> doubedash illegal-access=permit </argLine> -->
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.owasp</groupId>
@@ -212,13 +211,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>central.maven.org</id>
-			<name>Maven Central</name>
-			<url>http://central.maven.org/maven2/</url>
-		</repository>
-	</repositories>
 </project>
-
