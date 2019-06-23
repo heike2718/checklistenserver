@@ -5,10 +5,13 @@
 
 package de.egladil.web.checklistenserver.error;
 
+import javax.ejb.ApplicationException;
+
 /**
  * ChecklistenRuntimeException. Muss gelogged werden, bevor sie geworfen wird. Wird anschließend nur noch vom
  * ExceptionMapper behandelt.
  */
+@ApplicationException
 public class ChecklistenRuntimeException extends RuntimeException {
 
 	/* serialVersionUID */
