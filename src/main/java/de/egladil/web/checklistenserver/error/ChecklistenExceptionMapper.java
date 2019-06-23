@@ -34,21 +34,26 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 
 	@Override
 	public Response toResponse(final Exception exception) {
+
 		if (exception instanceof NoContentException) {
 			return Response.status(204).build();
 		}
+
 		if (exception instanceof InvalidInputException) {
 			InvalidInputException e = (InvalidInputException) exception;
 			return Response.status(400).entity(e.getResponsePayload()).build();
 		}
+
 		if (exception instanceof AuthException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
 			return Response.status(401).entity(payload).build();
 		}
+
 		if (exception instanceof SessionExpiredException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
 			return Response.status(901).entity(payload).build();
 		}
+
 		if (exception instanceof ResourceNotFoundException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Hamwer nich"));
 			return Response.status(404).entity(payload).build();
@@ -57,11 +62,13 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn(exception.getMessage()));
 			return Response.status(409).entity(payload).build();
 		}
-		if (exception instanceof TokenExpiredException ) {
+
+		if (exception instanceof TokenExpiredException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn("Die Session ist abgelaufen."));
 			// 419 ist kein Standard, sagt aber Authentication Timeout
 			return Response.status(419).entity(payload).build();
 		}
+
 		if (exception instanceof ChecklistenRuntimeException) {
 			// wurde schon gelogged
 		} else {
@@ -71,7 +78,8 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error(
 			"OMG +++ Divide By Cucumber Error. Please Reinstall Universe And Reboot +++ (und schau besser auch mal ins Server-Log...)"));
 
-		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(payload).build();
+		return Response.status(Status.INTERNAL_SERVER_ERROR).header("X-Checklisten-Error", payload.getMessage().getMessage())
+			.entity(payload).build();
 	}
 
 }

@@ -5,6 +5,7 @@
 
 package de.egladil.web.checklistenserver.endpoints;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -21,6 +22,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
@@ -49,8 +51,12 @@ public class ChecklistenController {
 	@Inject
 	private ChecklistenService checklistenService;
 
+	@Context
+	private UriInfo uriInfo;
+
 	@GET
-	public Response getChecklisten(@Context final ContainerRequestContext crc) {
+	public Response getChecklisten(@Context
+	final ContainerRequestContext crc) {
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
 
@@ -62,19 +68,29 @@ public class ChecklistenController {
 
 	@GET
 	@Path("/{kuerzel}")
-	public Response getCheckliste(@Context final ContainerRequestContext crc, @PathParam(value = "kuerzel")
+	public Response getCheckliste(@Context
+	final ContainerRequestContext crc, @PathParam(value = "kuerzel")
 	final String kuerzel) {
 		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel);
-		return Response.ok().entity(checkliste).build();
+		return Response.ok(checkliste).build();
 	}
 
 	@POST
-	public Response checklisteAnlegen(@Context final ContainerRequestContext crc, final ChecklisteDaten daten) {
+	public Response checklisteAnlegen(@Context
+	final ContainerRequestContext crc, final ChecklisteDaten daten) {
 
 		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
+
+		URI uri = uriInfo.getBaseUriBuilder()
+			.path(ChecklistenController.class)
+			.path(ChecklistenController.class, "getCheckliste")
+			.build(result.getKuerzel());
+
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("erfolgreich angelegt"), result);
-		// TODO: hier die BaseUrl vom Server lesen. und davorklatschen
-		return Response.status(201).entity(payload).header("Location", result.getLocation(RESOURCE_BASE_URL)).build();
+		return Response.created(uri)
+			.entity(payload)
+			.header("Location", result.getLocation(RESOURCE_BASE_URL))
+			.build();
 	}
 
 	@PUT
@@ -85,7 +101,9 @@ public class ChecklistenController {
 		if (!kuerzel.equals(daten.getKuerzel())) {
 			LOG.error("Konflikt: kuerzel= '{}', daten.kuerzel = '{}'", kuerzel, daten.getKuerzel());
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Precondition Failed"));
-			return Response.status(412).entity(payload).build();
+			return Response.status(412)
+				.entity(payload)
+				.build();
 		}
 
 		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel);
@@ -101,7 +119,9 @@ public class ChecklistenController {
 		checklistenService.checklisteLoeschen(kuerzel);
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("erfolgreich gelöscht"));
 
-		return Response.ok().entity(payload).build();
+		return Response.ok()
+			.entity(payload)
+			.build();
 	}
 
 }
