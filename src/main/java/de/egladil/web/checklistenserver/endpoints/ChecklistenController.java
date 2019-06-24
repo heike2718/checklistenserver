@@ -25,6 +25,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Meter;
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Metric;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
@@ -55,7 +62,20 @@ public class ChecklistenController {
 	@Context
 	private ContainerRequestContext containerRequestContext;
 
+	@Inject
+	@Metric(name = "checklisten_counter")
+	private Counter checklistenCounter;
+
+	@Inject
+	@Metric(name = "name_length_histogram")
+	private Histogram nameLength;
+
+	@Inject
+	@Metric(name = "checklisten_adding_meter")
+	private Meter addMeter;
+
 	@GET
+	@Timed(name = "load_checklisten-timer")
 	public Response getChecklisten() {
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
@@ -78,9 +98,14 @@ public class ChecklistenController {
 	}
 
 	@POST
+	@Metered(name = "checklisten_adding_meter")
 	public Response checklisteAnlegen(final ChecklisteDaten daten) {
 
 		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
+
+		addMeter.mark();
+		checklistenCounter.inc();
+		nameLength.update(daten.getName().length());
 
 		LOG.info("{}: checkliste anglegt", getPrincipalAbbreviated());
 
@@ -116,13 +141,17 @@ public class ChecklistenController {
 
 	@DELETE
 	@Path("/{kuerzel}")
+	@Metered(name = "checklisten_removing_meter")
 	public Response checklisteLoeschen(@PathParam(value = "kuerzel")
 	final String kuerzel) {
 
 		checklistenService.checklisteLoeschen(kuerzel);
+
+		checklistenCounter.dec();
+
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("erfolgreich gelöscht"));
 
-		LOG.info("{}: checkliste gelöscht", getPrincipalAbbreviated());
+		LOG.info("{}: checkliste {} gelöscht", getPrincipalAbbreviated(), kuerzel);
 		return Response.ok()
 			.entity(payload)
 			.build();
