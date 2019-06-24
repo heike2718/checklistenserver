@@ -21,9 +21,6 @@ import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.kumuluz.ee.logs.cdi.Log;
-import com.kumuluz.ee.logs.cdi.LogParams;
-
 import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.checklistenserver.service.SignUpService;
 import de.egladil.web.commons.payload.HateoasPayload;
@@ -34,11 +31,10 @@ import de.egladil.web.commons.validation.ValidationDelegate;
 /**
  * SignUpController
  */
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Log(LogParams.METRICS)
 @RequestScoped
 @Path("signup")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class SignUpController {
 
 	@Inject

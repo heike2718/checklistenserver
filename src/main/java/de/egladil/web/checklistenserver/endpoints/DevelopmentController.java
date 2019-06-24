@@ -20,18 +20,15 @@ import javax.ws.rs.core.Response;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
-import com.kumuluz.ee.logs.cdi.Log;
-import com.kumuluz.ee.logs.cdi.LogParams;
 
 /**
  * DevelopmentController stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
  * umziehen.
  */
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Log(LogParams.METRICS)
 @RequestScoped
 @Path("dev")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class DevelopmentController {
 
 	private static final Logger LOG = LogManager.getLogger(DevelopmentController.class.getName());
