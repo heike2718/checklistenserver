@@ -26,10 +26,9 @@ import javax.ws.rs.core.UriInfo;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
-import com.kumuluz.ee.logs.cdi.Log;
-import com.kumuluz.ee.logs.cdi.LogParams;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
+import de.egladil.web.checklistenserver.filters.JwtAuthz;
 import de.egladil.web.checklistenserver.service.ChecklistenService;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
@@ -37,14 +36,12 @@ import de.egladil.web.commons.payload.ResponsePayload;
 /**
  * ChecklistenController
  */
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Log(LogParams.METRICS)
 @RequestScoped
 @Path("checklisten")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@JwtAuthz
 public class ChecklistenController {
-
-	private static final String RESOURCE_BASE_URL = "/cl/checklisten/";
 
 	private static final Logger LOG = LogManager.getLogger(ChecklistenController.class.getName());
 
@@ -89,7 +86,6 @@ public class ChecklistenController {
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("erfolgreich angelegt"), result);
 		return Response.created(uri)
 			.entity(payload)
-			.header("Location", result.getLocation(RESOURCE_BASE_URL))
 			.build();
 	}
 
