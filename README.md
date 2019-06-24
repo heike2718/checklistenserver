@@ -8,8 +8,18 @@ Sarten des Servers mit
 java -jar checklistenserver.jar -Dcom.kumuluz.ee.configuration.file=path-to-auth-provider-config.yaml
 
 Root-Resource zum Testen, ob das Backend da ist:
-http://localhost:9300/checklistenserver/dev
-http://localhost:9300/checklistenserver/heartbeats?heartbeatId=heartbeat
+
+http://localhost:9300/checklisten-api/dev
+
+http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
+
+### Metriken
+
+with Accept-Header application/json
+
+GET http://localhost:9300/metrics
+
+OPTIONS http://localhost:9300/metrics
 
 ### Starten in Eclipse
 
