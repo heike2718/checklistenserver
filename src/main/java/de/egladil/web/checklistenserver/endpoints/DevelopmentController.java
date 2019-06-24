@@ -21,6 +21,8 @@ import javax.ws.rs.core.Response;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 
+import de.egladil.web.commons.utils.CommonTimeUtils;
+
 /**
  * DevelopmentController stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
  * umziehen.
@@ -38,7 +40,8 @@ public class DevelopmentController {
 	public Response test() {
 		final Map<String, String> json = new HashMap<>();
 		json.put("greetings",
-			"Also Hallochen am  " + DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm:ss").format(LocalDateTime.now()));
+			"Also Hallochen am  "
+				+ DateTimeFormatter.ofPattern(CommonTimeUtils.DEFAULT_DATE_TIME_FORMAT).format(LocalDateTime.now()));
 
 		LOG.debug("Fast fertig");
 
