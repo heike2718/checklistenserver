@@ -35,7 +35,7 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @JwtAuthz
 public class ChecklistenTemplateController {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenTemplateController.class.getName());
+	private static final Logger LOG = LogManager.getLogger(ChecklistenTemplateController.class.getSimpleName());
 
 	@Inject
 	private ChecklistenTemplateProvider templateProvider;

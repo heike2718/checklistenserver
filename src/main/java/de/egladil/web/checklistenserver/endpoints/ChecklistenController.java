@@ -6,6 +6,7 @@
 package de.egladil.web.checklistenserver.endpoints;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -43,7 +44,7 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @JwtAuthz
 public class ChecklistenController {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenController.class.getName());
+	private static final Logger LOG = LogManager.getLogger(ChecklistenController.class.getSimpleName());
 
 	@Inject
 	private ChecklistenService checklistenService;
@@ -51,14 +52,18 @@ public class ChecklistenController {
 	@Context
 	private UriInfo uriInfo;
 
+	@Context
+	private ContainerRequestContext containerRequestContext;
+
 	@GET
-	public Response getChecklisten(@Context
-	final ContainerRequestContext crc) {
+	public Response getChecklisten() {
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
 
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK: Anzahl Checklisten: " + checklisten.size()),
 			checklisten);
+
+		LOG.info("{}: checklisten geladen", getPrincipalAbbreviated());
 
 		return Response.ok().entity(payload).build();
 	}
@@ -73,10 +78,11 @@ public class ChecklistenController {
 	}
 
 	@POST
-	public Response checklisteAnlegen(@Context
-	final ContainerRequestContext crc, final ChecklisteDaten daten) {
+	public Response checklisteAnlegen(final ChecklisteDaten daten) {
 
 		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
+
+		LOG.info("{}: checkliste anglegt", getPrincipalAbbreviated());
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ChecklistenController.class)
@@ -103,6 +109,7 @@ public class ChecklistenController {
 		}
 
 		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel);
+		LOG.info("{}: checkliste geändert", getPrincipalAbbreviated());
 		return Response.ok().entity(payload).build();
 
 	}
@@ -115,9 +122,19 @@ public class ChecklistenController {
 		checklistenService.checklisteLoeschen(kuerzel);
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("erfolgreich gelöscht"));
 
+		LOG.info("{}: checkliste gelöscht", getPrincipalAbbreviated());
 		return Response.ok()
 			.entity(payload)
 			.build();
+	}
+
+	private Principal getPrincipal() {
+		return containerRequestContext.getSecurityContext().getUserPrincipal();
+	}
+
+	private String getPrincipalAbbreviated() {
+		Principal userPrincipal = getPrincipal();
+		return userPrincipal != null ? userPrincipal.getName().substring(0, 8) : null;
 	}
 
 }

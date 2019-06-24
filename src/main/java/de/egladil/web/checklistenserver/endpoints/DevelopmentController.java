@@ -31,7 +31,7 @@ import com.kumuluz.ee.logs.Logger;
 @Produces(MediaType.APPLICATION_JSON)
 public class DevelopmentController {
 
-	private static final Logger LOG = LogManager.getLogger(DevelopmentController.class.getName());
+	private static final Logger LOG = LogManager.getLogger(DevelopmentController.class.getSimpleName());
 
 	@GET
 	@Path("/hello")
