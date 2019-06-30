@@ -31,9 +31,8 @@ import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
-
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.filters.JwtAuthz;
@@ -51,7 +50,7 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @JwtAuthz
 public class ChecklistenController {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenController.class.getSimpleName());
 
 	@Inject
 	private ChecklistenService checklistenService;

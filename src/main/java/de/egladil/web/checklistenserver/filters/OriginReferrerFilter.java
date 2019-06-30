@@ -19,9 +19,8 @@ import javax.ws.rs.core.NoContentException;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
 import de.egladil.web.commons.error.AuthException;
@@ -36,7 +35,7 @@ import de.egladil.web.commons.utils.CommonStringUtils;
 @Priority(900)
 public class OriginReferrerFilter implements ContainerRequestFilter {
 
-	private static final Logger LOG = LogManager.getLogger(OriginReferrerFilter.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(OriginReferrerFilter.class.getName());
 
 	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
 
@@ -47,7 +46,7 @@ public class OriginReferrerFilter implements ContainerRequestFilter {
 	private ApplicationConfig applicationConfig;
 
 	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+	public void filter(final ContainerRequestContext requestContext) throws IOException {
 
 		final String pathInfo = servletRequest.getPathInfo();
 		if (NO_CONTENT_PATHS.contains(pathInfo) || "OPTIONS".equals(this.servletRequest.getMethod())) {

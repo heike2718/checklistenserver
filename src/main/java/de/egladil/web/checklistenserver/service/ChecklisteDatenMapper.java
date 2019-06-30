@@ -7,10 +7,11 @@ package de.egladil.web.checklistenserver.service;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.domain.Checkliste;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
@@ -21,7 +22,7 @@ import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
  */
 public class ChecklisteDatenMapper {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklisteDatenMapper.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklisteDatenMapper.class.getName());
 
 	/**
 	 * @param checkliste

@@ -15,8 +15,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
@@ -35,7 +35,7 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @JwtAuthz
 public class ChecklistenTemplateController {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenTemplateController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateController.class.getSimpleName());
 
 	@Inject
 	private ChecklistenTemplateProvider templateProvider;
