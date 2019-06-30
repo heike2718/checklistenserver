@@ -23,9 +23,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.config.ChecklistenTemplateConfiguration;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
@@ -38,7 +37,7 @@ import de.egladil.web.checklistenserver.domain.Checklistentyp;
 @ApplicationScoped
 public class ChecklistenTemplateProvider {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenTemplateProvider.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateProvider.class.getName());
 
 	@Inject
 	private ChecklistenTemplateConfiguration templateConfiguration;

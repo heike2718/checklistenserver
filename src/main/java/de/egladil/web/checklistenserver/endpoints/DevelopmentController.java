@@ -18,8 +18,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.commons.utils.CommonTimeUtils;
 
@@ -33,7 +33,7 @@ import de.egladil.web.commons.utils.CommonTimeUtils;
 @Produces(MediaType.APPLICATION_JSON)
 public class DevelopmentController {
 
-	private static final Logger LOG = LogManager.getLogger(DevelopmentController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentController.class.getSimpleName());
 
 	@GET
 	@Path("/hello")

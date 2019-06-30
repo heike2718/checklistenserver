@@ -11,9 +11,10 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.ConcurrentUpdateException;
@@ -30,7 +31,7 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @Provider
 public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenExceptionMapper.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenExceptionMapper.class.getName());
 
 	@Override
 	public Response toResponse(final Exception exception) {

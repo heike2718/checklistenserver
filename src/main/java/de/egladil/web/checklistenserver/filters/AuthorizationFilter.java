@@ -19,13 +19,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.context.JWTSecurityContext;
 import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidationException;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
 
 import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
@@ -43,7 +44,7 @@ import de.egladil.web.commons.error.SessionExpiredException;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthorizationFilter implements ContainerRequestFilter {
 
-	private static final Logger LOG = LogManager.getLogger(AuthorizationFilter.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(AuthorizationFilter.class.getName());
 
 	private static final String SIGN_UP_PATH = "/signup/user";
 
