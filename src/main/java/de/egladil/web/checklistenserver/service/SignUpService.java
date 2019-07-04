@@ -13,9 +13,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.config.DynamicConfigProperties;
 import de.egladil.web.checklistenserver.dao.IUserDao;
@@ -35,7 +34,7 @@ import de.egladil.web.commons.validation.InvalidProperty;
 @RequestScoped
 public class SignUpService {
 
-	private static final Logger LOG = LogManager.getLogger(SignUpService.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(SignUpService.class.getName());
 
 	@Inject
 	private DynamicConfigReader dynamicConfigReader;

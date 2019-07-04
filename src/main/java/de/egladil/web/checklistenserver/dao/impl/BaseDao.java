@@ -17,8 +17,8 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.dao.IBaseDao;
 import de.egladil.web.checklistenserver.domain.Checklistenentity;
@@ -30,7 +30,7 @@ import de.egladil.web.commons.validation.ValidationDelegate;
  */
 public abstract class BaseDao implements IBaseDao {
 
-	private static final Logger LOG = LogManager.getLogger(BaseDao.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(BaseDao.class.getName());
 
 	private ValidationDelegate validationDelegate = new ValidationDelegate();
 

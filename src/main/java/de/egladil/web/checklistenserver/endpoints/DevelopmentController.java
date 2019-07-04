@@ -18,30 +18,30 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
-import com.kumuluz.ee.logs.cdi.Log;
-import com.kumuluz.ee.logs.cdi.LogParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.egladil.web.commons.utils.CommonTimeUtils;
 
 /**
  * DevelopmentController stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
  * umziehen.
  */
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Log(LogParams.METRICS)
 @RequestScoped
 @Path("dev")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class DevelopmentController {
 
-	private static final Logger LOG = LogManager.getLogger(DevelopmentController.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentController.class.getSimpleName());
 
 	@GET
 	@Path("/hello")
 	public Response test() {
 		final Map<String, String> json = new HashMap<>();
 		json.put("greetings",
-			"Also Hallochen am  " + DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm:ss").format(LocalDateTime.now()));
+			"Also Hallochen am  "
+				+ DateTimeFormatter.ofPattern(CommonTimeUtils.DEFAULT_DATE_TIME_FORMAT).format(LocalDateTime.now()));
 
 		LOG.debug("Fast fertig");
 

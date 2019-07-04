@@ -18,9 +18,6 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.kumuluz.ee.logs.cdi.Log;
-import com.kumuluz.ee.logs.cdi.LogParams;
-
 import de.egladil.web.checklistenserver.config.ApplicationConfig;
 import de.egladil.web.checklistenserver.service.HeartbeatService;
 import de.egladil.web.commons.error.LogmessagePrefixes;
@@ -30,11 +27,10 @@ import de.egladil.web.commons.payload.ResponsePayload;
 /**
  * HeartbeatController
  */
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Log(LogParams.METRICS)
 @RequestScoped
 @Path("heartbeats")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class HeartbeatController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HeartbeatController.class);
@@ -55,7 +51,7 @@ public class HeartbeatController {
 				.entity(ResponsePayload.messageOnly(MessagePayload.error("keine Berechtigung für diese Resource"))).build();
 		}
 		ResponsePayload responsePayload = heartbeatService.update();
-		if ("INFO".equals(responsePayload.getMessage().getLevel())) {
+		if (responsePayload.isOk()) {
 			return Response.ok().entity(responsePayload).build();
 		}
 		return Response.serverError().entity(responsePayload).build();

@@ -15,13 +15,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
-import com.kumuluz.ee.logs.cdi.Log;
-import com.kumuluz.ee.logs.cdi.LogParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
+import de.egladil.web.checklistenserver.filters.JwtAuthz;
 import de.egladil.web.checklistenserver.service.ChecklistenTemplateProvider;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
@@ -29,14 +28,14 @@ import de.egladil.web.commons.payload.ResponsePayload;
 /**
  * ChecklistenTemplateController gibt Vorgabedetails für Checklisten zurück.
  */
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Log(LogParams.METRICS)
 @RequestScoped
 @Path("templates")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@JwtAuthz
 public class ChecklistenTemplateController {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenTemplateController.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateController.class.getSimpleName());
 
 	@Inject
 	private ChecklistenTemplateProvider templateProvider;

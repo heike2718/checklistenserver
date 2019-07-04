@@ -17,9 +17,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.logging.log4j.ThreadContext;
-
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.commons.utils.CommonStringUtils;
 
@@ -31,7 +30,7 @@ import de.egladil.web.commons.utils.CommonStringUtils;
 @Priority(101)
 public class MDCFilter implements ContainerRequestFilter {
 
-	private static final Logger LOG = LogManager.getLogger(MDCFilter.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(MDCFilter.class.getName());
 
 	@Context
 	private HttpServletRequest servletRequest;

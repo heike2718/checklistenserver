@@ -15,9 +15,8 @@ import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.kumuluz.ee.logs.LogManager;
-import com.kumuluz.ee.logs.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.dao.impl.ChecklisteDao;
 import de.egladil.web.checklistenserver.domain.Checkliste;
@@ -34,7 +33,7 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @RequestScoped
 public class ChecklistenService {
 
-	private static final Logger LOG = LogManager.getLogger(ChecklistenService.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenService.class.getName());
 
 	@Inject
 	private ChecklisteDao checklisteDao;
