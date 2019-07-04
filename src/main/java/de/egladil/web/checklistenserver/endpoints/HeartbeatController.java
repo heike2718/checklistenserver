@@ -51,7 +51,7 @@ public class HeartbeatController {
 				.entity(ResponsePayload.messageOnly(MessagePayload.error("keine Berechtigung für diese Resource"))).build();
 		}
 		ResponsePayload responsePayload = heartbeatService.update();
-		if ("INFO".equals(responsePayload.getMessage().getLevel())) {
+		if (responsePayload.isOk()) {
 			return Response.ok().entity(responsePayload).build();
 		}
 		return Response.serverError().entity(responsePayload).build();
