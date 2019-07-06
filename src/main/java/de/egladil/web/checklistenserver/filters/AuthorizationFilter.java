@@ -32,6 +32,7 @@ import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.commons.error.AuthException;
 import de.egladil.web.commons.error.SessionExpiredException;
+import de.egladil.web.commons.jwt.JwtAuthz;
 
 /**
  * AuthorizationFilter liest den authorization-Header, wenn erforderlich, verifiziert das JWT und setzt das subject aus

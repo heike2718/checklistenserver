@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import de.egladil.web.checklistenserver.filters.JwtAuthz;
+import de.egladil.web.commons.jwt.JwtAuthz;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 import de.egladil.web.commons.validation.ValidationDelegate;

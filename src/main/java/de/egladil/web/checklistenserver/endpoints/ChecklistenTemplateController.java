@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
-import de.egladil.web.checklistenserver.filters.JwtAuthz;
 import de.egladil.web.checklistenserver.service.ChecklistenTemplateProvider;
+import de.egladil.web.commons.jwt.JwtAuthz;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
