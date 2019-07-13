@@ -42,16 +42,16 @@ import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
- * ChecklistenController
+ * ChecklistenResource
  */
 @RequestScoped
 @Path("checklisten")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @JwtAuthz
-public class ChecklistenController {
+public class ChecklistenResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenResource.class.getSimpleName());
 
 	@Inject
 	private ChecklistenService checklistenService;
@@ -110,8 +110,8 @@ public class ChecklistenController {
 		LOG.info("{}: checkliste anglegt", getPrincipalAbbreviated());
 
 		URI uri = uriInfo.getBaseUriBuilder()
-			.path(ChecklistenController.class)
-			.path(ChecklistenController.class, "getCheckliste")
+			.path(ChecklistenResource.class)
+			.path(ChecklistenResource.class, "getCheckliste")
 			.build(result.getKuerzel());
 
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("erfolgreich angelegt"), result);

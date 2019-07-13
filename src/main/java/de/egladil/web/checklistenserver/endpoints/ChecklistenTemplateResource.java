@@ -26,16 +26,16 @@ import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
- * ChecklistenTemplateController gibt Vorgabedetails für Checklisten zurück.
+ * ChecklistenTemplateResource gibt Vorgabedetails für Checklisten zurück.
  */
 @RequestScoped
 @Path("templates")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @JwtAuthz
-public class ChecklistenTemplateController {
+public class ChecklistenTemplateResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateResource.class.getSimpleName());
 
 	@Inject
 	private ChecklistenTemplateProvider templateProvider;

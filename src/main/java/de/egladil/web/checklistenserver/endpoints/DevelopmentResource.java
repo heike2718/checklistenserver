@@ -24,16 +24,16 @@ import org.slf4j.LoggerFactory;
 import de.egladil.web.commons.utils.CommonTimeUtils;
 
 /**
- * DevelopmentController stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
+ * DevelopmentResource stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
  * umziehen.
  */
 @RequestScoped
 @Path("dev")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class DevelopmentController {
+public class DevelopmentResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentResource.class.getSimpleName());
 
 	@GET
 	@Path("/hello")
