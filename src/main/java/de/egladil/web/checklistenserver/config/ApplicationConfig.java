@@ -30,6 +30,8 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	private String heartbeatId;
 
+	private String clientSecret;
+
 	@Override
 	public String getConfigRoot() {
 		return configRoot;
@@ -70,5 +72,13 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	public void setHeartbeatId(final String heartbeatId) {
 		this.heartbeatId = heartbeatId;
+	}
+
+	public String getClientSecret() {
+		return clientSecret;
+	}
+
+	public void setClientSecret(final String clientSecret) {
+		this.clientSecret = clientSecret;
 	}
 }
