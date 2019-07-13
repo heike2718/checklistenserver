@@ -23,6 +23,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.metrics.Counter;
@@ -59,7 +60,7 @@ public class ChecklistenController {
 	private UriInfo uriInfo;
 
 	@Context
-	private ContainerRequestContext containerRequestContext;
+	private SecurityContext securityContext;
 
 	@Inject
 	@Metric(name = "checklisten_counter")
@@ -156,12 +157,8 @@ public class ChecklistenController {
 			.build();
 	}
 
-	private Principal getPrincipal() {
-		return containerRequestContext.getSecurityContext().getUserPrincipal();
-	}
-
 	private String getPrincipalAbbreviated() {
-		Principal userPrincipal = getPrincipal();
+		Principal userPrincipal = securityContext.getUserPrincipal();
 		return userPrincipal != null ? userPrincipal.getName().substring(0, 8) : null;
 	}
 
