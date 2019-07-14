@@ -31,6 +31,10 @@ oder
 
 	-Djavax.net.debug=all -Dcom.kumuluz.ee.configuration.file=/home/heike/git/konfigurationen/checklistenservice/checklistenservice-config.yaml
 
+## URL zum Holen eines AccessTokens vom Authprovider
+
+	http://localhost:9300/checklisten-api/accesstoken
+
 ## Ablauf SignUp
 
 * POST-Request an signup/secret mit SignUpPayload: Verifiziert, ob der Person gestattet werden kann, ein Benutzerkonto anzulegen
