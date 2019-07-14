@@ -20,22 +20,22 @@ import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
-import de.egladil.web.checklistenserver.filters.JwtAuthz;
 import de.egladil.web.checklistenserver.service.ChecklistenTemplateProvider;
+import de.egladil.web.commons.jwt.JwtAuthz;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
- * ChecklistenTemplateController gibt Vorgabedetails für Checklisten zurück.
+ * ChecklistenTemplateResource gibt Vorgabedetails für Checklisten zurück.
  */
 @RequestScoped
 @Path("templates")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @JwtAuthz
-public class ChecklistenTemplateController {
+public class ChecklistenTemplateResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateController.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateResource.class.getSimpleName());
 
 	@Inject
 	private ChecklistenTemplateProvider templateProvider;

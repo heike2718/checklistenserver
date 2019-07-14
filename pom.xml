@@ -16,7 +16,7 @@
 		<version.java>1.11</version.java>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.hibernate.persistence.version>5.3.7.Final</org.hibernate.persistence.version>
-		<kumuluz.version>3.4.1</kumuluz.version>
+		<kumuluz.version>3.5.0</kumuluz.version>
 		<slf4j.version>1.7.26</slf4j.version>
 	</properties>
 
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons</artifactId>
-			<version>2.0.3</version>
+			<version>3.0.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -86,6 +86,12 @@
 		<dependency>
 			<groupId>com.kumuluz.ee</groupId>
 			<artifactId>kumuluzee-jta-narayana</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.kumuluz.ee.rest-client</groupId>
+			<artifactId>kumuluzee-rest-client</artifactId>
+			<version>1.2.2</version>
 		</dependency>
 
 		<dependency>

@@ -29,13 +29,13 @@ import de.egladil.web.commons.payload.ResponsePayload;
 import de.egladil.web.commons.validation.ValidationDelegate;
 
 /**
- * SignUpController
+ * SignUpResource
  */
 @RequestScoped
 @Path("signup")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class SignUpController {
+public class SignUpResource {
 
 	@Inject
 	private SignUpService signUpService;

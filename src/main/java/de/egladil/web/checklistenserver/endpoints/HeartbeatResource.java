@@ -25,15 +25,15 @@ import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 
 /**
- * HeartbeatController
+ * HeartbeatResource
  */
 @RequestScoped
 @Path("heartbeats")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class HeartbeatController {
+public class HeartbeatResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(HeartbeatController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HeartbeatResource.class);
 
 	@Inject
 	private HeartbeatService heartbeatService;

@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import de.egladil.web.checklistenserver.filters.JwtAuthz;
+import de.egladil.web.commons.jwt.JwtAuthz;
 import de.egladil.web.commons.payload.MessagePayload;
 import de.egladil.web.commons.payload.ResponsePayload;
 import de.egladil.web.commons.validation.ValidationDelegate;
@@ -25,14 +25,14 @@ import de.egladil.web.commons.validation.annotations.UuidString;
 import de.egladil.web.commons.validation.beans.UuidPayload;
 
 /**
- * UserController
+ * UserResource
  */
 @RequestScoped
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @JwtAuthz
-public class UserController {
+public class UserResource {
 
 	private final ValidationDelegate validationDelegate = new ValidationDelegate();
 
@@ -40,9 +40,9 @@ public class UserController {
 	private SecurityContext securityContext;
 
 	/**
-	 * Erzeugt eine Instanz von UserController
+	 * Erzeugt eine Instanz von UserResource
 	 */
-	public UserController() {
+	public UserResource() {
 	}
 
 	@Path("/{uuid}")

@@ -35,17 +35,17 @@ public class ChecklistenServerApp extends Application {
 //		classes.add(ChecklistenExceptionMapper.class);
 //
 //		// resources
-//		classes.add(ChecklistenController.class);
+//		classes.add(ChecklistenResource.class);
 //
-//		classes.add(ChecklistenTemplateController.class);
+//		classes.add(ChecklistenTemplateResource.class);
 //
 //		classes.add(SessionController.class);
 //
-//		classes.add(SignUpController.class);
+//		classes.add(SignUpResource.class);
 //
-//		classes.add(UserController.class);
+//		classes.add(UserResource.class);
 //
-//		classes.add(DevelopmentController.class);
+//		classes.add(DevelopmentResource.class);
 //
 //		return classes;
 //	}
