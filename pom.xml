@@ -18,6 +18,7 @@
 		<org.hibernate.persistence.version>5.3.7.Final</org.hibernate.persistence.version>
 		<kumuluz.version>3.5.0</kumuluz.version>
 		<slf4j.version>1.7.26</slf4j.version>
+		<jetty.version>9.4.19.v20190610</jetty.version>
 	</properties>
 
 	<dependencyManagement>
@@ -37,7 +38,7 @@
 		<dependency>
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons</artifactId>
-			<version>3.0.0</version>
+			<version>4.0.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -61,7 +62,44 @@
 		<dependency>
 			<groupId>com.kumuluz.ee</groupId>
 			<artifactId>kumuluzee-servlet-jetty</artifactId>
-		</dependency>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-webapp</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-jndi</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-alpn-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-alpn-java-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-alpn-java-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.http2</groupId>
+					<artifactId>http2-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.http2</groupId>
+					<artifactId>http2-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.http2</groupId>
+					<artifactId>http2-http-client-transport</artifactId>
+				</exclusion>
+			</exclusions>		</dependency>
 
 		<dependency>
 			<groupId>com.kumuluz.ee</groupId>
@@ -128,8 +166,56 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.9</version>
+			<version>2.9.9.1</version>
 		</dependency>
+
+		<!-- START eigene Jetty-Version, da die Kumuluzee-Leute etwas lahm im CVE-Fixen sind -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-annotations</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jndi</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-alpn-server</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.http2</groupId>
+			<artifactId>http2-server</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.http2</groupId>
+			<artifactId>http2-client</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.http2</groupId>
+			<artifactId>http2-http-client-transport</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-alpn-java-server</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-alpn-java-client</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<!-- ENDE eigene Jetty-Version, da die Kumuluzee-Leute etwas lahm im CVE-Fixen sind -->
 
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
