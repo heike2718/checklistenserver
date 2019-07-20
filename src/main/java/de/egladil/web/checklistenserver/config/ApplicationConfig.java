@@ -9,8 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.kumuluz.ee.configuration.cdi.ConfigBundle;
 
-import de.egladil.web.commons.config.ConfigRootProvider;
-
 /**
  * ApplicationConfig<br>
  * <br>
@@ -18,7 +16,7 @@ import de.egladil.web.commons.config.ConfigRootProvider;
  */
 @ApplicationScoped
 @ConfigBundle("application-config")
-public class ApplicationConfig implements ConfigRootProvider {
+public class ApplicationConfig {
 
 	private String configRoot;
 
@@ -36,7 +34,6 @@ public class ApplicationConfig implements ConfigRootProvider {
 
 	private String authBaseUri;
 
-	@Override
 	public String getConfigRoot() {
 		return configRoot;
 	}
@@ -61,7 +58,6 @@ public class ApplicationConfig implements ConfigRootProvider {
 		this.blockOnMissingOriginReferer = blockOnMissingOriginReferer;
 	}
 
-	@Override
 	public String getNameDynamicConfigFile() {
 		return nameDynamicConfigFile;
 	}

@@ -5,6 +5,7 @@
 
 package de.egladil.web.checklistenserver.service;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.checklistenserver.config.ApplicationConfig;
 import de.egladil.web.checklistenserver.config.DynamicConfigProperties;
 import de.egladil.web.checklistenserver.dao.IUserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
@@ -45,6 +47,9 @@ public class SignUpService {
 	@Inject
 	private IUserDao userDao;
 
+	@Inject
+	private ApplicationConfig applicationConfig;
+
 	/**
 	 * Validiert das secret.
 	 *
@@ -59,8 +64,9 @@ public class SignUpService {
 			throw new InvalidInputException(payload);
 		}
 
+		String pathConfigFile = applicationConfig.getConfigRoot() + File.separator + applicationConfig.getNameDynamicConfigFile();
 		DynamicConfigProperties dynamicConfigProperties = (DynamicConfigProperties) dynamicConfigReader
-			.getConfig(DynamicConfigProperties.class);
+			.getConfig(DynamicConfigProperties.class, pathConfigFile);
 
 		// @formatter:off
 		PasswordAlgorithm passwordAlgorithm = PasswordAlgorithmBuilder.instance()
