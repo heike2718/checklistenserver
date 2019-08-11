@@ -5,7 +5,6 @@
 
 package de.egladil.web.checklistenserver.endpoints;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class DevelopmentResource {
 		final Map<String, String> json = new HashMap<>();
 		json.put("greetings",
 			"Also Hallochen am  "
-				+ DateTimeFormatter.ofPattern(CommonTimeUtils.DEFAULT_DATE_TIME_FORMAT).format(LocalDateTime.now()));
+				+ DateTimeFormatter.ofPattern(CommonTimeUtils.DEFAULT_DATE_TIME_FORMAT).format(CommonTimeUtils.now()));
 
 		LOG.debug("Fast fertig");
 
