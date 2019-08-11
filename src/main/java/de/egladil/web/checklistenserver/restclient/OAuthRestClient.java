@@ -16,15 +16,15 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import de.egladil.web.commons.payload.OAuthClientCredentials;
 
 /**
- * OAuthRestClient: die URI ist authprovider/oauth/token
+ * OAuthRestClient: die URI ist [auth-url]/clients/client/accesstoken
  */
 @RegisterRestClient
-@Path("clients/oauth")
+@Path("clients")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface OAuthRestClient {
 
 	@POST
-	@Path("/token")
+	@Path("/client/accesstoken")
 	JsonObject orderAccessToken(OAuthClientCredentials clientSecrets);
 }
