@@ -1,0 +1,57 @@
+kumuluzee:
+  name: checklistenservice
+  version: 4.0.0
+  env:
+    name: dev
+  server:
+    http:
+      port: 9300
+    https:
+      port: 9343
+  datasources:
+    - jndi-name: jdbc/ChecklistenserviceDS
+      connection-url: jdbc:mysql://localhost:3306/checklisten
+      username: chklst
+      password: hwinkel
+      max-pool-size: 20
+  jwt-auth:
+    public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1csTKiAv4N3SwLNCA9r77Uzz/GZ5JIfOdUJziUonHPoprT/FTgtPFefRo9a+4KTYltG1gwv1VxR9IPueZFBsZkY/mwpnp1wUgQucDVf7jzQmAwLe9gxuUugDQ3UMdFvg+OgZhpjXYE2H/EQn0fmWWYr8VCaMH/bsSaZfuPy+7sozE5whM/8WdDGMp9GJ4NsUPhXBwhMzwC08Z/m5E+W4gX1YyRqCeposB8UtvM0CIjjbzFoQx9yfNx71C0prI7YCIrrgiJym6YmYHkBcFc9Gt6k2cWGmjZwxlO3I8vqCXYg/W7Fz3Sj9srcIuEnMXqb27bE2IhJvcbGgRRqeqXsA9QIDAQAB
+    issuer: heike2718/authprovider
+  health:
+    servlet:
+      mapping: /health
+      enabled: true
+    logs:
+      enabled: false
+      level: INFO
+      period-s: 3600
+    checks:
+      disk-space-health-check:
+        threshold: 100000000
+      data-source-health-check:
+        jndi-name: jdbc/ChecklistenserviceDS
+  metrics:
+    web-instrumentation:
+      - name: metricsEndpoint
+        url-pattern: /metrics/*
+      - name: checklistenEndpoint
+        url-pattern: /checklisten/*
+    logs:
+      enabled: true
+      level: INFO
+      period-s: 3600
+  logs:
+    config-file-location: /home/heike/git/konfigurationen/checklistenservice/log4j2.xml
+application-config:
+  config-root: /home/heike/git/konfigurationen/checklistenservice # camelCase muss zu lower + dash umgewandelt werden
+  name-dynamic-config-file: dynamicConfigProperties.json
+  target-origin: localhost:4200
+  block-on-missing-origin-referer: false
+  heartbeat-id: heartbeat
+  client-id: WLJLH4vsldWapZrMZi2U5HKRBVpgyUiRTWwX7aiJd8nX
+  client-secret: start123
+  auth-base-uri: http://localhost:9000/authprovider
+checklistentemplate-config:
+  eingaufsliste: /home/heike/git/konfigurationen/checklistenservice/einkaufsliste.txt
+  packliste: /home/heike/git/konfigurationen/checklistenservice/packliste.txt
+
