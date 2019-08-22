@@ -41,9 +41,9 @@ kumuluzee:
       level: INFO
       period-s: 3600
   logs:
-    config-file-location: /home/heike/git/konfigurationen/checklistenservice/log4j2.xml
+    config-file-location: /home/heike/git/checklistenserver/src/config/log4j2.xml
 application-config:
-  config-root: /home/heike/git/konfigurationen/checklistenservice # camelCase muss zu lower + dash umgewandelt werden
+  config-root: /home/heike/git/checklistenserver/src/config/checklistenservice # camelCase muss zu lower + dash umgewandelt werden
   name-dynamic-config-file: dynamicConfigProperties.json
   target-origin: localhost:4200
   block-on-missing-origin-referer: false
@@ -52,6 +52,6 @@ application-config:
   client-secret: start123
   auth-base-uri: http://localhost:9000/authprovider
 checklistentemplate-config:
-  eingaufsliste: /home/heike/git/konfigurationen/checklistenservice/einkaufsliste.txt
-  packliste: /home/heike/git/konfigurationen/checklistenservice/packliste.txt
+  eingaufsliste: /home/heike/git/checklistenserver/src/config/checklistenservice/einkaufsliste.txt
+  packliste: /home/heike/git/checklistenserver/src/config/checklistenservice/packliste.txt
 
