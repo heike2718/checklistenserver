@@ -61,6 +61,8 @@ public class AccessTokenResource {
 
 			JsonObject response = restClient.orderAccessToken(credentials);
 
+			LOG.info("{}", response);
+
 			JsonObject message = response.getJsonObject("message");
 			String level = message.getString("level");
 
@@ -75,6 +77,7 @@ public class AccessTokenResource {
 
 			return Response.ok(response).build();
 		} catch (IllegalStateException | RestClientDefinitionException | URISyntaxException e) {
+			LOG.error(e.getMessage(), e);
 			throw new ChecklistenRuntimeException("Unerwarteter Fehler beim Anfordern eines accessTokens: " + e.getMessage(), e);
 		}
 	}
