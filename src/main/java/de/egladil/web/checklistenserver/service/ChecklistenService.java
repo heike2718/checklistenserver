@@ -86,7 +86,7 @@ public class ChecklistenService {
 
 			daten.setVersion(persisted.getVersion());
 
-			LOG.info("Checkliste mit kuerzel '{}' angelegt", daten.getKuerzel());
+			// LOG.info("Checkliste mit kuerzel '{}' angelegt", daten.getKuerzel());
 			return daten;
 		} catch (PersistenceException e) {
 			String msg = "Anlegen gescheitert (Fehler beim Speichern)";

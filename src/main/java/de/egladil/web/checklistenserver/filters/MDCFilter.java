@@ -7,14 +7,11 @@ package de.egladil.web.checklistenserver.filters;
 
 import java.io.IOException;
 
-import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.Provider;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
@@ -25,9 +22,9 @@ import de.egladil.web.commons.utils.CommonStringUtils;
 /**
  * MDCFilter setzt Infos aus der URL ins Log.
  */
-@Provider
-@PreMatching
-@Priority(101)
+// @Provider
+// @PreMatching
+// @Priority(101)
 public class MDCFilter implements ContainerRequestFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MDCFilter.class.getName());

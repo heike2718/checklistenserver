@@ -86,6 +86,8 @@ public class ChecklistenResource {
 		LOG.info("{}: checklisten geladen", getPrincipalAbbreviated());
 
 		return Response.ok().entity(payload).build();
+		// return Response.status(500).entity(ResponsePayload.messageOnly(MessagePayload.error("Das ist ein
+		// Testfehler"))).build();
 	}
 
 	@GET
