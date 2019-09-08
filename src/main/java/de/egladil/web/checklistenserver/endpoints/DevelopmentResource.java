@@ -39,7 +39,7 @@ public class DevelopmentResource {
 	public Response test() {
 		final Map<String, String> json = new HashMap<>();
 		json.put("greetings",
-			"Also Hallochen am  "
+			"Also Hallochen vom checklistenserver am  "
 				+ DateTimeFormatter.ofPattern(CommonTimeUtils.DEFAULT_DATE_TIME_FORMAT).format(CommonTimeUtils.now()));
 
 		LOG.debug("Fast fertig");

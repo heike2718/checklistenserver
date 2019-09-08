@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="customers">
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<!-- Mit custom context (MDC) <PatternLayout pattern="%-4r %d{yyyy-MM-dd HH:mm:ss.SSS, Europe/Berlin} %-5level [X:%X{ip}
+				U:%X{username}] [%t] %logger{26} %msg%n" /> -->
+			<PatternLayout
+				pattern="%-4r %d{yyyy-MM-dd HH:mm:ss.SSS, Europe/Berlin} %-5level [%t] %logger{26} %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+	    <Logger name="de.egladil.web.commons.jsonp" level="DEBUG"/>
+
+		<Root level="INFO">
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+</Configuration>
+
