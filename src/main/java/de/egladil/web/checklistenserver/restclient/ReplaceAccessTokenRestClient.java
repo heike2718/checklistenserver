@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Project: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 package de.egladil.web.checklistenserver.restclient;
 
 import javax.json.JsonObject;
@@ -14,10 +14,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import de.egladil.web.commons.payload.OAuthClientCredentials;
+import de.egladil.web.commons_validation.payload.OAuthClientCredentials;
 
 /**
- * ReplaceAccessTokenRestClient: die URI ist [auth-url]/accesstoken/{oldAccessToken}
+ * ReplaceAccessTokenRestClient: URI: [auth-url]/accesstoken/{oldAccessToken}, METHOD: PUT
  */
 @RegisterRestClient
 @Path("accesstoken")
@@ -27,6 +27,6 @@ public interface ReplaceAccessTokenRestClient {
 
 	@PUT
 	@Path("/{replacedToken}")
-	JsonObject replaceAccessToken(@PathParam(value = "replacedToken")
-	final String replacedToken, OAuthClientCredentials clientSecrets);
+	JsonObject replaceAccessToken(@PathParam(
+		value = "replacedToken") final String replacedToken, OAuthClientCredentials clientSecrets);
 }

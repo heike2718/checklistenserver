@@ -1,10 +1,11 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.endpoints;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -21,9 +22,8 @@ import org.slf4j.LoggerFactory;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
 import de.egladil.web.checklistenserver.service.ChecklistenTemplateProvider;
-import de.egladil.web.commons.jwt.JwtAuthz;
-import de.egladil.web.commons.payload.MessagePayload;
-import de.egladil.web.commons.payload.ResponsePayload;
+import de.egladil.web.commons_validation.payload.MessagePayload;
+import de.egladil.web.commons_validation.payload.ResponsePayload;
 
 /**
  * ChecklistenTemplateResource gibt Vorgabedetails für Checklisten zurück.
@@ -32,26 +32,27 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @Path("templates")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@JwtAuthz
+@RolesAllowed({ "STANDARD" })
 public class ChecklistenTemplateResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateResource.class.getSimpleName());
 
 	@Inject
-	private ChecklistenTemplateProvider templateProvider;
+	ChecklistenTemplateProvider templateProvider;
 
 	@GET
 	@Path("/{typ}")
-	public Response getTemplateMitTyp(@PathParam("typ")
-	final String value) {
+	public Response getTemplateMitTyp(@PathParam("typ") final String value) {
 
 		try {
+
 			Checklistentyp typ = Checklistentyp.valueOf(value.trim().toUpperCase());
 			ChecklisteDaten template = templateProvider.getTemplateMitTyp(typ);
 
 			ResponsePayload payload = new ResponsePayload(MessagePayload.info("Bitteschön"), template);
 			return Response.ok().entity(payload).build();
 		} catch (IllegalArgumentException e) {
+
 			LOG.error("Falscher Parameter [typ={}]", value);
 			return Response.status(404)
 				.entity(ResponsePayload.messageOnly(MessagePayload.error("Gib einen korrekten Checklistentyp an"))).build();

@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.domain;
 
@@ -24,7 +24,7 @@ import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.egladil.web.commons.payload.HateoasPayload;
+import de.egladil.web.commons_validation.payload.HateoasPayload;
 
 /**
  * Checkliste
@@ -37,6 +37,7 @@ public class Checkliste implements Checklistenentity {
 	private static final long serialVersionUID = 1L;
 
 	public static Checkliste create(final Checklistentyp typ, final String name, final String kuerzel) {
+
 		Checkliste result = new Checkliste();
 		result.setTyp(typ);
 		result.setName(name);
@@ -81,6 +82,7 @@ public class Checkliste implements Checklistenentity {
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((kuerzel == null) ? 0 : kuerzel.hashCode());
@@ -89,21 +91,31 @@ public class Checkliste implements Checklistenentity {
 
 	@Override
 	public boolean equals(final Object obj) {
+
 		if (this == obj) {
+
 			return true;
 		}
+
 		if (obj == null) {
+
 			return false;
 		}
+
 		if (getClass() != obj.getClass()) {
+
 			return false;
 		}
 		Checkliste other = (Checkliste) obj;
+
 		if (kuerzel == null) {
+
 			if (other.kuerzel != null) {
+
 				return false;
 			}
 		} else if (!kuerzel.equals(other.kuerzel)) {
+
 			return false;
 		}
 		return true;
@@ -111,69 +123,85 @@ public class Checkliste implements Checklistenentity {
 
 	@Override
 	public Long getId() {
+
 		return id;
 	}
 
 	public void setId(final Long id) {
+
 		this.id = id;
 	}
 
 	public String getName() {
+
 		return name;
 	}
 
 	public void setName(final String name) {
+
 		this.name = name;
 	}
 
 	public Checklistentyp getTyp() {
+
 		return typ;
 	}
 
 	public void setTyp(final Checklistentyp typ) {
+
 		this.typ = typ;
 	}
 
 	public String getDaten() {
+
 		return daten;
 	}
 
 	public void setDaten(final String details) {
+
 		this.daten = details;
 	}
 
 	public Date getDatumGeaendert() {
+
 		return datumGeaendert;
 	}
 
 	public void setDatumGeaendert(final Date datumGeaendert) {
+
 		this.datumGeaendert = datumGeaendert;
 	}
 
 	public int getVersion() {
+
 		return version;
 	}
 
 	public String getKuerzel() {
+
 		return kuerzel;
 	}
 
 	public void setKuerzel(final String kuerzel) {
+
 		this.kuerzel = kuerzel;
 	}
 
 	@Override
 	public HateoasPayload getHateoasPayload() {
+
 		return hateoasPayload;
 	}
 
 	@Override
 	public void setHateoasPayload(final HateoasPayload hateoasPayload) {
+
 		this.hateoasPayload = hateoasPayload;
 	}
 
 	@Override
 	public String toString() {
+
 		StringBuilder builder = new StringBuilder();
 		builder.append("Checkliste [kuerzel=");
 		builder.append(StringUtils.abbreviate(kuerzel, 11));

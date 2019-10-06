@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklisten
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.service;
 
@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 
 import de.egladil.web.checklistenserver.dao.IPacemakerDao;
 import de.egladil.web.checklistenserver.domain.Pacemaker;
-import de.egladil.web.commons.payload.ResponsePayload;
+import de.egladil.web.commons_validation.payload.ResponsePayload;
 
 /**
  * HeartbeatServiceTest
@@ -29,6 +29,7 @@ public class HeartbeatServiceTest {
 
 	@BeforeEach
 	public void setUp() {
+
 		dao = Mockito.mock(IPacemakerDao.class);
 		service = new HeartbeatService(dao);
 		pacemaker = new Pacemaker();
@@ -65,10 +66,12 @@ public class HeartbeatServiceTest {
 
 		// Assert
 		assertEquals("ERROR", responsePayload.getMessage().getLevel());
-		assertEquals("Fehler beim Speichern des pacemakers checklisten-database: testmessage", responsePayload.getMessage().getMessage());
+		assertEquals("Fehler beim Speichern des pacemakers checklisten-database: testmessage",
+			responsePayload.getMessage().getMessage());
 		assertNull(responsePayload.getData());
 
 	}
+
 	@Test
 	void updateExceptionOnSave() {
 
@@ -81,7 +84,8 @@ public class HeartbeatServiceTest {
 
 		// Assert
 		assertEquals("ERROR", responsePayload.getMessage().getLevel());
-		assertEquals("Fehler beim Speichern des pacemakers checklisten-database: testmessage", responsePayload.getMessage().getMessage());
+		assertEquals("Fehler beim Speichern des pacemakers checklisten-database: testmessage",
+			responsePayload.getMessage().getMessage());
 		assertNull(responsePayload.getData());
 
 	}

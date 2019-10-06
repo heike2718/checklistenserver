@@ -1,13 +1,13 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.domain;
 
 import java.io.Serializable;
 
-import de.egladil.web.commons.payload.HateoasPayload;
+import de.egladil.web.commons_validation.payload.HateoasPayload;
 
 /**
  * Checklistenentity
