@@ -1,10 +1,12 @@
-//=====================================================
+// =====================================================
 // Projekt: authprovider
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.endpoints;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +22,6 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.egladil.web.commons.utils.CommonTimeUtils;
-
 /**
  * DevelopmentResource stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
  * umziehen.
@@ -34,13 +34,18 @@ public class DevelopmentResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentResource.class.getSimpleName());
 
+	private static final String DEFAULT_DATE_TIME_FORMAT = "dd.MM.yyyy kk:mm:ss";
+
 	@GET
 	@Path("/hello")
 	public Response test() {
+
+		LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+
 		final Map<String, String> json = new HashMap<>();
 		json.put("greetings",
 			"Also Hallochen vom checklistenserver am  "
-				+ DateTimeFormatter.ofPattern(CommonTimeUtils.DEFAULT_DATE_TIME_FORMAT).format(CommonTimeUtils.now()));
+				+ DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT).format(now));
 
 		LOG.debug("Fast fertig");
 

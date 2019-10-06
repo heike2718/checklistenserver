@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.service;
 
@@ -10,15 +10,16 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import de.egladil.web.commons.payload.HateoasPayload;
+import de.egladil.web.commons_validation.payload.HateoasPayload;
 
 /**
-* SignUpServiceTest
-*/
+ * SignUpServiceTest
+ */
 public class SignUpServiceTest {
 
 	@Test
 	void testCreateHateoasPayload() {
+
 		// Arrange
 		String uuid = "qwgdigil";
 		String expectedUrl = "/users/qwgdigil";
