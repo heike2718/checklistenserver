@@ -1,10 +1,11 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.error;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.NoContentException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -14,15 +15,9 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
-
-import de.egladil.web.commons.error.AuthException;
-import de.egladil.web.commons.error.ConcurrentUpdateException;
-import de.egladil.web.commons.error.InvalidInputException;
-import de.egladil.web.commons.error.ResourceNotFoundException;
-import de.egladil.web.commons.error.SessionExpiredException;
-import de.egladil.web.commons.payload.MessagePayload;
-import de.egladil.web.commons.payload.ResponsePayload;
+import de.egladil.web.commons_validation.exception.InvalidInputException;
+import de.egladil.web.commons_validation.payload.MessagePayload;
+import de.egladil.web.commons_validation.payload.ResponsePayload;
 
 /**
  * ChecklistenExceptionMapper wird durchjax.rs aufgerufen und behandelt alle Exceptions sinnvoll. Dadurch muss kein
@@ -37,42 +32,45 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 	public Response toResponse(final Exception exception) {
 
 		if (exception instanceof NoContentException) {
+
 			return Response.status(204).build();
 		}
 
 		if (exception instanceof InvalidInputException) {
+
 			InvalidInputException e = (InvalidInputException) exception;
 			return Response.status(400).entity(e.getResponsePayload()).build();
 		}
 
 		if (exception instanceof AuthException) {
+
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
 			return Response.status(401).entity(payload).build();
 		}
 
-		if (exception instanceof SessionExpiredException) {
-			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
-			return Response.status(901).entity(payload).build();
-		}
+		// if (exception instanceof SessionExpiredException) {
+		//
+		// ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
+		// return Response.status(901).entity(payload).build();
+		// }
+		//
+		if (exception instanceof NotFoundException) {
 
-		if (exception instanceof ResourceNotFoundException) {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Hamwer nich"));
 			return Response.status(404).entity(payload).build();
 		}
+
 		if (exception instanceof ConcurrentUpdateException) {
+
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn(exception.getMessage()));
 			return Response.status(409).entity(payload).build();
 		}
 
-		if (exception instanceof TokenExpiredException) {
-			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.warn("Die Session ist abgelaufen."));
-			// 419 ist kein Standard, sagt aber Authentication Timeout
-			return Response.status(419).entity(payload).build();
-		}
-
 		if (exception instanceof ChecklistenRuntimeException) {
+
 			// wurde schon gelogged
 		} else {
+
 			LOG.error(exception.getMessage(), exception);
 		}
 

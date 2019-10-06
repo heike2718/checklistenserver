@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.endpoints;
 
@@ -9,6 +9,7 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -26,20 +27,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Meter;
-import org.eclipse.microprofile.metrics.annotation.Metered;
-import org.eclipse.microprofile.metrics.annotation.Metric;
-import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.service.ChecklistenService;
-import de.egladil.web.commons.jwt.JwtAuthz;
-import de.egladil.web.commons.payload.MessagePayload;
-import de.egladil.web.commons.payload.ResponsePayload;
+import de.egladil.web.commons_validation.payload.MessagePayload;
+import de.egladil.web.commons_validation.payload.ResponsePayload;
 
 /**
  * ChecklistenResource
@@ -48,34 +42,21 @@ import de.egladil.web.commons.payload.ResponsePayload;
 @Path("checklisten")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@JwtAuthz
+@RolesAllowed({ "STANDARD" })
 public class ChecklistenResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenResource.class.getSimpleName());
 
 	@Inject
-	private ChecklistenService checklistenService;
+	ChecklistenService checklistenService;
 
 	@Context
-	private UriInfo uriInfo;
+	UriInfo uriInfo;
 
 	@Context
-	private SecurityContext securityContext;
-
-	@Inject
-	@Metric(name = "checklisten_counter")
-	private Counter checklistenCounter;
-
-	@Inject
-	@Metric(name = "name_length_histogram")
-	private Histogram nameLength;
-
-	@Inject
-	@Metric(name = "checklisten_adding_meter")
-	private Meter addMeter;
+	SecurityContext securityContext;
 
 	@GET
-	@Timed(name = "load_checklisten-timer")
 	public Response getChecklisten() {
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
@@ -92,22 +73,16 @@ public class ChecklistenResource {
 
 	@GET
 	@Path("/{kuerzel}")
-	public Response getCheckliste(@Context
-	final ContainerRequestContext crc, @PathParam(value = "kuerzel")
-	final String kuerzel) {
+	public Response getCheckliste(@Context final ContainerRequestContext crc, @PathParam(value = "kuerzel") final String kuerzel) {
+
 		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel);
 		return Response.ok(checkliste).build();
 	}
 
 	@POST
-	@Metered(name = "checklisten_adding_meter")
 	public Response checklisteAnlegen(final ChecklisteDaten daten) {
 
 		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
-
-		addMeter.mark();
-		checklistenCounter.inc();
-		nameLength.update(daten.getName().length());
 
 		LOG.info("{}: checkliste anglegt", getPrincipalAbbreviated());
 
@@ -124,10 +99,10 @@ public class ChecklistenResource {
 
 	@PUT
 	@Path("/{kuerzel}")
-	public Response checklisteAendern(@PathParam(value = "kuerzel")
-	final String kuerzel, final ChecklisteDaten daten) {
+	public Response checklisteAendern(@PathParam(value = "kuerzel") final String kuerzel, final ChecklisteDaten daten) {
 
 		if (!kuerzel.equals(daten.getKuerzel())) {
+
 			LOG.error("Konflikt: kuerzel= '{}', daten.kuerzel = '{}'", kuerzel, daten.getKuerzel());
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Precondition Failed"));
 			return Response.status(412)
@@ -143,13 +118,9 @@ public class ChecklistenResource {
 
 	@DELETE
 	@Path("/{kuerzel}")
-	@Metered(name = "checklisten_removing_meter")
-	public Response checklisteLoeschen(@PathParam(value = "kuerzel")
-	final String kuerzel) {
+	public Response checklisteLoeschen(@PathParam(value = "kuerzel") final String kuerzel) {
 
 		checklistenService.checklisteLoeschen(kuerzel);
-
-		checklistenCounter.dec();
 
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("erfolgreich gelöscht"));
 
@@ -160,6 +131,7 @@ public class ChecklistenResource {
 	}
 
 	private String getPrincipalAbbreviated() {
+
 		Principal userPrincipal = securityContext.getUserPrincipal();
 		return userPrincipal != null ? userPrincipal.getName().substring(0, 8) : null;
 	}

@@ -1,14 +1,10 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,10 +19,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import de.egladil.web.checklistenserver.config.ChecklistenTemplateConfiguration;
+import de.egladil.web.checklistenserver.config.EinkaufslisteTemplate;
+import de.egladil.web.checklistenserver.config.PacklisteTemplate;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.ChecklistenItem;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
@@ -37,27 +32,18 @@ import de.egladil.web.checklistenserver.domain.Checklistentyp;
 @ApplicationScoped
 public class ChecklistenTemplateProvider {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateProvider.class.getName());
+	@Inject
+	EinkaufslisteTemplate einkaufslisteTemplate;
 
 	@Inject
-	private ChecklistenTemplateConfiguration templateConfiguration;
-
-	private static final String[] EINKAUFSLISTE = new String[] { "Äpfel", "Brot", "Brötchen", "Butter", "Eier", "Erdnüsse", "Fisch",
-		"Forellenfilet", "Frischkäse", "Grapefruit", "Haselnüsse", "Joghurt", "Kartoffeln", "Klopapier", "Mandeln", "Milch fettarm",
-		"Milch voll", "Obst", "Quark", "Salate", "Schnittkäse", "Schokolade", "Toast", "Tomaten", "Wurst Winkel" };
-
-	private static final String[] PACKLISTE = new String[] { "Abwaschlappen", "Ausweise", "Brotpapier", "Bücher", "Bürste",
-		"feste Schuhe", "Filme", "Gemüsebrühe", "Geschirrtücher", "Handschuhe", "Handtücher", "Hausschuhe", "Hörbücher",
-		"Hüfttasche", "Klopapier", "Küchenmesser", "Küchenschwamm", "kurze Hosen", "lange Hosen", "Ladekabel", "Laptop",
-		"Lesebrille", "Mülltüten", "Mütze", "Ohrstöpsel", "Olivenöl", "Pullover", "Regenjacke", "Sandalen", "Salz", "Schal",
-		"Schlafanzug", "Schampoo", "Schnur", "Schreibzeug", "Schwimmsachen", "Socken", "Sonnencreme", "Spiele", "Sportklamotten",
-		"Spüli", "Stranddecke", "Tee + Zubehör", "T-Shirts", "Unterwäsche", "Vouchers", "Wäscheklammern", "Zahnputzzeug" };
+	PacklisteTemplate packlisteTemplate;
 
 	/**
 	 * Gibt eine Standardvorauswahl für eine bestimmte Checkliste zurück.
 	 *
-	 * @param typ Checklistentyp
-	 * @return List
+	 * @param  typ
+	 *             Checklistentyp
+	 * @return     List
 	 */
 	public ChecklisteDaten getTemplateMitTyp(final Checklistentyp typ) {
 
@@ -70,31 +56,15 @@ public class ChecklistenTemplateProvider {
 		return result;
 	}
 
-	private List<ChecklistenItem> readInMemory(final Checklistentyp typ) {
-
-		String[] vorgaben = new String[] {};
-		switch (typ) {
-		case EINKAUFSLISTE:
-			vorgaben = EINKAUFSLISTE;
-			break;
-		case PACKLISTE:
-			vorgaben = PACKLISTE;
-			break;
-		default:
-			break;
-		}
-
-		List<ChecklistenItem> result = mapToChecklistenItems(vorgaben);
-		return result;
-	}
-
 	/**
 	 * Zu Testzwecken Sichtbarkeit package
 	 *
-	 * @param namen String[]
-	 * @return List
+	 * @param  namen
+	 *               String[]
+	 * @return       List
 	 */
 	List<ChecklistenItem> mapToChecklistenItems(final String[] namen) {
+
 		Set<String> gefilterteNamen = Stream.of(namen).filter(name -> StringUtils.isNotBlank(name)).map(name -> name.trim())
 			.collect(Collectors.toSet());
 
@@ -109,32 +79,17 @@ public class ChecklistenTemplateProvider {
 	}
 
 	private List<ChecklistenItem> readFromFile(final Checklistentyp typ) {
-		String path = null;
+
 		switch (typ) {
+
 		case EINKAUFSLISTE:
-			path = templateConfiguration.getEingaufsliste();
-			break;
+			return mapToChecklistenItems(einkaufslisteTemplate.getEinkaufsliste());
+
 		case PACKLISTE:
-			path = templateConfiguration.getPackliste();
+			return mapToChecklistenItems(packlisteTemplate.getPackliste());
+
 		default:
-			break;
+			return new ArrayList<>();
 		}
-
-		List<ChecklistenItem> result = new ArrayList<>();
-
-		if (path != null) {
-			File file = new File(path);
-
-			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-				String readLine = "";
-				while ((readLine = br.readLine()) != null) {
-					result.add(ChecklistenItem.fromName(readLine));
-				}
-			} catch (IOException e) {
-				LOG.error("Konnte Daten nicht lesen, verwende hiesige: {} ", e.getMessage());
-				return readInMemory(typ);
-			}
-		}
-		return result;
 	}
 }

@@ -5,7 +5,7 @@
 
 	<groupId>de.egladil.web</groupId>
 	<artifactId>checklistenserver</artifactId>
-	<version>4.1.0</version>
+	<version>5.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>checklistenserver</name>
@@ -13,20 +13,20 @@
 	<description>Server für die Checklistenapp</description>
 
 	<properties>
-		<version.java>1.11</version.java>
+		<surefire-plugin.version>2.22.0</surefire-plugin.version>
+		<quarkus.version>0.23.2</quarkus.version>
+		<maven.compiler.source>1.11</maven.compiler.source>
+		<maven.compiler.target>1.11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.hibernate.persistence.version>5.3.7.Final</org.hibernate.persistence.version>
-		<kumuluz.version>3.5.0</kumuluz.version>
-		<slf4j.version>1.7.26</slf4j.version>
-		<jetty.version>9.4.19.v20190610</jetty.version>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.kumuluz.ee</groupId>
-				<artifactId>kumuluzee-bom</artifactId>
-				<version>${kumuluz.version}</version>
+				<groupId>io.quarkus</groupId>
+				<artifactId>quarkus-bom</artifactId>
+				<version>${quarkus.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -37,269 +37,112 @@
 
 		<dependency>
 			<groupId>de.egladil.web</groupId>
-			<artifactId>commons</artifactId>
-			<version>4.2.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>commons-validation</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-core</artifactId>
+			<groupId>de.egladil.web</groupId>
+			<artifactId>commons-crypto</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-servlet-jetty</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-webapp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-jndi</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-alpn-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-alpn-java-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-alpn-java-client</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty.http2</groupId>
-					<artifactId>http2-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty.http2</groupId>
-					<artifactId>http2-client</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty.http2</groupId>
-					<artifactId>http2-http-client-transport</artifactId>
-				</exclusion>
-			</exclusions>		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-jax-rs-jersey</artifactId>
+			<groupId>de.egladil.web</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 
+		<!-- Quarkus START -->
 		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-cdi-weld</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-json-p-jsonp</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-jpa-hibernate</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee</groupId>
-			<artifactId>kumuluzee-jta-narayana</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee.rest-client</groupId>
-			<artifactId>kumuluzee-rest-client</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee.logs</groupId>
-			<artifactId>kumuluzee-logs-log4j2</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee.health</groupId>
-			<artifactId>kumuluzee-health</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee.jwt</groupId>
-			<artifactId>kumuluzee-jwt-auth</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee.metrics</groupId>
-			<artifactId>kumuluzee-metrics-core</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.kumuluz.ee.metrics</groupId>
-			<artifactId>kumuluzee-metrics-logs</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.9.9.2</version>
-		</dependency>
-
-		<!-- START eigene Jetty-Version, da die Kumuluzee-Leute etwas lahm im CVE-Fixen sind -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-hibernate-orm</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-annotations</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-agroal</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-jndi</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-alpn-server</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-rest-client</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty.http2</groupId>
-			<artifactId>http2-server</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy-jackson</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty.http2</groupId>
-			<artifactId>http2-client</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-smallrye-jwt</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.http2</groupId>
-			<artifactId>http2-http-client-transport</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-alpn-java-server</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-alpn-java-client</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<!-- ENDE eigene Jetty-Version, da die Kumuluzee-Leute etwas lahm im CVE-Fixen sind -->
+		<!-- Quarkus END -->
 
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>6.1.0.Alpha5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
-			<version>3.0.1-b11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
 		</dependency>
 
-		<!-- Persistence -->
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>2.4.2</version>
 		</dependency>
 
-		<!-- Logging -->
+
+		<!-- Test START -->
 		<dependency>
-			<groupId>com.kumuluz.ee.logs</groupId>
-			<artifactId>kumuluzee-logs-log4j2</artifactId>
-			<version>1.3.0</version>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
 		</dependency>
 
-		<!-- Test -->
-		<!-- api muss dabei sein, damit das surefire-plugin die tests findet! -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.5.0-RC1</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.5.0-RC1</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
-			<version>1.5.0-RC1</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>2.0.2-beta</version>
+			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Test ENDE -->
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}-${version}</finalName>
-
 		<plugins>
-			<plugin>
-				<groupId>com.kumuluz.ee</groupId>
-				<artifactId>kumuluzee-maven-plugin</artifactId>
-				<version>${kumuluz.version}</version>
-				<executions>
-					<execution>
-						<id>package</id>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -307,17 +150,11 @@
 				<inherited>true</inherited>
 				<configuration>
 					<release>11</release>
-					<source>${version.java}</source>
-					<target>${version.java}</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
-				<configuration>
-					<!-- <argLine> doubedash illegal-access=permit </argLine> -->
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
@@ -331,6 +168,74 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>io.quarkus</groupId>
+				<artifactId>quarkus-maven-plugin</artifactId>
+				<version>${quarkus.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire-plugin.version}</version>
+				<configuration>
+					<systemProperties>
+						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+					</systemProperties>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>native</id>
+			<activation>
+				<property>
+					<name>native</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.quarkus</groupId>
+						<artifactId>quarkus-maven-plugin</artifactId>
+						<version>${quarkus.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>native-image</goal>
+								</goals>
+								<configuration>
+									<enableHttpUrlHandler>true</enableHttpUrlHandler>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>${surefire-plugin.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+								<configuration>
+									<systemProperties>
+										<native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+									</systemProperties>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

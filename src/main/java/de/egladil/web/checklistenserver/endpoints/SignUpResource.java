@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.endpoints;
 
@@ -23,10 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.checklistenserver.service.SignUpService;
-import de.egladil.web.commons.payload.HateoasPayload;
-import de.egladil.web.commons.payload.MessagePayload;
-import de.egladil.web.commons.payload.ResponsePayload;
-import de.egladil.web.commons.validation.ValidationDelegate;
+import de.egladil.web.commons_validation.ValidationDelegate;
+import de.egladil.web.commons_validation.payload.HateoasPayload;
+import de.egladil.web.commons_validation.payload.MessagePayload;
+import de.egladil.web.commons_validation.payload.ResponsePayload;
 
 /**
  * SignUpResource
@@ -38,10 +38,10 @@ import de.egladil.web.commons.validation.ValidationDelegate;
 public class SignUpResource {
 
 	@Inject
-	private SignUpService signUpService;
+	SignUpService signUpService;
 
 	@Context
-	private SecurityContext securityContext;
+	SecurityContext securityContext;
 
 	private ValidationDelegate validationDelegate = new ValidationDelegate();
 
@@ -49,15 +49,18 @@ public class SignUpResource {
 	 * Prüft, ob derjenige, der diesen Endpoint aufruft, das Geheimnis kennt. Dann wird er auf den AuthProvider
 	 * redirected, um ein Konto anzulegen.
 	 *
-	 * @param signUpPayload String
-	 * @return Response
+	 * @param  signUpPayload
+	 *                       String
+	 * @return               Response
 	 */
 	@POST
 	@Path("/secret")
 	public Response checkMaySignUp(SignUpPayload signUpPayload) {
 
 		SignUpPayload trimmedPayload = trimIfNotEmpty(signUpPayload);
+
 		try {
+
 			validationDelegate.check(trimmedPayload, SignUpPayload.class);
 
 			signUpService.verifySecret(trimmedPayload);
@@ -65,9 +68,12 @@ public class SignUpResource {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Tritt ein, Fremder."));
 			return Response.status(200).entity(payload).build();
 		} finally {
+
 			signUpPayload.wipe();
 			signUpPayload = null;
+
 			if (trimmedPayload != null) {
+
 				trimmedPayload.wipe();
 				trimmedPayload = null;
 			}
@@ -76,11 +82,15 @@ public class SignUpResource {
 	}
 
 	private SignUpPayload trimIfNotEmpty(final SignUpPayload payload) {
+
 		if (payload == null) {
+
 			return null;
 		}
 		String secret = payload.getSecret();
+
 		if (secret != null && StringUtils.isEmpty(secret)) {
+
 			secret = secret.trim();
 		}
 		SignUpPayload result = new SignUpPayload(secret, payload.getKleber());
@@ -92,8 +102,9 @@ public class SignUpResource {
 	/**
 	 * Legt einen Checklistenuser mit der UUID an.
 	 *
-	 * @param signUpPayload String
-	 * @return Response
+	 * @param  signUpPayload
+	 *                       String
+	 * @return               Response
 	 */
 	@POST
 	@Path("/user")
@@ -105,6 +116,7 @@ public class SignUpResource {
 		Optional<HateoasPayload> optHateoasPayload = signUpService.findUser(uuid);
 
 		if (optHateoasPayload.isPresent()) {
+
 			return Response.ok().entity(new ResponsePayload(MessagePayload.info("User existiert bereits"), optHateoasPayload.get()))
 				.build();
 		}

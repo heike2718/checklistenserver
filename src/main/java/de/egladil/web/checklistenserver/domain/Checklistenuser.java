@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.domain;
 
@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import de.egladil.web.commons.payload.HateoasPayload;
+import de.egladil.web.commons_validation.payload.HateoasPayload;
 
 /**
  * Checklistenuser
@@ -61,41 +61,50 @@ public class Checklistenuser implements Checklistenentity {
 	 * Erzeugt eine Instanz von Checklistenuser
 	 */
 	public Checklistenuser() {
+
 		roles.add("user");
 	}
 
 	@Override
 	public Long getId() {
+
 		return id;
 	}
 
 	public void setId(final Long id) {
+
 		this.id = id;
 	}
 
 	public String getUuid() {
+
 		return uuid;
 	}
 
 	public void setUuid(final String uuid) {
+
 		this.uuid = uuid;
 	}
 
 	public int getVersion() {
+
 		return version;
 	}
 
 	public void setVersion(final int version) {
+
 		this.version = version;
 	}
 
 	@Override
 	public HateoasPayload getHateoasPayload() {
+
 		return hateoasPayload;
 	}
 
 	@Override
 	public void setHateoasPayload(final HateoasPayload hateoasPayload) {
+
 		this.hateoasPayload = hateoasPayload;
 	}
 
@@ -105,11 +114,13 @@ public class Checklistenuser implements Checklistenentity {
 	 * @return Set
 	 */
 	public Set<String> getRoles() {
+
 		return roles;
 	}
 
 	@Override
 	public String toString() {
+
 		StringBuilder builder = new StringBuilder();
 		builder.append("Checklistenuser [uuid=");
 		builder.append(StringUtils.abbreviate(uuid, 11));
