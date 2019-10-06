@@ -75,6 +75,8 @@ http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
 
 ## Relesenotes
 
+* __Release 5.0.0:__ migrated to quarkus :D
+
 * __Release 4.1.0:__ serverseitiges Loggen von clientErrors eingebaut
 
 * __Release 4.0.0:__ Refresh client access token: Payload Signatur nicht abwärtskompatibel.
