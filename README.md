@@ -3,33 +3,15 @@ REST-API für Winkels Checklisten
 
 ## Development Server
 
-Sarten des Servers mit
+Sarten des Servers mit Maven:
 
-java -jar checklistenserver.jar -Dcom.kumuluz.ee.configuration.file=path-to-auth-provider-config.yaml
+	mvn clean compile quarkus:dev
 
-Resourcen zum Testen, ob das Backend da ist:
+## Resourcen zum Testen, ob das Backend da ist:
 
-http://localhost:9300/checklisten-api/dev/hello
+	http://localhost:9300/checklisten-api/dev/hello
 
-http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
-
-### Metriken
-
-with Accept-Header application/json
-
-GET http://localhost:9300/metrics
-
-OPTIONS http://localhost:9300/metrics
-
-### Starten in Eclipse
-
-mit IDEChecklistenAppRunner und VMargs
-
-	-Dcom.kumuluz.ee.configuration.file=/home/heike/git/konfigurationen/checklistenservice/checklistenservice-config.yaml
-
-oder
-
-	-Djavax.net.debug=all -Dcom.kumuluz.ee.configuration.file=/home/heike/git/konfigurationen/checklistenservice/checklistenservice-config.yaml
+	http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
 
 ## URL zum Holen eines AccessTokens vom Authprovider in Browser-Anwendungen
 
@@ -55,23 +37,6 @@ mit dem Payload OAuthClientCredentials auf:
 
 * redirect zum AuthProvider mit url https://auth-provider-domain#/login?accessToken=das-access-token&redirectUrl=die-redirect-url
 * Nach Antwort vom AuthProvider: GET-Request an users/{sub aus JWT} . Es wird geprüft, ob das Subject bekannt ist. Erst dann geht's in die Anwendung
-
-## Validierung des JWT
-
-* erfolgt im AuthorizationFilter
-* Der public key des AuthProviders steht momentan in der checklistenservice-config.yaml um die Validierung aus kumuluzee-jwt verwenden zu
-können,
-(evtl. gibt es auch mal eine key-versionierung mit allem pi-pa-po. Dann wird er über die URL geholt, die in der checklistenservice-config.yaml unter application-config -> auth-public-key-url steht
-* Validierung des JWT erfolgt mit MP-JWT (microprofile JWT)
-* Die groups werden aus dem JWT genommen und um (momentan nicht persistente) statische Checklisten-Groups ergänzt.
-
-## API zum Testen
-
-Server-Komponente kann getestet werden mit
-
-http://localhost:9300/checklisten-api/dev/hello
-http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
-
 
 ## Relesenotes
 
