@@ -40,5 +40,5 @@ mit dem Payload OAuthClientCredentials auf:
 
 ## Relesenotes
 
-[Release-Notes](https://github.com/heike2718/checklistenserver/RELEASE-NOTES.md)
+[Release-Notes](RELEASE-NOTES.md)
 

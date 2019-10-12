@@ -30,6 +30,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>de.egladil.web</groupId>
+				<artifactId>commons-bom</artifactId>
+				<version>0.0.9</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -38,19 +45,16 @@
 		<dependency>
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons-validation</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons-crypto</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.egladil.web</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 		<!-- Quarkus START -->
