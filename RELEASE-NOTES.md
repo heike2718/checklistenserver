@@ -1,0 +1,14 @@
+# checklistenserver Release Notes
+
+__11.09.2019:__ attempt to fix
+
+* [quarkus-issue-3382](https://github.com/quarkusio/quarkus/issues/3382)
+* [quarkus-issue-4282](https://github.com/quarkusio/quarkus/pull/4282)
+
+__Release 5.0.0:__ migrated to quarkus :D
+
+__Release 4.1.0:__ serverseitiges Loggen von clientErrors eingebaut
+
+__Release 4.0.0:__ Refresh client access token: Payload Signatur nicht abwärtskompatibel.
+
+__Release 3.0.0:__ Nicht abwärtskompatible Änderung: Client-Secrets werden von Server zu Server gegen ein AccessToken eingetauscht, das der checklisten-app übermttelt wird und welches diese dann in den redirects zur auth-app verwendet (statt wie bisher die clientID)
