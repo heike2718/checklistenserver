@@ -75,10 +75,5 @@ http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
 
 ## Relesenotes
 
-* __Release 5.0.0:__ migrated to quarkus :D
+[Release-Notes](https://github.com/heike2718/checklistenserver/RELEASE-NOTES.md)
 
-* __Release 4.1.0:__ serverseitiges Loggen von clientErrors eingebaut
-
-* __Release 4.0.0:__ Refresh client access token: Payload Signatur nicht abwärtskompatibel.
-
-* __Release 3.0.0:__ Nicht abwärtskompatible Änderung: Client-Secrets werden von Server zu Server gegen ein AccessToken eingetauscht, das der checklisten-app übermttelt wird und welches diese dann in den redirects zur auth-app verwendet (statt wie bisher die clientID)
