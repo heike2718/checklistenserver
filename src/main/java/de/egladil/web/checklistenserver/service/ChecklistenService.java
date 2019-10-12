@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
-import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +77,6 @@ public class ChecklistenService {
 		return daten;
 	}
 
-	@Transactional
 	public ChecklisteDaten checklisteAnlegen(final Checklistentyp typ, final String name) {
 
 		try {
@@ -109,7 +107,6 @@ public class ChecklistenService {
 	 * @param  daten
 	 * @return       ChecklisteDaten
 	 */
-	@Transactional
 	public ResponsePayload checklisteAendern(final ChecklisteDaten daten, final String kuerzel) {
 
 		if (daten == null) {
@@ -171,7 +168,6 @@ public class ChecklistenService {
 	 * @param kuerzel
 	 *                String
 	 */
-	@Transactional
 	public void checklisteLoeschen(final String kuerzel) {
 
 		try {

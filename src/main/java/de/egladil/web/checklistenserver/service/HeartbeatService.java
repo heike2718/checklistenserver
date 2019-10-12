@@ -7,7 +7,6 @@ package de.egladil.web.checklistenserver.service;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,6 @@ public class HeartbeatService {
 		this.pacemakerDao = iPacemakerDao;
 	}
 
-	@Transactional
 	public ResponsePayload update() {
 
 		try {

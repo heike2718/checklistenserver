@@ -16,6 +16,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public abstract class BaseDao implements IBaseDao {
 	}
 
 	@Override
+	@Transactional
 	public <T extends Checklistenentity> T save(final T entity) {
 
 		@SuppressWarnings("unchecked")
