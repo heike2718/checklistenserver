@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -168,6 +169,7 @@ public class ChecklistenService {
 	 * @param kuerzel
 	 *                String
 	 */
+	@Transactional
 	public void checklisteLoeschen(final String kuerzel) {
 
 		try {

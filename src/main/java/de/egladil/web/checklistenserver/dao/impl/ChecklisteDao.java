@@ -7,7 +7,6 @@ package de.egladil.web.checklistenserver.dao.impl;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +39,13 @@ public class ChecklisteDao extends BaseDao implements IChecklisteDao {
 	}
 
 	@Override
-	@Transactional
 	public void delete(final Checkliste checkliste) {
 
-		getEm().remove(checkliste);
+		// BalusC: falls die Transaktion nicht schon mit dem Suchen der Checkliste beginnt (siehe ChecklistenServivce), muss man es
+		// so machen. Es schadet aber nichts, wenn man es immer so macht.
+		EntityManager entityManager = getEm();
+		entityManager.remove(entityManager.contains(checkliste) ? checkliste : entityManager.merge(checkliste));
+		// getEm().remove(checkliste);
 		LOG.debug("deleted: {}", checkliste);
 	}
 
