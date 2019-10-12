@@ -1,5 +1,9 @@
 # checklistenserver Release Notes
 
+
+__Release 5.0.0:__ fixed Löschen von Checklisten nicht mehr möglich (Server-error)
+
+
 __11.09.2019:__ attempt to fix
 
 * [quarkus-issue-3382](https://github.com/quarkusio/quarkus/issues/3382)
