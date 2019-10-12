@@ -1,8 +1,9 @@
 # checklistenserver Release Notes
 
 
-__Release 5.0.0:__ fixed Löschen von Checklisten nicht mehr möglich (Server-error)
+__Release 5.1.0:__ new Version Resource
 
+__Release 5.0.1:__ fixed Löschen von Checklisten nicht mehr möglich (Server-error)
 
 __11.09.2019:__ attempt to fix
 
