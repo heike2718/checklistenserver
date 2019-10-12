@@ -70,7 +70,7 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 
 		if (headers.get("Access-Control-Allow-Methods") == null) {
 
-			headers.add("Access-Control-Allow-Methods", "POST, PUT, GET, HEADERS, OPTIONS, DELETE");
+			headers.add("Access-Control-Allow-Methods", "POST, PUT, GET, HEAD, OPTIONS, DELETE");
 		}
 
 		if (headers.get("Access-Control-Max-Age") == null) {

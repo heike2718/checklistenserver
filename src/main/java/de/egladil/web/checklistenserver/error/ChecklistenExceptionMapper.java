@@ -15,6 +15,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.commons_net.exception.SessionExpiredException;
 import de.egladil.web.commons_validation.exception.InvalidInputException;
 import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.ResponsePayload;
@@ -48,12 +49,12 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 			return Response.status(401).entity(payload).build();
 		}
 
-		// if (exception instanceof SessionExpiredException) {
-		//
-		// ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
-		// return Response.status(901).entity(payload).build();
-		// }
-		//
+		if (exception instanceof SessionExpiredException) {
+
+			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
+			return Response.status(901).entity(payload).build();
+		}
+
 		if (exception instanceof NotFoundException) {
 
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Hamwer nich"));
