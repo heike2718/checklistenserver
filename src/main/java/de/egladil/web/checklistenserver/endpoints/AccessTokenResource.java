@@ -144,7 +144,8 @@ public class AccessTokenResource {
 				return getAccessToken();
 			}
 
-			LOG.error("Unerwarteter Fehler beim Austauschen des ClientAccessTokens: Status={}", response.getStatus());
+			LOG.error("Unerwarteter Fehler beim Austauschen des ClientAccessTokens: Status={}, error:{}", response.getStatus(),
+				e.getMessage(), e);
 			return Response.serverError().build();
 		}
 	}

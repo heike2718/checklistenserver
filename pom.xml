@@ -14,7 +14,8 @@
 
 	<properties>
 		<surefire-plugin.version>2.22.0</surefire-plugin.version>
-		<quarkus.version>0.23.2</quarkus.version>
+		<quarkus.version>0.26.1</quarkus.version>
+		<commons.version>1.2.0</commons.version>
 		<maven.compiler.source>1.11</maven.compiler.source>
 		<maven.compiler.target>1.11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +34,7 @@
 			<dependency>
 				<groupId>de.egladil.web</groupId>
 				<artifactId>commons-bom</artifactId>
-				<version>0.0.9</version>
+				<version>${commons.version}</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
