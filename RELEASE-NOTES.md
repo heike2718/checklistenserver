@@ -1,5 +1,7 @@
 # checklistenserver Release Notes
 
+__Release 5.3.0:__ upgrade to quarkus 0.27.0 in order to fix several CVEs
+
 __Release 5.2.0:__ upgrade to quarkus 0.26.1
 
 __Release 5.1.0:__ new Version Resource
