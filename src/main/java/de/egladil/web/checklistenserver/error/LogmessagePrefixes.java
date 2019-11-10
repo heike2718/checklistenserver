@@ -1,5 +1,5 @@
 // =====================================================
-// Projekt: de.egladil.constants
+// Projekt: checklistenserver
 // (c) Heike Winkelvoß
 // =====================================================
 

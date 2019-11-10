@@ -40,7 +40,7 @@ public class ClientAccessTokenService {
 
 	@Inject
 	@RestClient
-	InitAccessTokenRestClient initAccessTokenService;
+	InitAccessTokenRestClient initAccessTokenClient;
 
 	@Inject
 	@RestClient
@@ -59,7 +59,7 @@ public class ClientAccessTokenService {
 
 		try {
 
-			JsonObject authResponse = initAccessTokenService.authenticateClient(credentials);
+			JsonObject authResponse = initAccessTokenClient.authenticateClient(credentials);
 
 			evaluateResponse(nonce, authResponse);
 
@@ -137,7 +137,7 @@ public class ClientAccessTokenService {
 			}
 		} else {
 
-			LOG.warn("Authentisierung des Clients hat nicht geklappt: {} - {}", level, theMessage);
+			LOG.error("Authentisierung des Clients hat nicht geklappt: {} - {}", level, theMessage);
 			throw new AuthException();
 		}
 	}
