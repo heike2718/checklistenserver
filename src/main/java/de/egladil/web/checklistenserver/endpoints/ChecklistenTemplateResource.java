@@ -5,7 +5,6 @@
 
 package de.egladil.web.checklistenserver.endpoints;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -32,7 +31,6 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 @Path("templates")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@RolesAllowed({ "STANDARD" })
 public class ChecklistenTemplateResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateResource.class.getSimpleName());

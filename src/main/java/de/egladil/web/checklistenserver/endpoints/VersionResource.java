@@ -1,5 +1,5 @@
 // =====================================================
-// Project: mkadmin-server
+// Project: checklistenserver
 // (c) Heike Winkelvoß
 // =====================================================
 package de.egladil.web.checklistenserver.endpoints;

@@ -6,16 +6,21 @@
 package de.egladil.web.checklistenserver.error;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.NoContentException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.commons_net.exception.SessionExpiredException;
+import de.egladil.web.commons_net.utils.CommonHttpUtils;
 import de.egladil.web.commons_validation.exception.InvalidInputException;
 import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.ResponsePayload;
@@ -28,6 +33,9 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenExceptionMapper.class.getName());
+
+	@Context
+	SecurityContext securityContext;
 
 	@Override
 	public Response toResponse(final Exception exception) {
@@ -46,13 +54,14 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		if (exception instanceof AuthException) {
 
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
-			return Response.status(401).entity(payload).build();
+			return Response.status(401).cookie(CommonHttpUtils.createSessionInvalidatedCookie()).entity(payload).build();
 		}
 
 		if (exception instanceof SessionExpiredException) {
 
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
-			return Response.status(901).entity(payload).build();
+			return Response.status(908).entity(payload)
+				.cookie(CommonHttpUtils.createSessionInvalidatedCookie()).build();
 		}
 
 		if (exception instanceof NotFoundException) {
@@ -67,12 +76,20 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 			return Response.status(409).entity(payload).build();
 		}
 
-		if (exception instanceof ChecklistenRuntimeException) {
+		if (exception instanceof ChecklistenRuntimeException || exception instanceof ClientAuthException) {
 
 			// wurde schon gelogged
 		} else {
 
-			LOG.error(exception.getMessage(), exception);
+			if (securityContext != null && securityContext.getUserPrincipal() instanceof UserSession) {
+
+				UserSession userSession = (UserSession) securityContext.getUserPrincipal();
+				LOG.error("{} - {}: {}", StringUtils.abbreviate(userSession.getIdReference(), 11),
+					StringUtils.abbreviate(userSession.getUuid(), 11), exception.getMessage(), exception);
+			} else {
+
+				LOG.error(exception.getMessage(), exception);
+			}
 		}
 
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error(
