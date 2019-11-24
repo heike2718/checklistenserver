@@ -53,15 +53,6 @@ public class ChecklistenSessionResource {
 	@ConfigProperty(name = "stage")
 	String stage;
 
-	@ConfigProperty(name = "sessioncookie.secure")
-	boolean sessioncookieSecure;
-
-	@ConfigProperty(name = "sessioncookie.httpOnly")
-	boolean sessionCookieHttpOnly;
-
-	@ConfigProperty(name = "sessioncookie.domain")
-	String domain;
-
 	@ConfigProperty(name = "auth.redirect-url.signup")
 	String signupRedirectUrl;
 
@@ -140,7 +131,7 @@ public class ChecklistenSessionResource {
 		}
 
 		return Response.ok(ResponsePayload.messageOnly(MessagePayload.info("Sie haben sich erfolreich ausgeloggt")))
-			.cookie(CommonHttpUtils.createSessionInvalidatedCookie(domain)).build();
+			.cookie(CommonHttpUtils.createSessionInvalidatedCookie()).build();
 
 	}
 

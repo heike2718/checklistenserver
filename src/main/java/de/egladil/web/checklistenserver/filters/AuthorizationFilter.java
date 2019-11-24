@@ -14,7 +14,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -68,11 +67,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 					throw new SessionExpiredException("keine gültige Session vorhanden");
 				}
 
-				sessionService.refresh(sessionId);
-
-				SecurityContext quarkusSecurityContext = requestContext.getSecurityContext();
-
-				ChecklistenSecurityContext securityContext = new ChecklistenSecurityContext(userSession);
+				UserSession refrehedSession = sessionService.refresh(sessionId);
+				ChecklistenSecurityContext securityContext = new ChecklistenSecurityContext(refrehedSession);
 				requestContext.setSecurityContext(securityContext);
 
 			} else {

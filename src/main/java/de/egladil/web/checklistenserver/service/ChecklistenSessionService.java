@@ -58,15 +58,6 @@ public class ChecklistenSessionService {
 	@ConfigProperty(name = "stage")
 	String stage;
 
-	@ConfigProperty(name = "sessioncookie.secure")
-	boolean sessioncookieSecure;
-
-	@ConfigProperty(name = "sessioncookie.httpOnly")
-	boolean sessionCookieHttpOnly;
-
-	@ConfigProperty(name = "sessioncookie.domain")
-	String domain;
-
 	// TODO: das muss in die Datenbank
 	private ConcurrentHashMap<String, UserSession> sessions = new ConcurrentHashMap<>();
 
@@ -137,13 +128,15 @@ public class ChecklistenSessionService {
 
 	}
 
-	public void refresh(final String sessionId) {
+	public UserSession refresh(final String sessionId) {
 
 		UserSession userSession = sessions.get(sessionId);
 
 		if (userSession != null) {
 
 			userSession.setExpiresAt(getSessionTimeout());
+
+			return userSession;
 		} else {
 
 			throw new SessionExpiredException("keine Session mehr vorhanden");
@@ -167,16 +160,16 @@ public class ChecklistenSessionService {
 		// @formatter:off
 		NewCookie sessionCookie = new NewCookie(CommonHttpUtils.NAME_SESSIONID_COOKIE,
 			sessionId,
+			null, // path
+			null, // domain muss null sein, wird vom Browser anhand des restlichen Responses abgeleitet. Sonst wird das Cookie nicht gesetzt.
+			1,  // version
+			null, // comment
+			7200, // expires (minutes)
 			null,
-			domain,
-			1,
-			null,
-			7200,
-			null,
-			sessioncookieSecure,
-			sessionCookieHttpOnly);
+			true, // secure
+			true  // httpOnly
+			);
 //		 @formatter:on
-		// NewCookie sessionCookie = new NewCookie("JSESSIONID", userSession.getSessionId());
 
 		return sessionCookie;
 	}
@@ -220,18 +213,6 @@ public class ChecklistenSessionService {
 
 		}
 		return userSession;
-	}
-
-	/**
-	 * Sucht die UserSession anhand des Principals
-	 *
-	 * @param  principal
-	 * @return           Optional
-	 */
-	private Optional<UserSession> findSessionByUuid(final String uuid) {
-
-		return this.sessions.values().stream().filter(s -> uuid != null && uuid.equals(s.getUuid())).findFirst();
-
 	}
 
 	private long getSessionTimeout() {

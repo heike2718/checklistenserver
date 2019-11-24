@@ -107,11 +107,8 @@ public class ClientAccessTokenService {
 
 			if (!nonce.equals(responseNonce)) {
 
-				{
-
-					LOG.warn(LogmessagePrefixes.BOT + "zurückgesendetes nonce stimmt nicht");
-					throw new ClientAuthException();
-				}
+				LOG.warn(LogmessagePrefixes.BOT + "zurückgesendetes nonce stimmt nicht");
+				throw new ClientAuthException();
 			}
 		} else {
 

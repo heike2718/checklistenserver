@@ -34,8 +34,7 @@ public class ChecklistenSecurityContext implements SecurityContext {
 	@Override
 	public boolean isUserInRole(final String role) {
 
-		// TODO Auto-generated method stub
-		return false;
+		return userSession.getRoles().contains(role);
 	}
 
 	@Override
