@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -29,8 +30,8 @@ import de.egladil.web.commons_net.utils.CommonHttpUtils;
  */
 @ApplicationScoped
 @Provider
-// @Priority(900)
 @PreMatching
+@Priority(900)
 public class OriginReferrerFilter implements ContainerRequestFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OriginReferrerFilter.class.getSimpleName());

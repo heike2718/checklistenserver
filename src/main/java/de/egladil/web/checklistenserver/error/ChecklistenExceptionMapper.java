@@ -15,6 +15,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.checklistenserver.utils.SessionUtils;
 import de.egladil.web.commons_net.exception.SessionExpiredException;
 import de.egladil.web.commons_validation.exception.InvalidInputException;
 import de.egladil.web.commons_validation.payload.MessagePayload;
@@ -52,7 +53,7 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		if (exception instanceof SessionExpiredException) {
 
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
-			return Response.status(901).entity(payload).build();
+			return Response.status(908).entity(payload).cookie(SessionUtils.createSessionInvalidatedCookie()).build();
 		}
 
 		if (exception instanceof NotFoundException) {
@@ -67,7 +68,7 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 			return Response.status(409).entity(payload).build();
 		}
 
-		if (exception instanceof ChecklistenRuntimeException) {
+		if (exception instanceof ChecklistenRuntimeException || exception instanceof ClientAuthException) {
 
 			// wurde schon gelogged
 		} else {

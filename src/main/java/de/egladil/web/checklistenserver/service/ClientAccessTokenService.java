@@ -4,12 +4,13 @@
 // =====================================================
 package de.egladil.web.checklistenserver.service;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.JsonObject;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
@@ -19,10 +20,13 @@ import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
+import de.egladil.web.checklistenserver.error.ClientAuthException;
 import de.egladil.web.checklistenserver.error.LogmessagePrefixes;
 import de.egladil.web.checklistenserver.restclient.InitAccessTokenRestClient;
 import de.egladil.web.checklistenserver.restclient.ReplaceAccessTokenRestClient;
+import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.OAuthClientCredentials;
+import de.egladil.web.commons_validation.payload.ResponsePayload;
 
 /**
  * ClientAccessTokenService
@@ -51,7 +55,7 @@ public class ClientAccessTokenService {
 	 *
 	 * @return JsonObject oder null
 	 */
-	public JsonObject orderAccessToken() {
+	public String orderAccessToken() {
 
 		String nonce = UUID.randomUUID().toString();
 		OAuthClientCredentials credentials = OAuthClientCredentials.create(clientId,
@@ -59,17 +63,23 @@ public class ClientAccessTokenService {
 
 		try {
 
-			JsonObject authResponse = initAccessTokenClient.authenticateClient(credentials);
+			Response authResponse = initAccessTokenClient.authenticateClient(credentials);
 
-			evaluateResponse(nonce, authResponse);
+			ResponsePayload responsePayload = authResponse.readEntity(ResponsePayload.class);
 
-			return authResponse;
+			evaluateResponse(nonce, responsePayload);
+
+			@SuppressWarnings("unchecked")
+			Map<String, String> dataMap = (Map<String, String>) responsePayload.getData();
+			String accessToken = dataMap.get("accessToken");
+
+			return accessToken;
 		} catch (IllegalStateException | RestClientDefinitionException e) {
 
 			LOG.error(e.getMessage(), e);
 			throw new ChecklistenRuntimeException("Unerwarteter Fehler beim Anfordern eines client-accessTokens: " + e.getMessage(),
 				e);
-		} catch (AuthException e) {
+		} catch (ClientAuthException e) {
 
 			// ist schon geloggt
 			return null;
@@ -79,66 +89,35 @@ public class ClientAccessTokenService {
 			LOG.error(e.getMessage(), e);
 
 			return null;
+		} finally {
+
+			credentials.clean();
 		}
 	}
 
-	/**
-	 * Ersetzt das accessToken oder orderd ein neues.
-	 *
-	 * @param  replacedToken
-	 * @return               JsonObject oder null
-	 */
-	public JsonObject replaceAccessToken(final String replacedToken) {
+	private void evaluateResponse(final String nonce, final ResponsePayload responsePayload) throws AuthException {
 
-		String nonce = UUID.randomUUID().toString();
-		OAuthClientCredentials credentials = OAuthClientCredentials.create(clientId,
-			clientSecret, nonce);
+		MessagePayload messagePayload = responsePayload.getMessage();
 
-		try {
+		if (messagePayload.isOk()) {
 
-			JsonObject authResponse = replaceAccessTokenRestClient.replaceAccessToken(replacedToken, credentials);
-
-			this.evaluateResponse(nonce, authResponse);
-
-			return authResponse;
-		} catch (IllegalStateException | RestClientDefinitionException e) {
-
-			LOG.error(e.getMessage(), e);
-			throw new ChecklistenRuntimeException("Unerwarteter Fehler beim Anfordern eines client-accessTokens: " + e.getMessage(),
-				e);
-		} catch (AuthException e) {
-
-			// ist schon geloggt
-			return null;
-
-		} catch (WebApplicationException e) {
-
-			LOG.error(e.getMessage(), e);
-
-			return null;
-		}
-
-	}
-
-	private void evaluateResponse(final String nonce, final JsonObject authResponse) throws AuthException {
-
-		JsonObject message = authResponse.getJsonObject("message");
-		String level = message.getString("level");
-		String theMessage = message.getString("message");
-
-		if ("INFO".equals(level)) {
-
-			String responseNonce = authResponse.getJsonObject("data").getString("nonce");
+			@SuppressWarnings("unchecked")
+			Map<String, String> dataMap = (Map<String, String>) responsePayload.getData();
+			String responseNonce = dataMap.get("nonce");
 
 			if (!nonce.equals(responseNonce)) {
 
-				LOG.warn(LogmessagePrefixes.BOT + "zurückgesendetes nonce stimmt nicht");
-				throw new AuthException();
+				{
+
+					LOG.warn(LogmessagePrefixes.BOT + "zurückgesendetes nonce stimmt nicht");
+					throw new ClientAuthException();
+				}
 			}
 		} else {
 
-			LOG.error("Authentisierung des Clients hat nicht geklappt: {} - {}", level, theMessage);
-			throw new AuthException();
+			LOG.error("Authentisierung des Clients hat nicht geklappt: {} - {}", messagePayload.getLevel(),
+				messagePayload.getMessage());
+			throw new ClientAuthException();
 		}
 	}
 }
