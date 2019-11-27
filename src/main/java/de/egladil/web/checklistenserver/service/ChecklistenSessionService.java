@@ -21,7 +21,6 @@ import javax.ws.rs.core.NewCookie;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +30,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import de.egladil.web.checklistenserver.ChecklistenServerApp;
 import de.egladil.web.checklistenserver.dao.IUserDao;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.checklistenserver.domain.UserSession;
@@ -51,12 +51,7 @@ public class ChecklistenSessionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenSessionService.class);
 
-	private static final int SESSION_IDLE_TIMEOUT_MINUTES = 15;
-
-	private static final String STAGE_DEV = "dev";
-
-	@ConfigProperty(name = "stage")
-	String stage;
+	private static final int SESSION_IDLE_TIMEOUT_MINUTES = 120;
 
 	// TODO: das muss in die Datenbank
 	private ConcurrentHashMap<String, UserSession> sessions = new ConcurrentHashMap<>();
@@ -97,14 +92,7 @@ public class ChecklistenSessionService {
 
 				UserSession userSession = null;
 
-				if (STAGE_DEV.equals(stage)) {
-
-					userSession = UserSession.create(sesionId, roles, CommonHttpUtils.createUserIdReference());
-				} else {
-
-					userSession = UserSession.create(null, roles, CommonHttpUtils.createUserIdReference());
-				}
-
+				userSession = UserSession.create(sesionId, roles, CommonHttpUtils.createUserIdReference());
 				userSession.setExpiresAt(getSessionTimeout());
 				userSession.setUuid(uuid);
 
@@ -157,10 +145,14 @@ public class ChecklistenSessionService {
 
 	public NewCookie createSessionCookie(final String sessionId) {
 
+		final String name = ChecklistenServerApp.CLIENT_COOKIE_PREFIX + CommonHttpUtils.NAME_SESSIONID_COOKIE;
+
+		LOG.debug("Erzeugen Cookie mit name={}", name);
+
 		// @formatter:off
-		NewCookie sessionCookie = new NewCookie(CommonHttpUtils.NAME_SESSIONID_COOKIE,
+		NewCookie sessionCookie = new NewCookie(name,
 			sessionId,
-			null, // path
+			"/", // path
 			null, // domain muss null sein, wird vom Browser anhand des restlichen Responses abgeleitet. Sonst wird das Cookie nicht gesetzt.
 			1,  // version
 			null, // comment
@@ -169,7 +161,7 @@ public class ChecklistenSessionService {
 			true, // secure
 			true  // httpOnly
 			);
-//		 @formatter:on
+		// @formatter:on
 
 		return sessionCookie;
 	}

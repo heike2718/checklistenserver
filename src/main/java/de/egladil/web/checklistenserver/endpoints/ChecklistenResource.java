@@ -66,7 +66,11 @@ public class ChecklistenResource {
 	@PermitAll
 	public Response getChecklisten() {
 
+		LOG.debug("entering getChecklisten");
+
 		UserSession userSession = getUserSession();
+
+		LOG.debug("Alles gut: session vorhanden");
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
 
@@ -173,12 +177,13 @@ public class ChecklistenResource {
 
 		if (userPrincipal != null) {
 
+			LOG.debug("UserPrincipal gefunden: {}", userPrincipal);
+
 			return (UserSession) userPrincipal;
 		}
 
 		LOG.error("keine UserSession für Principal vorhanden");
 		throw new AuthException("keine Berechtigung");
-
 	}
 
 	private String getStringAbbreviated(final String string) {

@@ -11,13 +11,15 @@ Sarten des Servers mit Maven:
 
 	http://localhost:9300/checklisten-api/dev/hello
 
+	http://localhost:9300/checklisten-api/version
+
 	http://localhost:9300/checklisten-api/heartbeats?heartbeatId=heartbeat
 
-## URL zum Holen eines AccessTokens vom Authprovider in Browser-Anwendungen
+## Login
 
-	http://localhost:9300/checklisten-api/accesstoken
+	http://localhost:9300/auth/login
 
-Der Endpoint ruft seinerseits die URL
+Der Endpoint gibt
 
 	http://localhost:9000/authprovider/clients/oauth/token
 
@@ -36,7 +38,7 @@ mit dem Payload OAuthClientCredentials auf:
 ## Ablauf LogIn
 
 * redirect zum AuthProvider mit url https://auth-provider-domain#/login?accessToken=das-access-token&redirectUrl=die-redirect-url
-* Nach Antwort vom AuthProvider: GET-Request an users/{sub aus JWT} . Es wird geprüft, ob das Subject bekannt ist. Erst dann geht's in die Anwendung
+* Nach Antwort vom AuthProvider: POST-Request an /auth/session . Es wird geprüft, ob das Subject bekannt ist. Die Antwort ist eine Session auf dem Server und ein Session-Cookie für den client, das im AuthorizationFilter bei jedem Request geprüft wird. Außedem kommt noch ein UserSession-Objekt mit, in dem ein expiresAt-Datum steht sowie ein Zufallsstring für die idReferenz der Session. Bei jedem Request wird die Session wieder verlängert, so dass man nur nach langer Untätigkeit rausfliegt.
 
 ## Relesenotes
 

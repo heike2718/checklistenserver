@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.checklistenserver.ChecklistenServerApp;
 import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.commons_net.exception.SessionExpiredException;
 import de.egladil.web.commons_net.utils.CommonHttpUtils;
@@ -54,14 +55,16 @@ public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 		if (exception instanceof AuthException) {
 
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Du kommst nicht vorbei!"));
-			return Response.status(401).cookie(CommonHttpUtils.createSessionInvalidatedCookie()).entity(payload).build();
+			return Response.status(401)
+				.cookie(CommonHttpUtils.createSessionInvalidatedCookie(ChecklistenServerApp.CLIENT_COOKIE_PREFIX)).entity(payload)
+				.build();
 		}
 
 		if (exception instanceof SessionExpiredException) {
 
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Deine Session ist abgelaufen."));
 			return Response.status(908).entity(payload)
-				.cookie(CommonHttpUtils.createSessionInvalidatedCookie()).build();
+				.cookie(CommonHttpUtils.createSessionInvalidatedCookie(ChecklistenServerApp.CLIENT_COOKIE_PREFIX)).build();
 		}
 
 		if (exception instanceof NotFoundException) {

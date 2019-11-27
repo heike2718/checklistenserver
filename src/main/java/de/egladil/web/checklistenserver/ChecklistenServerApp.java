@@ -17,4 +17,6 @@ import org.eclipse.microprofile.auth.LoginConfig;
 @ApplicationPath("/checklisten-api")
 public class ChecklistenServerApp extends Application {
 
+	public static final String CLIENT_COOKIE_PREFIX = "CHK";
+
 }
