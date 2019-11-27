@@ -23,8 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * DevelopmentResource stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung. Die werden irgendwann
- * umziehen.
+ * DevelopmentResource stellt REST-Endpoints zum Spielen und Dinge ausprobieren zur Verfügung.
  */
 @RequestScoped
 @Path("dev")

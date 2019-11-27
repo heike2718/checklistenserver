@@ -5,6 +5,7 @@
 package de.egladil.web.checklistenserver.filters;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -14,12 +15,14 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.ext.Provider;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.checklistenserver.ChecklistenServerApp;
 import de.egladil.web.checklistenserver.context.ChecklistenSecurityContext;
 import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
@@ -55,7 +58,14 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
 		if (needsSession(path)) {
 
-			String sessionId = CommonHttpUtils.getSessionId(requestContext, stage);
+			if (LOG.isDebugEnabled()) {
+
+				logCookies(requestContext);
+			}
+
+			String sessionId = CommonHttpUtils.getSessionId(requestContext, stage, ChecklistenServerApp.CLIENT_COOKIE_PREFIX);
+
+			LOG.debug("sessionId={}", sessionId);
 
 			if (sessionId != null) {
 
@@ -71,12 +81,27 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 				ChecklistenSecurityContext securityContext = new ChecklistenSecurityContext(refrehedSession);
 				requestContext.setSecurityContext(securityContext);
 
+				LOG.debug("UserSession in SecurityContext gesetzt.");
+
 			} else {
 
 				throw new AuthException("Keine Berechtigung");
 			}
 		}
 
+	}
+
+	private void logCookies(final ContainerRequestContext requestContext) {
+
+		final Map<String, Cookie> cookies = requestContext.getCookies();
+
+		System.out.println("==== Start read cookies ====");
+		cookies.keySet().stream().forEach(key -> {
+
+			Cookie cookie = cookies.get(key);
+			System.out.println("[k=" + key + ", value=" + cookie.getValue() + "]");
+		});
+		System.out.println("==== End read cookies ====");
 	}
 
 	private boolean needsSession(final String path) {

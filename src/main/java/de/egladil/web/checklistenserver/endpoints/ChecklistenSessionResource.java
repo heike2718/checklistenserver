@@ -24,6 +24,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.checklistenserver.ChecklistenServerApp;
 import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.service.ChecklistenSessionService;
@@ -123,7 +124,8 @@ public class ChecklistenSessionResource {
 	@DELETE
 	@Path("/logout")
 	@PermitAll
-	public Response logout(@CookieParam(value = "sessionid") final String sessionId) {
+	public Response logout(@CookieParam(
+		value = ChecklistenServerApp.CLIENT_COOKIE_PREFIX + CommonHttpUtils.NAME_SESSIONID_COOKIE) final String sessionId) {
 
 		if (sessionId != null) {
 
@@ -131,7 +133,7 @@ public class ChecklistenSessionResource {
 		}
 
 		return Response.ok(ResponsePayload.messageOnly(MessagePayload.info("Sie haben sich erfolreich ausgeloggt")))
-			.cookie(CommonHttpUtils.createSessionInvalidatedCookie()).build();
+			.cookie(CommonHttpUtils.createSessionInvalidatedCookie(ChecklistenServerApp.CLIENT_COOKIE_PREFIX)).build();
 
 	}
 
