@@ -75,7 +75,7 @@ public class ChecklistenSessionResource {
 			return Response.serverError().entity("Fehler beim Authentisieren des Clients").build();
 		}
 
-		String redirectUrl = authAppUrl + "#/signup?accessToken=" + accessToken + "&state=login&nonce=null&redirectUrl="
+		String redirectUrl = authAppUrl + "#/signup?accessToken=" + accessToken + "&state=signup&nonce=null&redirectUrl="
 			+ signupRedirectUrl;
 
 		LOG.debug(redirectUrl);
@@ -113,6 +113,11 @@ public class ChecklistenSessionResource {
 		UserSession userSession = sessionService.createUserSession(jwt);
 
 		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
+
+		if (!STAGE_DEV.equals(stage)) {
+
+			userSession.clearSessionId();
+		}
 
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK"), userSession);
 

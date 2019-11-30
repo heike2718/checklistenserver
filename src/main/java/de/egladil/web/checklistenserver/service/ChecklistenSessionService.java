@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,8 +30,6 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import de.egladil.web.checklistenserver.ChecklistenServerApp;
-import de.egladil.web.checklistenserver.dao.IUserDao;
-import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
@@ -62,9 +59,6 @@ public class ChecklistenSessionService {
 	@Inject
 	JWTService jwtService;
 
-	@Inject
-	IUserDao userDao;
-
 	public UserSession createUserSession(final String jwt) {
 
 		try {
@@ -83,27 +77,16 @@ public class ChecklistenSessionService {
 				roles = StringUtils.join(rolesArr, ",");
 			}
 
-			Optional<Checklistenuser> optUser = userDao.findByUniqueIdentifier(uuid);
+			byte[] sessionIdBase64 = Base64.getEncoder().encode(cryptoService.generateSessionId().getBytes());
+			String sesionId = new String(sessionIdBase64);
 
-			if (optUser.isPresent()) {
+			UserSession userSession = UserSession.create(sesionId, roles, CommonHttpUtils.createUserIdReference());
+			userSession.setExpiresAt(getSessionTimeout());
+			userSession.setUuid(uuid);
 
-				byte[] sessionIdBase64 = Base64.getEncoder().encode(cryptoService.generateSessionId().getBytes());
-				String sesionId = new String(sessionIdBase64);
+			sessions.put(sesionId, userSession);
 
-				UserSession userSession = null;
-
-				userSession = UserSession.create(sesionId, roles, CommonHttpUtils.createUserIdReference());
-				userSession.setExpiresAt(getSessionTimeout());
-				userSession.setUuid(uuid);
-
-				sessions.put(sesionId, userSession);
-
-				return userSession;
-
-			} else {
-
-				throw new AuthException("Du kommst nicht vorbei!");
-			}
+			return userSession;
 		} catch (TokenExpiredException e) {
 
 			LOG.error("JWT expired");

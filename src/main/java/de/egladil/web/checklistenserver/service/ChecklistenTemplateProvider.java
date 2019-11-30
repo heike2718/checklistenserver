@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.egladil.web.checklistenserver.config.EinkaufslisteTemplate;
 import de.egladil.web.checklistenserver.config.PacklisteTemplate;
+import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.ChecklistenItem;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
@@ -36,21 +37,27 @@ public class ChecklistenTemplateProvider {
 	EinkaufslisteTemplate einkaufslisteTemplate;
 
 	@Inject
+	UserDao userDao;
+
+	@Inject
 	PacklisteTemplate packlisteTemplate;
 
 	/**
-	 * Gibt eine Standardvorauswahl für eine bestimmte Checkliste zurück.
+	 * Gibt eine Standardvorauswahl für eine bestimmte Checkliste zurück. Diese Vorauswahl ist mit der Gruppe personalisiert (gruppe
+	 * = präfix). Falls es kein personalisiertes Template gibt, wird ein default zurückgegeben.
 	 *
 	 * @param  typ
-	 *             Checklistentyp
-	 * @return     List
+	 *                Checklistentyp
+	 * @param  gruppe
+	 *                String Name der Gruppe
+	 * @return        ChecklisteDaten
 	 */
-	public ChecklisteDaten getTemplateMitTyp(final Checklistentyp typ) {
+	public ChecklisteDaten getTemplateMitTypFuerGruppe(final Checklistentyp typ, final String gruppe) {
 
 		ChecklisteDaten result = new ChecklisteDaten();
 		result.setTyp(typ);
 		result.setKuerzel(UUID.randomUUID().toString());
-		List<ChecklistenItem> items = readFromFile(typ);
+		List<ChecklistenItem> items = readFromFile(typ, gruppe);
 		result.setItems(items);
 
 		return result;
@@ -78,15 +85,15 @@ public class ChecklistenTemplateProvider {
 		return result;
 	}
 
-	private List<ChecklistenItem> readFromFile(final Checklistentyp typ) {
+	private List<ChecklistenItem> readFromFile(final Checklistentyp typ, final String gruppe) {
 
 		switch (typ) {
 
 		case EINKAUFSLISTE:
-			return mapToChecklistenItems(einkaufslisteTemplate.getEinkaufsliste());
+			return mapToChecklistenItems(einkaufslisteTemplate.getListeTemplate(gruppe));
 
 		case PACKLISTE:
-			return mapToChecklistenItems(packlisteTemplate.getPackliste());
+			return mapToChecklistenItems(packlisteTemplate.getListeTemplate(gruppe));
 
 		default:
 			return new ArrayList<>();

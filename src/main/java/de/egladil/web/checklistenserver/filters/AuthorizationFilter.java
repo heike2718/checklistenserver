@@ -5,7 +5,10 @@
 package de.egladil.web.checklistenserver.filters;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -39,6 +42,8 @@ import de.egladil.web.commons_net.utils.CommonHttpUtils;
 public class AuthorizationFilter implements ContainerRequestFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthorizationFilter.class);
+
+	private static final List<String> AUTHORIZED_PATHS = Arrays.asList(new String[] { "/checklisten", "/templates", "/signup" });
 
 	@ConfigProperty(name = "stage")
 	String stage;
@@ -106,7 +111,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
 	private boolean needsSession(final String path) {
 
-		return path.toLowerCase().startsWith("/checklisten");
+		Optional<String> optPath = AUTHORIZED_PATHS.stream().filter(p -> path.toLowerCase().startsWith(p)).findFirst();
+
+		return optPath.isPresent();
 	}
 
 }

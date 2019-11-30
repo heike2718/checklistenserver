@@ -13,6 +13,7 @@ import de.egladil.web.commons_validation.annotations.Passphrase;
 /**
  * SignUpPayload
  */
+@Deprecated
 public class SignUpPayload {
 
 	@Passphrase

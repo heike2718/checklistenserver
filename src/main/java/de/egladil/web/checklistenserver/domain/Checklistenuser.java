@@ -46,6 +46,11 @@ public class Checklistenuser implements Checklistenentity {
 	@Column(name = "UUID")
 	private String uuid;
 
+	@NotNull
+	@Size(min = 1, max = 36)
+	@Column(name = "GRUPPE")
+	private String gruppe;
+
 	@Version
 	@Column(name = "VERSION")
 	@JsonIgnore
@@ -128,5 +133,15 @@ public class Checklistenuser implements Checklistenentity {
 		builder.append(roles);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public String getGruppe() {
+
+		return gruppe;
+	}
+
+	public void setGruppe(final String gruppe) {
+
+		this.gruppe = gruppe;
 	}
 }
