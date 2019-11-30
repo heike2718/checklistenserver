@@ -1,6 +1,8 @@
 # checklistenserver Release Notes
 
-__Release 6.0.1__: sessionID cookie is now working
+__Release 6.1.0:__ personalized todo lists
+
+__Release 6.0.1:__ sessionID cookie is now working
 
 __Release 6.0.0:__ server side sessions and session cookies in order to protect client access tokens and jwt
 

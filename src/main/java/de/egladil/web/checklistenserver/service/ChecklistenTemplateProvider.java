@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,8 +19,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.config.EinkaufslisteTemplate;
 import de.egladil.web.checklistenserver.config.PacklisteTemplate;
@@ -29,15 +26,12 @@ import de.egladil.web.checklistenserver.dao.impl.UserDao;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.ChecklistenItem;
 import de.egladil.web.checklistenserver.domain.Checklistentyp;
-import de.egladil.web.checklistenserver.domain.Checklistenuser;
 
 /**
  * ChecklistenTemplateProvider
  */
 @ApplicationScoped
 public class ChecklistenTemplateProvider {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateProvider.class);
 
 	@Inject
 	EinkaufslisteTemplate einkaufslisteTemplate;
@@ -53,24 +47,17 @@ public class ChecklistenTemplateProvider {
 	 * = präfix). Falls es kein personalisiertes Template gibt, wird ein default zurückgegeben.
 	 *
 	 * @param  typ
-	 *                  Checklistentyp
-	 * @param  userUUID
-	 *                  String
-	 * @return          ChecklisteDaten
+	 *                Checklistentyp
+	 * @param  gruppe
+	 *                String Name der Gruppe
+	 * @return        ChecklisteDaten
 	 */
-	public ChecklisteDaten getTemplateMitTypFuerUser(final Checklistentyp typ, final String userUUID) {
-
-		Optional<Checklistenuser> optUser = userDao.findByUniqueIdentifier(userUUID);
-
-		if (!optUser.isPresent()) {
-
-			LOG.error("Kein User mit uuid={} gefunden: AuthException", userUUID);
-		}
+	public ChecklisteDaten getTemplateMitTypFuerGruppe(final Checklistentyp typ, final String gruppe) {
 
 		ChecklisteDaten result = new ChecklisteDaten();
 		result.setTyp(typ);
 		result.setKuerzel(UUID.randomUUID().toString());
-		List<ChecklistenItem> items = readFromFile(typ, optUser.get().getGruppe());
+		List<ChecklistenItem> items = readFromFile(typ, gruppe);
 		result.setItems(items);
 
 		return result;

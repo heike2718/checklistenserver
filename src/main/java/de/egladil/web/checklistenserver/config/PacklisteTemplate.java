@@ -15,7 +15,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class PacklisteTemplate extends AbstractListeTemplate {
 
-	private static final String SUFFIX_FILENAME = "packliste.txt";
+	private static final String SUFFIX_FILENAME = "_packliste.txt";
 
 	@ConfigProperty(name = "dir.packlisten")
 	String pathDirPacklisten;
