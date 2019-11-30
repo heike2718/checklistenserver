@@ -30,8 +30,8 @@ mit dem Payload OAuthClientCredentials auf:
 
 ## Ablauf SignUp
 
-* POST-Request an signup/secret mit SignUpPayload: Verifiziert, ob der Person gestattet werden kann, ein Benutzerkonto anzulegen
-* Falls erfolgreich: redirect zum AuthProvider mit url https://auth-provider-domain/signup?accessToken=ddas-access-token&state=signup
+* SignUp mit secret wurde nach 6.0.1 entfernt, da jetzt jede, der möchte ein Checklistenkonto anlegen könen soll.
+* redirect zum AuthProvider mit url https://auth-provider-domain/signup?accessToken=ddas-access-token&state=signup
 * Nach Antwort vom AuthProvider: POST-Request an signup/user mit dem JWT als Authorizaton-Header. Eintrag in Tabelle USERS (AuthenticationFilter holt die UUID heraus und setzt sie in den ContainerRequestContext als property 'USERID')
 * Auth-Provider redirected zurük. Nach Antwort: Dialog mit Hinweis auf Postfach und Aktivierungslink öffnen.
 

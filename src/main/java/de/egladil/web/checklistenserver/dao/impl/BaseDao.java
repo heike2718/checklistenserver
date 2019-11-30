@@ -17,6 +17,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public abstract class BaseDao implements IBaseDao {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(value = TxType.REQUIRED)
 	public <T extends Checklistenentity> T save(final T entity) {
 
 		@SuppressWarnings("unchecked")
@@ -130,7 +131,7 @@ public abstract class BaseDao implements IBaseDao {
 	}
 
 	@Override
-	public Integer getAnzahl() {
+	public int getAnzahl() {
 
 		final String stmt = getCountStatement();
 
@@ -165,7 +166,7 @@ public abstract class BaseDao implements IBaseDao {
 		return em;
 	}
 
-	private BigInteger getCount(final Query query) {
+	protected BigInteger getCount(final Query query) {
 
 		final Object res = query.getSingleResult();
 

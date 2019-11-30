@@ -22,7 +22,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
@@ -54,7 +53,7 @@ public class ChecklistenResource {
 	ChecklistenService checklistenService;
 
 	@Inject
-	ChecklistenSessionService sessionService;
+	ChecklistenSessionService _sessionService;
 
 	@Context
 	UriInfo uriInfo;
@@ -72,9 +71,7 @@ public class ChecklistenResource {
 
 		LOG.debug("Alles gut: session vorhanden");
 
-		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten();
-
-		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
+		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten(userSession.getUuid());
 
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK: Anzahl Checklisten: " + checklisten.size()),
 			checklisten);
@@ -82,7 +79,7 @@ public class ChecklistenResource {
 		LOG.info("{}: checklisten geladen", getStringAbbreviated(userSession.getUuid()));
 
 		// TODO: neues XSRF-Token?
-		return Response.ok().entity(payload).cookie(sessionCookie).build();
+		return Response.ok().entity(payload).build();
 		// return Response.status(500).entity(ResponsePayload.messageOnly(MessagePayload.error("Das ist ein
 		// Testfehler"))).build();
 	}
@@ -94,10 +91,8 @@ public class ChecklistenResource {
 		value = "kuerzel") final String kuerzel) {
 
 		UserSession userSession = getUserSession();
-		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
-
-		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel);
-		return Response.ok(checkliste).cookie(sessionCookie).build();
+		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel, userSession.getUuid());
+		return Response.ok(checkliste).build();
 	}
 
 	@POST
@@ -105,7 +100,7 @@ public class ChecklistenResource {
 	public Response checklisteAnlegen(final ChecklisteDaten daten) {
 
 		UserSession userSession = getUserSession();
-		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName());
+		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName(), userSession.getUuid());
 
 		LOG.info("{}: checkliste angelegt: {}", getStringAbbreviated(userSession.getUuid()),
 			getStringAbbreviated(result.getKuerzel()));
@@ -115,11 +110,9 @@ public class ChecklistenResource {
 			.path(ChecklistenResource.class, "getCheckliste")
 			.build(result.getKuerzel());
 
-		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("erfolgreich angelegt"), result);
 		return Response.created(uri)
 			.entity(payload)
-			.cookie(sessionCookie)
 			.build();
 	}
 
@@ -131,8 +124,6 @@ public class ChecklistenResource {
 
 		UserSession userSession = getUserSession();
 
-		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
-
 		if (!kuerzel.equals(daten.getKuerzel())) {
 
 			LOG.error("{}: Konflikt: kuerzel= '{}', daten.kuerzel = '{}'",
@@ -140,15 +131,13 @@ public class ChecklistenResource {
 			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Precondition Failed"));
 			return Response.status(412)
 				.entity(payload)
-				.cookie(sessionCookie)
 				.build();
 		}
 
-		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel);
+		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel, userSession.getUuid());
 		LOG.info("{}: checkliste {} geändert", getStringAbbreviated(userSession.getUuid()),
 			getStringAbbreviated(kuerzel));
-		return Response.ok().entity(payload).cookie(sessionCookie).build();
-
+		return Response.ok().entity(payload).build();
 	}
 
 	@DELETE
@@ -159,15 +148,13 @@ public class ChecklistenResource {
 
 		UserSession userSession = getUserSession();
 
-		checklistenService.checklisteLoeschen(kuerzel);
+		checklistenService.checklisteLoeschen(kuerzel, userSession.getUuid());
 
-		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("erfolgreich gelöscht"));
 
 		LOG.info("{} - {}: checkliste {} gelöscht", getStringAbbreviated(userSession.getUuid()), getStringAbbreviated(kuerzel));
 		return Response.ok()
 			.entity(payload)
-			.cookie(sessionCookie)
 			.build();
 	}
 

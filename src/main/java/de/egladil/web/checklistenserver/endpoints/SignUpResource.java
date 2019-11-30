@@ -19,11 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import org.apache.commons.lang3.StringUtils;
-
-import de.egladil.web.checklistenserver.payload.SignUpPayload;
 import de.egladil.web.checklistenserver.service.SignUpService;
-import de.egladil.web.commons_validation.ValidationDelegate;
 import de.egladil.web.commons_validation.payload.HateoasPayload;
 import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.ResponsePayload;
@@ -42,62 +38,6 @@ public class SignUpResource {
 
 	@Context
 	SecurityContext securityContext;
-
-	private ValidationDelegate validationDelegate = new ValidationDelegate();
-
-	/**
-	 * Prüft, ob derjenige, der diesen Endpoint aufruft, das Geheimnis kennt. Dann wird er auf den AuthProvider
-	 * redirected, um ein Konto anzulegen.
-	 *
-	 * @param  signUpPayload
-	 *                       String
-	 * @return               Response
-	 */
-	@POST
-	@Path("/secret")
-	public Response checkMaySignUp(SignUpPayload signUpPayload) {
-
-		SignUpPayload trimmedPayload = trimIfNotEmpty(signUpPayload);
-
-		try {
-
-			validationDelegate.check(trimmedPayload, SignUpPayload.class);
-
-			signUpService.verifySecret(trimmedPayload);
-
-			ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.error("Tritt ein, Fremder."));
-			return Response.status(200).entity(payload).build();
-		} finally {
-
-			signUpPayload.wipe();
-			signUpPayload = null;
-
-			if (trimmedPayload != null) {
-
-				trimmedPayload.wipe();
-				trimmedPayload = null;
-			}
-		}
-
-	}
-
-	private SignUpPayload trimIfNotEmpty(final SignUpPayload payload) {
-
-		if (payload == null) {
-
-			return null;
-		}
-		String secret = payload.getSecret();
-
-		if (secret != null && StringUtils.isEmpty(secret)) {
-
-			secret = secret.trim();
-		}
-		SignUpPayload result = new SignUpPayload(secret, payload.getKleber());
-		secret = null;
-		payload.wipe();
-		return result;
-	}
 
 	/**
 	 * Legt einen Checklistenuser mit der UUID an.

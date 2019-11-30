@@ -66,6 +66,11 @@ public class Checkliste implements Checklistenentity {
 	private Checklistentyp typ;
 
 	@NotNull
+	@Size(min = 1, max = 36)
+	@Column(name = "GRUPPE")
+	private String gruppe;
+
+	@NotNull
 	@Column(name = "DATEN")
 	private String daten;
 
@@ -211,5 +216,15 @@ public class Checkliste implements Checklistenentity {
 		builder.append(typ);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public String getGruppe() {
+
+		return gruppe;
+	}
+
+	public void setGruppe(final String gruppe) {
+
+		this.gruppe = gruppe;
 	}
 }

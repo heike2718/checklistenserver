@@ -5,15 +5,21 @@
 
 package de.egladil.web.checklistenserver.dao.impl;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.dao.IChecklisteDao;
 import de.egladil.web.checklistenserver.domain.Checkliste;
 import de.egladil.web.checklistenserver.domain.Checklistenentity;
+import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 
 /**
  * ChecklisteDao
@@ -66,5 +72,55 @@ public class ChecklisteDao extends BaseDao implements IChecklisteDao {
 	protected String getCountStatement() {
 
 		return "select count(*) from CHECKLISTEN";
+	}
+
+	@Override
+	public <T extends Checklistenentity> List<T> load() {
+
+		final String msg = "Methode load() ohne Argument ist für Checklisten verboten. Verwende Methode load(gruppe)";
+		LOG.error(msg);
+		throw new ChecklistenRuntimeException(msg);
+	}
+
+	@Override
+	public int getAnzahl() {
+
+		final String msg = "Methode getAnzahl() ohne Argument ist für Checklisten verboten. Verwende Methode getAnzahl(gruppe)";
+		LOG.error(msg);
+		throw new ChecklistenRuntimeException(msg);
+	}
+
+	@Override
+	public List<Checkliste> load(final String gruppe) {
+
+		if (StringUtils.isBlank(gruppe)) {
+
+			throw new IllegalArgumentException("gruppe blank");
+		}
+
+		String stmt = "select c from Checkliste c where gruppe = :gruppe";
+		TypedQuery<Checkliste> query = getEm().createQuery(stmt, Checkliste.class);
+		query.setParameter("gruppe", gruppe);
+
+		List<Checkliste> trefferliste = query.getResultList();
+
+		LOG.debug("Checkliste - Anzahl Treffer: {}", trefferliste.size());
+
+		return trefferliste;
+	}
+
+	@Override
+	public int getAnzahl(final String gruppe) {
+
+		if (StringUtils.isBlank(gruppe)) {
+
+			throw new IllegalArgumentException("gruppe blank");
+		}
+
+		String stmt = "select count(*) from CHECKLISTEN where GRUPPE = :gruppe";
+		final Query query = getEm().createNativeQuery(stmt);
+		query.setParameter("gruppe", gruppe);
+
+		return super.getCount(query).intValue();
 	}
 }
