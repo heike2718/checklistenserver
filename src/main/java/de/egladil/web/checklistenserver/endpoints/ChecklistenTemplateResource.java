@@ -56,7 +56,7 @@ public class ChecklistenTemplateResource {
 			UserSession userSession = getUserSession();
 
 			Checklistentyp typ = Checklistentyp.valueOf(typValue.trim().toUpperCase());
-			ChecklisteDaten template = templateProvider.getTemplateMitTypFuerUser(typ, userSession.getUuid());
+			ChecklisteDaten template = templateProvider.getTemplateMitTypFuerGruppe(typ, userSession.getUuid());
 
 			ResponsePayload payload = new ResponsePayload(MessagePayload.info("Bitteschön"), template);
 			return Response.ok().entity(payload).build();
