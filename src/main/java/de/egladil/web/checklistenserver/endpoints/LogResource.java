@@ -29,7 +29,7 @@ import de.egladil.web.commons_validation.payload.TSLogLevel;
 @Produces(MediaType.APPLICATION_JSON)
 public class LogResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LogResource.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(LogResource.class);
 
 	@ConfigProperty(name = "auth.client-id")
 	String clientId;

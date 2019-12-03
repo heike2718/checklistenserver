@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class DevelopmentResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentResource.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(DevelopmentResource.class);
 
 	private static final String DEFAULT_DATE_TIME_FORMAT = "dd.MM.yyyy kk:mm:ss";
 

@@ -34,7 +34,7 @@ import de.egladil.web.commons_net.utils.CommonHttpUtils;
 @Priority(900)
 public class OriginReferrerFilter implements ContainerRequestFilter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OriginReferrerFilter.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(OriginReferrerFilter.class);
 
 	private static final List<String> NO_CONTENT_PATHS = Arrays.asList(new String[] { "/favicon.ico" });
 
