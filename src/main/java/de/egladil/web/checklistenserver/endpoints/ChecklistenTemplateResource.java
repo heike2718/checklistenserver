@@ -39,7 +39,7 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 @Produces(MediaType.APPLICATION_JSON)
 public class ChecklistenTemplateResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateResource.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenTemplateResource.class);
 
 	@Context
 	SecurityContext securityContext;

@@ -47,7 +47,7 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 @Produces(MediaType.APPLICATION_JSON)
 public class ChecklistenResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenResource.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenResource.class);
 
 	@Inject
 	ChecklistenService checklistenService;
