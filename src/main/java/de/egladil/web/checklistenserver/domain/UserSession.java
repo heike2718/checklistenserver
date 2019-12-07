@@ -27,9 +27,10 @@ public class UserSession implements Principal, Serializable {
 
 	private long expiresAt;
 
-	public static UserSession create(final String sessionId, final String roles, final String idReference) {
+	public static UserSession create(final String uuid, final String sessionId, final String roles, final String idReference) {
 
 		UserSession result = new UserSession();
+		result.uuid = uuid;
 		result.sessionId = sessionId;
 		result.roles = roles;
 		result.idReference = idReference;
@@ -44,11 +45,6 @@ public class UserSession implements Principal, Serializable {
 	public String getUuid() {
 
 		return uuid;
-	}
-
-	public void setUuid(final String uuid) {
-
-		this.uuid = uuid;
 	}
 
 	public String getIdReference() {
