@@ -18,7 +18,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 import de.egladil.web.checklistenserver.error.ClientAuthException;
 import de.egladil.web.checklistenserver.error.LogmessagePrefixes;
@@ -90,7 +89,7 @@ public class ClientAccessTokenService {
 		}
 	}
 
-	private void evaluateResponse(final String nonce, final ResponsePayload responsePayload) throws AuthException {
+	private void evaluateResponse(final String nonce, final ResponsePayload responsePayload) throws ClientAuthException {
 
 		MessagePayload messagePayload = responsePayload.getMessage();
 
