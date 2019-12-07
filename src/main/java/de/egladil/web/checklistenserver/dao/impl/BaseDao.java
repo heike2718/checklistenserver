@@ -32,7 +32,7 @@ import de.egladil.web.commons_validation.ValidationDelegate;
  */
 public abstract class BaseDao implements IBaseDao {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BaseDao.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(BaseDao.class);
 
 	private ValidationDelegate validationDelegate = new ValidationDelegate();
 
