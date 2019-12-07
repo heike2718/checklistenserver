@@ -12,13 +12,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.egladil.web.commons_validation.LogDelegate;
 import de.egladil.web.commons_validation.payload.LogEntry;
-import de.egladil.web.commons_validation.payload.TSLogLevel;
 
 /**
  * LogResource
@@ -35,35 +34,9 @@ public class LogResource {
 	String clientId;
 
 	@POST
-	public Response logError(final LogEntry logEntry) {
+	public Response log(final LogEntry logEntry) {
 
-		TSLogLevel level = logEntry.getLevel();
-
-		String clientIdAbbr = StringUtils.abbreviate(clientId, 11);
-
-		switch (level) {
-
-		case All:
-		case Debug:
-			LOG.debug("BrowserLog: {} - Client-ID={}", logEntry, clientIdAbbr);
-			break;
-
-		case Info:
-			LOG.info("BrowserLog: {} - Client-ID={}", logEntry, clientIdAbbr);
-			break;
-
-		case Warn:
-			LOG.warn("BrowserLog: {} - Client-ID={}", logEntry, clientIdAbbr);
-			break;
-
-		case Error:
-		case Fatal:
-			LOG.error("BrowserLog: {} - Client-ID={}", logEntry, clientIdAbbr);
-			break;
-
-		default:
-			break;
-		}
+		new LogDelegate().log(logEntry, LOG, clientId);
 
 		return Response.ok().build();
 

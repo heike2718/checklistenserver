@@ -38,7 +38,7 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 @RequestScoped
 public class ChecklistenService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenService.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenService.class);
 
 	@Inject
 	ChecklisteDao checklisteDao;

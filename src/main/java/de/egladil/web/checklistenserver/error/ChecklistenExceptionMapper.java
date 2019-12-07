@@ -33,7 +33,7 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 @Provider
 public class ChecklistenExceptionMapper implements ExceptionMapper<Exception> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenExceptionMapper.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenExceptionMapper.class);
 
 	@Context
 	SecurityContext securityContext;
