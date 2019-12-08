@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.service;
 
@@ -22,18 +22,22 @@ import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
  */
 public class ChecklisteDatenMapper {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ChecklisteDatenMapper.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(ChecklisteDatenMapper.class);
 
 	/**
-	 * @param checkliste
-	 * @return ChecklisteDaten oder null
+	 * @param  checkliste
+	 * @return            ChecklisteDaten oder null
 	 */
 	public static ChecklisteDaten deserialize(final Checkliste checkliste, final String... errmContext) {
+
 		ObjectMapper objectMapper = new ObjectMapper();
+
 		try {
+
 			ChecklisteDaten daten = objectMapper.readValue(checkliste.getDaten().getBytes(), ChecklisteDaten.class);
 			return daten;
 		} catch (IOException e) {
+
 			String context = errmContext != null ? errmContext[0] : "";
 			LOG.error(context + " Checkliste mit kuerzel '{}' hat korrupte Daten", checkliste.getKuerzel());
 			return null;
@@ -41,16 +45,21 @@ public class ChecklisteDatenMapper {
 	}
 
 	/**
-	 *
-	 * @param daten ChecklisteDaten
-	 * @param errmContext String
-	 * @return String
+	 * @param  daten
+	 *                     ChecklisteDaten
+	 * @param  errmContext
+	 *                     String
+	 * @return             String
 	 */
 	public static String serialize(final ChecklisteDaten daten, final String errmContext) {
+
 		ObjectMapper objectMapper = new ObjectMapper();
+
 		try {
+
 			return objectMapper.writeValueAsString(daten);
 		} catch (JsonProcessingException e) {
+
 			String msg = errmContext + " (Fehler beim JSONisieren)";
 			LOG.error("{}: {}", e.getMessage(), e);
 			throw new ChecklistenRuntimeException(msg);

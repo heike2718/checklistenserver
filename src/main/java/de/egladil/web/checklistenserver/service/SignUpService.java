@@ -20,7 +20,7 @@ import de.egladil.web.commons_validation.payload.HateoasPayload;
 @RequestScoped
 public class SignUpService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SignUpService.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(SignUpService.class);
 
 	@Inject
 	IUserDao userDao;
