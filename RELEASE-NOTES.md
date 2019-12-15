@@ -2,6 +2,10 @@
 
 __Release 6.2.0__
 
+More secure response headers
+
+__Release 6.2.0__
+
 [remove ReplaceAccessTokenRestClient](https://github.com/heike2718/checklistenserver/issues/11)
 
 [delete @LoginConfig(authMethod = "MP-JWT") from ChecklistenServerApp](https://github.com/heike2718/checklistenserver/issues/10)
