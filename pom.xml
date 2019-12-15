@@ -5,7 +5,7 @@
 
 	<groupId>de.egladil.web</groupId>
 	<artifactId>checklistenserver</artifactId>
-	<version>6.2.0</version>
+	<version>6.2.1</version>
 	<packaging>jar</packaging>
 
 	<name>checklistenserver</name>
