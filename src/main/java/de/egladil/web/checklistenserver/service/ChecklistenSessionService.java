@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -39,6 +40,7 @@ import de.egladil.web.commons_crypto.JWTService;
 import de.egladil.web.commons_net.exception.SessionExpiredException;
 import de.egladil.web.commons_net.time.CommonTimeUtils;
 import de.egladil.web.commons_net.utils.CommonHttpUtils;
+import de.egladil.web.commons_validation.payload.HateoasPayload;
 
 /**
  * ChecklistenSessionService
@@ -59,6 +61,9 @@ public class ChecklistenSessionService {
 	@Inject
 	JWTService jwtService;
 
+	@Inject
+	SignUpService signupService;
+
 	public UserSession createUserSession(final String jwt) {
 
 		try {
@@ -66,6 +71,14 @@ public class ChecklistenSessionService {
 			DecodedJWT decodedJWT = jwtService.verify(jwt, getPublicKey());
 
 			String uuid = decodedJWT.getSubject();
+
+			Optional<HateoasPayload> opt = signupService.findUser(uuid);
+
+			if (opt.isEmpty()) {
+
+				signupService.signUpUser(uuid);
+				LOG.info("Neuen Checklistenuser mit UUID={} angelegt", StringUtils.abbreviate(uuid, 11));
+			}
 
 			Claim groupsClaim = decodedJWT.getClaim(Claims.groups.name());
 			String[] rolesArr = groupsClaim.asArray(String.class);
