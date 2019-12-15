@@ -17,4 +17,6 @@ public class ChecklistenServerApp extends Application {
 
 	public static final String CLIENT_COOKIE_PREFIX = "CHK";
 
+	public static final String STAGE_DEV = "dev";
+
 }

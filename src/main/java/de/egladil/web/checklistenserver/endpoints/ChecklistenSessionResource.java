@@ -43,8 +43,6 @@ public class ChecklistenSessionResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenSessionResource.class);
 
-	private static final String STAGE_DEV = "dev";
-
 	@ConfigProperty(name = "auth-app.url")
 	String authAppUrl;
 
@@ -114,7 +112,7 @@ public class ChecklistenSessionResource {
 
 		NewCookie sessionCookie = sessionService.createSessionCookie(userSession.getSessionId());
 
-		if (!STAGE_DEV.equals(stage)) {
+		if (!ChecklistenServerApp.STAGE_DEV.equals(stage)) {
 
 			userSession.clearSessionId();
 		}
@@ -147,7 +145,7 @@ public class ChecklistenSessionResource {
 	@PermitAll
 	public Response logoutDev(@PathParam(value = "sessionid") final String sessionId) {
 
-		if (!STAGE_DEV.equals(stage)) {
+		if (!ChecklistenServerApp.STAGE_DEV.equals(stage)) {
 
 			throw new AuthException("Diese URL darf nur im DEV-Mode aufgerufen werden");
 		}

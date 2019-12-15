@@ -14,6 +14,10 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import de.egladil.web.checklistenserver.ChecklistenServerApp;
+
 /**
  * SecureHeadersFilter packt die SecureHeaders in den Response.
  */
@@ -22,6 +26,9 @@ import javax.ws.rs.ext.Provider;
 public class SecureHeadersFilter implements ContainerResponseFilter {
 
 	private static final String CONTENT_SECURITY_POLICY = "Content-Security-Policy";
+
+	@ConfigProperty(name = "stage")
+	String stage;
 
 	@Override
 	public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
@@ -86,6 +93,22 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 		if (headers.get(CONTENT_SECURITY_POLICY) == null) {
 
 			responseContext.getHeaders().add(CONTENT_SECURITY_POLICY, "default-src 'self'; ");
+		}
+
+		if (!ChecklistenServerApp.STAGE_DEV.equals(stage) && headers.get("Strict-Transport-Security") == null) {
+
+			headers.add("Strict-Transport-Security", "max-age=63072000; includeSubdomains");
+
+		}
+
+		if (headers.get("X-XSS-Protection") == null) {
+
+			headers.add("X-XSS-Protection", "1; mode=block");
+		}
+
+		if (headers.get("X-Frame-Options") == null) {
+
+			headers.add("X-Frame-Options", "deny");
 		}
 	}
 }
