@@ -1,6 +1,12 @@
 # checklistenserver Release Notes
 
-__Release 6.2.0__
+__Release 6.2.2__
+
+Upgrade to quarkus 1.1.0.CR1
+
+[Session für nicht bekannten User wird erzeugt](https://github.com/heike2718/checklistenserver/issues/19)
+
+__Release 6.2.1__
 
 More secure response headers
 
