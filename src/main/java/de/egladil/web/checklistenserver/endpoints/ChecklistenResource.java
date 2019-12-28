@@ -8,6 +8,7 @@ package de.egladil.web.checklistenserver.endpoints;
 import java.net.URI;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import de.egladil.web.checklistenserver.domain.ChecklisteDaten;
 import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
+import de.egladil.web.checklistenserver.sanitize.ChecklisteDatenSanitizer;
 import de.egladil.web.checklistenserver.service.ChecklistenService;
 import de.egladil.web.checklistenserver.service.ChecklistenSessionService;
 import de.egladil.web.commons_validation.ValidationDelegate;
@@ -64,6 +66,8 @@ public class ChecklistenResource {
 
 	private final ValidationDelegate validationDelegate = new ValidationDelegate();
 
+	private final ChecklisteDatenSanitizer checklisteDatenSanitizer = new ChecklisteDatenSanitizer();
+
 	@GET
 	@PermitAll
 	public Response getChecklisten() {
@@ -76,8 +80,11 @@ public class ChecklistenResource {
 
 		List<ChecklisteDaten> checklisten = checklistenService.loadChecklisten(userSession.getUuid());
 
-		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK: Anzahl Checklisten: " + checklisten.size()),
-			checklisten);
+		List<ChecklisteDaten> sanitized = checklisten.stream().map(daten -> checklisteDatenSanitizer.apply(daten))
+			.collect(Collectors.toList());
+
+		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK: Anzahl Checklisten: " + sanitized.size()),
+			sanitized);
 
 		LOG.info("{}: checklisten geladen", getStringAbbreviated(userSession.getUuid()));
 
@@ -93,7 +100,10 @@ public class ChecklistenResource {
 
 		UserSession userSession = getUserSession();
 		ChecklisteDaten checkliste = checklistenService.getCheckliste(kuerzel, userSession.getUuid());
-		return Response.ok(checkliste).build();
+
+		ChecklisteDaten sanitized = checklisteDatenSanitizer.apply(checkliste);
+
+		return Response.ok(sanitized).build();
 	}
 
 	@POST
@@ -104,7 +114,9 @@ public class ChecklistenResource {
 
 		UserSession userSession = getUserSession();
 
-		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName(), userSession.getUuid());
+		ChecklisteDaten result = checklistenService.createCheckliste(daten.getTyp(), daten.getName(), userSession.getUuid());
+
+		result = checklisteDatenSanitizer.apply(result);
 
 		LOG.info("{}: checkliste angelegt: {}", getStringAbbreviated(userSession.getUuid()),
 			getStringAbbreviated(result.getKuerzel()));
@@ -140,7 +152,7 @@ public class ChecklistenResource {
 
 		this.validationDelegate.check(daten, ChecklisteDaten.class);
 
-		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel, userSession.getUuid());
+		ResponsePayload payload = checklistenService.changeAndSanitizeCheckliste(daten, kuerzel, userSession.getUuid());
 		LOG.info("{}: checkliste {} geändert", getStringAbbreviated(userSession.getUuid()),
 			getStringAbbreviated(kuerzel));
 		return Response.ok(payload).build();
@@ -154,7 +166,7 @@ public class ChecklistenResource {
 
 		UserSession userSession = getUserSession();
 
-		checklistenService.checklisteLoeschen(kuerzel, userSession.getUuid());
+		checklistenService.deleteCheckliste(kuerzel, userSession.getUuid());
 
 		ResponsePayload payload = ResponsePayload.messageOnly(MessagePayload.info("erfolgreich gelöscht"));
 

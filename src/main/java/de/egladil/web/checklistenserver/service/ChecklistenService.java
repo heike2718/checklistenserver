@@ -29,6 +29,7 @@ import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 import de.egladil.web.checklistenserver.error.LogmessagePrefixes;
+import de.egladil.web.checklistenserver.sanitize.ChecklisteDatenSanitizer;
 import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.ResponsePayload;
 
@@ -109,6 +110,7 @@ public class ChecklistenService {
 			// die Message wurde bereits gelogged
 			throw new ChecklistenRuntimeException("");
 		}
+
 		return daten;
 	}
 
@@ -123,7 +125,7 @@ public class ChecklistenService {
 	 *                  String darf nicht blank sein.
 	 * @return
 	 */
-	public ChecklisteDaten checklisteAnlegen(final Checklistentyp typ, final String name, final String userUUID) {
+	public ChecklisteDaten createCheckliste(final Checklistentyp typ, final String name, final String userUUID) {
 
 		Optional<Checklistenuser> optUser = userDao.findByUniqueIdentifier(userUUID);
 
@@ -165,7 +167,7 @@ public class ChecklistenService {
 	 * @param  daten
 	 * @return       ChecklisteDaten
 	 */
-	public ResponsePayload checklisteAendern(final ChecklisteDaten daten, final String kuerzel, final String userUUID) throws AuthException {
+	public ResponsePayload changeAndSanitizeCheckliste(ChecklisteDaten daten, final String kuerzel, final String userUUID) throws AuthException {
 
 		if (daten == null) {
 
@@ -206,6 +208,9 @@ public class ChecklistenService {
 			// persist erhöht Version um 1, das muss auch in die Daten.
 			daten.setVersion(checkliste.getVersion() + 1);
 			checkliste.setName(daten.getName());
+
+			daten = new ChecklisteDatenSanitizer().apply(daten);
+
 			checkliste.setDaten(ChecklisteDatenMapper.serialize(daten, "Ändern gescheitert"));
 			checklisteDao.save(checkliste);
 			return new ResponsePayload(MessagePayload.info("erfolgreich geändert"), daten);
@@ -237,7 +242,7 @@ public class ChecklistenService {
 	 *                String
 	 */
 	@Transactional
-	public void checklisteLoeschen(final String kuerzel, final String userUUID) {
+	public void deleteCheckliste(final String kuerzel, final String userUUID) {
 
 		Optional<Checklistenuser> optUser = userDao.findByUniqueIdentifier(userUUID);
 

@@ -1,5 +1,11 @@
 # checklistenserver Release Notes
 
+__Release 6.3.0__
+
+[API zum Pflegen der Vorschlagslisten](https://github.com/heike2718/checklistenserver/issues/14)
+
+Output-Validation: sanitize names for html
+
 __Release 6.2.2__
 
 Upgrade to quarkus 1.1.0.CR1
