@@ -27,7 +27,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +41,8 @@ import de.egladil.web.checklistenserver.domain.Checklistentyp;
 import de.egladil.web.checklistenserver.domain.Checklistenuser;
 import de.egladil.web.checklistenserver.error.ChecklistenRuntimeException;
 import de.egladil.web.checklistenserver.error.ConcurrentUpdateException;
+import de.egladil.web.checklistenserver.sanitize.ChecklisteDatenSanitizer;
+import de.egladil.web.checklistenserver.sanitize.ChecklisteTemplateSanitizer;
 import de.egladil.web.commons_net.time.CommonTimeUtils;
 
 /**
@@ -80,7 +81,7 @@ public class ChecklistenTemplateProvider {
 
 			ChecklisteTemplate template = ChecklisteTemplate.create(typ);
 
-			items.forEach(item -> template.addItem(ChecklisteTemplateItem.create(item.getName(), typ)));
+			items.stream().forEach(item -> template.addItem(ChecklisteTemplateItem.create(item.getName(), typ)));
 
 			template.sortItems();
 
@@ -109,9 +110,9 @@ public class ChecklistenTemplateProvider {
 			throw new ChecklistenRuntimeException("An dieser Stelle müsste ein User mit uuid=" + userUuid + " vorhanden sein");
 		}
 
-		ChecklisteTemplate result = ChecklisteTemplate.create(typ);
+		final ChecklisteTemplate result = ChecklisteTemplate.create(typ);
 		List<ChecklistenItem> items = readFromFile(typ, optUser.get().getGruppe());
-		items.forEach(item -> result.addItem(ChecklisteTemplateItem.create(item.getName(), typ)));
+		items.stream().forEach(item -> result.addItem(ChecklisteTemplateItem.create(item.getName(), typ)));
 		result.setReadTime(System.currentTimeMillis());
 
 		result.sortItems();
@@ -131,6 +132,9 @@ public class ChecklistenTemplateProvider {
 	public ChecklisteDaten getChecklisteMitTypFuerGruppe(final Checklistentyp typ, final String gruppe) {
 
 		ChecklisteDaten result = new ChecklisteDaten();
+
+		result = new ChecklisteDatenSanitizer().apply(result);
+
 		result.setTyp(typ);
 		result.setKuerzel(UUID.randomUUID().toString());
 		List<ChecklistenItem> items = readFromFile(typ, gruppe);
@@ -170,6 +174,8 @@ public class ChecklistenTemplateProvider {
 		try {
 
 			ChecklisteTemplate persisted = this.writeToFile(template.getTyp(), optUser.get(), template.getItems());
+
+			persisted = new ChecklisteTemplateSanitizer().apply(persisted);
 			return persisted;
 
 		} catch (IOException e) {
@@ -190,7 +196,6 @@ public class ChecklistenTemplateProvider {
 	List<ChecklistenItem> mapToChecklistenItems(final String[] namen) {
 
 		Set<String> gefilterteNamen = Stream.of(namen).filter(name -> StringUtils.isNotBlank(name)).map(name -> name.trim())
-			.map(name -> Encode.forHtml(name))
 			.collect(Collectors.toSet());
 
 		ArrayList<String> namenliste = new ArrayList<>(gefilterteNamen);
@@ -199,7 +204,8 @@ public class ChecklistenTemplateProvider {
 		coll.setStrength(Collator.PRIMARY);
 		Collections.sort(namenliste, coll);
 
-		List<ChecklistenItem> result = namenliste.stream().map(ChecklistenItem::fromName).collect(Collectors.toList());
+		List<ChecklistenItem> result = namenliste.stream().map(ChecklistenItem::fromName)
+			.collect(Collectors.toList());
 		return result;
 	}
 
@@ -238,17 +244,22 @@ public class ChecklistenTemplateProvider {
 
 		if (pathTemplateFile != null) {
 
-			long lastModified = java.nio.file.Files.getLastModifiedTime(Paths.get(pathTemplateFile)).toMillis();
-			LocalDateTime timeLastModified = CommonTimeUtils.transformFromDate(new Date(lastModified));
+			File templateFile = new File(pathTemplateFile);
 
-			if (LocalDateTime.now().isBefore(timeLastModified)) {
+			if (templateFile.isFile()) {
 
-				ChecklisteTemplate neuesTemplate = getTemplateMitTypFuerGruppe(typ, user.getUuid());
+				long lastModified = java.nio.file.Files.getLastModifiedTime(Paths.get(pathTemplateFile)).toMillis();
+				LocalDateTime timeLastModified = CommonTimeUtils.transformFromDate(new Date(lastModified));
 
-				ConcurrentUpdateException concurrentUpdateException = new ConcurrentUpdateException(
-					"Listenvorlage " + typ + " wurde kürzlich durch jemand anderen geändert. Anbei die neue Version.");
-				concurrentUpdateException.setActualData(neuesTemplate);
-				throw concurrentUpdateException;
+				if (LocalDateTime.now().isBefore(timeLastModified)) {
+
+					ChecklisteTemplate neuesTemplate = getTemplateMitTypFuerGruppe(typ, user.getUuid());
+
+					ConcurrentUpdateException concurrentUpdateException = new ConcurrentUpdateException(
+						"Listenvorlage " + typ + " wurde kürzlich durch jemand anderen geändert. Anbei die neue Version.");
+					concurrentUpdateException.setActualData(neuesTemplate);
+					throw concurrentUpdateException;
+				}
 			}
 
 			// String pathBackupFile = pathTemplateFile + "-" + System.currentTimeMillis();
@@ -256,7 +267,7 @@ public class ChecklistenTemplateProvider {
 			// java.nio.file.Files.move(Paths.get(pathTemplateFile), Paths.get(pathBackupFile),
 			// StandardCopyOption.REPLACE_EXISTING);
 
-			try (FileWriter fw = new FileWriter(new File(pathTemplateFile))) {
+			try (FileWriter fw = new FileWriter(templateFile)) {
 
 				for (int i = 0; i < items.size(); i++) {
 
