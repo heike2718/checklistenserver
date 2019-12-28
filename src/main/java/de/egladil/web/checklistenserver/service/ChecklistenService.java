@@ -137,7 +137,7 @@ public class ChecklistenService {
 
 			Checklistenuser user = optUser.get();
 
-			ChecklisteDaten daten = checklistenTemplateProvider.getTemplateMitTypFuerGruppe(typ, user.getGruppe());
+			ChecklisteDaten daten = checklistenTemplateProvider.getChecklisteMitTypFuerGruppe(typ, user.getGruppe());
 			daten.setName(name);
 			daten.setGruppe(user.getGruppe());
 
