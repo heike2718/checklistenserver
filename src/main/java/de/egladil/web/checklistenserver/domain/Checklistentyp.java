@@ -1,7 +1,7 @@
-//=====================================================
+// =====================================================
 // Projekt: checklistenserver
 // (c) Heike Winkelvoß
-//=====================================================
+// =====================================================
 
 package de.egladil.web.checklistenserver.domain;
 
@@ -12,5 +12,18 @@ public enum Checklistentyp {
 
 	EINKAUFSLISTE,
 	PACKLISTE,
-	TODOS;
+	TODOS {
+
+		@Override
+		public boolean hasTemplate() {
+
+			return false;
+		}
+
+	};
+
+	public boolean hasTemplate() {
+
+		return true;
+	}
 }
