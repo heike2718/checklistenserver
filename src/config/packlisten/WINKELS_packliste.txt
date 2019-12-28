@@ -16,8 +16,8 @@ Klopapier
 Küchenmesser
 Küchenschwamm
 kurze Hosen
-lange Hosen
 Ladekabel
+lange Hosen
 Laptop
 Lesebrille
 Mülltüten
@@ -26,8 +26,8 @@ Ohrstöpsel
 Olivenöl
 Pullover
 Regenjacke
-Sandalen
 Salz
+Sandalen
 Schal
 Schampoo
 Schlafanzug
@@ -40,8 +40,8 @@ Spiele
 Sportklamotten
 Spüli
 Stranddecke
-Tee + Zubehör
 T-Shirts
+Tee + Zubehör
 Unterwäsche
 Vouchers
 Wäscheklammern
