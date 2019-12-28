@@ -8,23 +8,38 @@ package de.egladil.web.checklistenserver.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import de.egladil.web.commons_validation.annotations.StringLatin;
+import de.egladil.web.commons_validation.annotations.UuidString;
+
 /**
  * ChecklisteDaten
  */
 public class ChecklisteDaten {
 
+	@UuidString
+	@NotBlank
 	private String kuerzel;
 
+	@StringLatin
+	@NotBlank
+	@Size(max = 100)
 	private String name;
 
+	@UuidString
 	private String gruppe;
 
+	@NotNull
 	private Checklistentyp typ;
 
 	private int version;
 
 	private int anzahlErledigt;
 
+	@Size(max = 999)
 	private List<ChecklistenItem> items = new ArrayList<>();
 
 	/**

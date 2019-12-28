@@ -35,6 +35,7 @@ import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.service.ChecklistenService;
 import de.egladil.web.checklistenserver.service.ChecklistenSessionService;
+import de.egladil.web.commons_validation.ValidationDelegate;
 import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.ResponsePayload;
 
@@ -61,6 +62,8 @@ public class ChecklistenResource {
 	@Context
 	SecurityContext securityContext;
 
+	private final ValidationDelegate validationDelegate = new ValidationDelegate();
+
 	@GET
 	@PermitAll
 	public Response getChecklisten() {
@@ -78,10 +81,8 @@ public class ChecklistenResource {
 
 		LOG.info("{}: checklisten geladen", getStringAbbreviated(userSession.getUuid()));
 
-		// TODO: neues XSRF-Token?
 		return Response.ok().entity(payload).build();
-		// return Response.status(500).entity(ResponsePayload.messageOnly(MessagePayload.error("Das ist ein
-		// Testfehler"))).build();
+		// return Response.status(500).entity(ResponsePayload.messageOnly(MessagePayload.error("Das ist ein Testfehler"))).build();
 	}
 
 	@GET
@@ -99,7 +100,10 @@ public class ChecklistenResource {
 	@PermitAll
 	public Response checklisteAnlegen(final ChecklisteDaten daten) {
 
+		this.validationDelegate.check(daten, ChecklisteDaten.class);
+
 		UserSession userSession = getUserSession();
+
 		ChecklisteDaten result = checklistenService.checklisteAnlegen(daten.getTyp(), daten.getName(), userSession.getUuid());
 
 		LOG.info("{}: checkliste angelegt: {}", getStringAbbreviated(userSession.getUuid()),
@@ -134,10 +138,12 @@ public class ChecklistenResource {
 				.build();
 		}
 
+		this.validationDelegate.check(daten, ChecklisteDaten.class);
+
 		ResponsePayload payload = checklistenService.checklisteAendern(daten, kuerzel, userSession.getUuid());
 		LOG.info("{}: checkliste {} geändert", getStringAbbreviated(userSession.getUuid()),
 			getStringAbbreviated(kuerzel));
-		return Response.ok().entity(payload).build();
+		return Response.ok(payload).build();
 	}
 
 	@DELETE
