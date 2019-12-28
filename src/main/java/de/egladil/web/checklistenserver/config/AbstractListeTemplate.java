@@ -43,7 +43,7 @@ public abstract class AbstractListeTemplate {
 			return new String[0];
 		}
 
-		String pathFile = getPathTemplateDir() + File.separator + gruppe + getSuffixFilename();
+		String pathFile = getPathTemplateFile(gruppe);
 
 		Path path = Paths.get(pathFile);
 
@@ -64,6 +64,11 @@ public abstract class AbstractListeTemplate {
 
 			throw new ChecklistenRuntimeException(e.getMessage(), e);
 		}
+	}
+
+	public String getPathTemplateFile(final String gruppe) {
+
+		return getPathTemplateDir() + File.separator + gruppe + getSuffixFilename();
 	}
 
 	protected abstract String getPathTemplateDir();
