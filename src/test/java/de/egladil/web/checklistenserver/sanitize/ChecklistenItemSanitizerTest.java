@@ -5,6 +5,7 @@
 package de.egladil.web.checklistenserver.sanitize;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +34,21 @@ public class ChecklistenItemSanitizerTest {
 		// Assert 2
 		assertEquals("&amp;lt;script&amp;gt;alert(&amp;#34;Hello! I am an alert box!!&amp;#34;)&amp;lt;/script&amp;gt;",
 			nochmals.getName());
+
+	}
+
+	@Test
+	void testLeavesKommentarNull() {
+
+		// Arrange
+		ChecklistenItem item = ChecklistenItem.fromName("Butter");
+
+		// Act
+		ChecklistenItem sanitizedItem = new ChecklistenItemSanitizer().apply(item);
+
+		// Assert
+		assertEquals("Butter", sanitizedItem.getName());
+		assertNull(item.getKommentar());
 
 	}
 
