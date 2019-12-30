@@ -1,5 +1,10 @@
 # checklistenserver Release Notes
 
+__Release 6.3.1__
+
+[Kommentar sanitize erzeugt null](https://github.com/heike2718/checklistenserver/issues/22)
+
+
 __Release 6.3.0__
 
 [API zum Pflegen der Vorschlagslisten](https://github.com/heike2718/checklistenserver/issues/14)
