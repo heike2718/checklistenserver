@@ -18,7 +18,10 @@ public class ChecklistenItemSanitizer implements Function<ChecklistenItem, Check
 	@Override
 	public ChecklistenItem apply(final ChecklistenItem item) {
 
-		item.setKommentar(Encode.forHtml(item.getKommentar()));
+		if (item.getKommentar() != null) {
+
+			item.setKommentar(Encode.forHtml(item.getKommentar()));
+		}
 		item.setName(Encode.forHtml(item.getName()));
 		return item;
 	}

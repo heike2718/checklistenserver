@@ -22,7 +22,11 @@ public class ChecklisteDatenSanitizer implements Function<ChecklisteDaten, Check
 		daten.getItems().stream().forEach(item -> {
 
 			item.setName(Encode.forHtml(item.getName()));
-			item.setKommentar(Encode.forHtml(item.getKommentar()));
+
+			if (item.getKommentar() != null) {
+
+				item.setKommentar(Encode.forHtml(item.getKommentar()));
+			}
 		});
 
 		return daten;
