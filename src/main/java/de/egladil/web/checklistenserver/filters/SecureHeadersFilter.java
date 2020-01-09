@@ -30,7 +30,7 @@ public class SecureHeadersFilter implements ContainerResponseFilter {
 	@ConfigProperty(name = "stage")
 	String stage;
 
-	@ConfigProperty(name = "allowedOrigin", defaultValue = "opa-wetterwachs.de")
+	@ConfigProperty(name = "allowedOrigin", defaultValue = "https://opa-wetterwachs.de")
 	String allowedOrigin;
 
 	@Override
