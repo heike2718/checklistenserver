@@ -1,5 +1,10 @@
 # checklistenserver Release Notes
 
+__Release 6.3.2__
+
+CVE-2020-8840: upgrade to [hewi-java-commons version 1.4.4](https://github.com/heike2718/hewi-java-commons/releases/tag/1.4.4)
+
+
 __Release 6.3.1__
 
 [Kommentar sanitize erzeugt null](https://github.com/heike2718/checklistenserver/issues/22)
