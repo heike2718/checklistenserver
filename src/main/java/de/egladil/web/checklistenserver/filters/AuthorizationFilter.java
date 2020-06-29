@@ -21,11 +21,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.ext.Provider;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.egladil.web.checklistenserver.ChecklistenServerApp;
+import de.egladil.web.checklistenserver.config.ConfigService;
 import de.egladil.web.checklistenserver.context.ChecklistenSecurityContext;
 import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
@@ -45,8 +45,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
 	private static final List<String> AUTHORIZED_PATHS = Arrays.asList(new String[] { "/checklisten", "/templates", "/signup" });
 
-	@ConfigProperty(name = "stage")
-	String stage;
+	@Inject
+	ConfigService config;
 
 	@Context
 	ResourceInfo resourceInfo;
@@ -68,7 +68,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 				logCookies(requestContext);
 			}
 
-			String sessionId = CommonHttpUtils.getSessionId(requestContext, stage, ChecklistenServerApp.CLIENT_COOKIE_PREFIX);
+			String sessionId = CommonHttpUtils.getSessionId(requestContext, config.getStage(),
+				ChecklistenServerApp.CLIENT_COOKIE_PREFIX);
 
 			LOG.debug("sessionId={}", sessionId);
 
