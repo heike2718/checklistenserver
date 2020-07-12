@@ -29,6 +29,7 @@ import de.egladil.web.checklistenserver.domain.UserSession;
 import de.egladil.web.checklistenserver.error.AuthException;
 import de.egladil.web.checklistenserver.service.ChecklistenSessionService;
 import de.egladil.web.checklistenserver.service.ClientAccessTokenService;
+import de.egladil.web.checklistenserver.service.TokenExchangeService;
 import de.egladil.web.commons_net.utils.CommonHttpUtils;
 import de.egladil.web.commons_validation.payload.MessagePayload;
 import de.egladil.web.commons_validation.payload.ResponsePayload;
@@ -60,6 +61,9 @@ public class ChecklistenSessionResource {
 
 	@Inject
 	ChecklistenSessionService sessionService;
+
+	@Inject
+	TokenExchangeService tokenExchangeService;
 
 	@GET
 	@Path("/signup")
@@ -106,7 +110,15 @@ public class ChecklistenSessionResource {
 	@Path("/session")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@PermitAll
-	public Response createSession(final String jwt) {
+	public Response getTheJwtAndCreateSession(final String oneTimeToken) {
+
+		String jwt = tokenExchangeService.exchangeTheOneTimeToken(oneTimeToken);
+
+		return this.createTheSessionWithJWT(jwt);
+
+	}
+
+	private Response createTheSessionWithJWT(final String jwt) {
 
 		UserSession userSession = sessionService.createUserSession(jwt);
 
@@ -118,9 +130,6 @@ public class ChecklistenSessionResource {
 		}
 
 		ResponsePayload payload = new ResponsePayload(MessagePayload.info("OK"), userSession);
-
-		// TODO: X-XSRF-Cookie anhängen
-
 		return Response.ok(payload).cookie(sessionCookie).build();
 	}
 
