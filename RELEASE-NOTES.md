@@ -1,5 +1,11 @@
 # checklistenserver Release Notes
 
+__Release 7.1.1__:
+
+* log into files
+* new common release because of shiro CVE
+* bumped quarkus to 1.7.2-Final
+
 __Release 7.1.0__:
 
 * Umstellung jwt auf authorization token grant flow, damit ein JWT niemals im Browser
