@@ -34,9 +34,11 @@ public class ClientAccessTokenService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClientAccessTokenService.class);
 
+	@Inject
 	@ConfigProperty(name = "auth.client-id")
 	String clientId;
 
+	@Inject
 	@ConfigProperty(name = "auth.client-secret")
 	String clientSecret;
 
