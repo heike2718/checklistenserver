@@ -35,9 +35,11 @@ public class TokenExchangeService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeService.class);
 
+	@Inject
 	@ConfigProperty(name = "auth.client-id")
 	String clientId;
 
+	@Inject
 	@ConfigProperty(name = "auth.client-secret")
 	String clientSecret;
 

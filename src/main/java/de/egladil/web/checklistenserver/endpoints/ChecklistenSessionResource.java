@@ -44,15 +44,19 @@ public class ChecklistenSessionResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistenSessionResource.class);
 
+	@Inject
 	@ConfigProperty(name = "auth-app.url")
 	String authAppUrl;
 
+	@Inject
 	@ConfigProperty(name = "auth.redirect-url.login")
 	String loginRedirectUrl;
 
+	@Inject
 	@ConfigProperty(name = "stage")
 	String stage;
 
+	@Inject
 	@ConfigProperty(name = "auth.redirect-url.signup")
 	String signupRedirectUrl;
 

@@ -5,6 +5,7 @@
 package de.egladil.web.checklistenserver.endpoints;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,6 +25,7 @@ import de.egladil.web.commons_validation.payload.ResponsePayload;
 @Produces(MediaType.APPLICATION_JSON)
 public class VersionResource {
 
+	@Inject
 	@ConfigProperty(name = "quarkus.application.version")
 	String version;
 

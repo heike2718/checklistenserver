@@ -35,6 +35,7 @@ public class HeartbeatResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HeartbeatResource.class);
 
+	@Inject
 	@ConfigProperty(name = "heartbeat.id")
 	String expectedHeartbeatId;
 

@@ -5,6 +5,7 @@
 package de.egladil.web.checklistenserver.endpoints;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,6 +31,7 @@ public class LogResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogResource.class);
 
+	@Inject
 	@ConfigProperty(name = "auth.client-id")
 	String clientId;
 
